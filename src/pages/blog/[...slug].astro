@@ -1,0 +1,90 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import SiteNav from "../../components/SiteNav.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => {
+    const slug = post.id.replace(/\.(md|mdx)$/i, "");
+    return {
+      params: { slug },
+      props: { post, slug },
+    };
+  });
+}
+
+const { post, slug } = Astro.props;
+const { Content, headings } = await render(post);
+const sectionHeadings = headings.filter((heading) => heading.depth === 2);
+const postSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  url: Astro.site
+    ? new URL(`/blog/${slug}/`, Astro.site).toString()
+    : `/blog/${slug}/`,
+  author: {
+    "@type": "Person",
+    name: "Your Name",
+    url: "https://example.com/about/",
+  },
+  // Escape < so a post title/description can never close the <script> tag.
+}).replace(/</g, "\\u003c");
+---
+
+<Layout
+  title={`${post.data.title} — Your Name`}
+  description={post.data.description}
+  canonicalPath={`/blog/${slug}/`}
+  ogType="article"
+>
+  <a style={`text-decoration: none;`} href="/blog"> Back to Blog </a>
+
+  <SiteNav />
+  <main class="content-shell">
+    <div
+      class="article-layout section"
+      style="max-width: var(--max); padding-inline: 1.25rem;"
+    >
+      <aside class="article-toc" aria-label="Article sections">
+        {
+          sectionHeadings.length > 0 && (
+            <nav>
+              {sectionHeadings.map((heading) => (
+                <a href={`#${heading.slug}`} data-heading-link={heading.slug}>
+                  {heading.text}
+                </a>
+              ))}
+            </nav>
+          )
+        }
+      </aside>
+
+      <article class="article-shell" data-pagefind-body>
+        <header class="article-header">
+          <p class="post-meta">
+            <time datetime={post.data.pubDate.toISOString()}>
+              {
+                post.data.pubDate.toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+              }
+            </time>
+          </p>
+          <h1>{post.data.title}</h1>
+        </header>
+        <div class="article-prose">
+          <Content />
+        </div>
+        <section class="article-comments" aria-label="Comments">
+          <div id="remark42"></div>
+        </section>
+      </article>
+    </div>
+  </main>
+</Layout>

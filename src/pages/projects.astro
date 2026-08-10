@@ -1,0 +1,136 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteNav from "../components/SiteNav.astro";
+
+const projects = [
+  {
+    title: "Portfolio Site",
+    summary:
+      "A polished Astro-based portfolio experience with a lightweight, modern presentation.",
+    stack: ["Astro", "TypeScript", "CSS"],
+    link: "https://github.com/lazurq-png/My-Portfolio",
+  },
+  {
+    title: "Next.js Dashboard Guide",
+    summary: "Learning how to use Next.js for building web applications.",
+    stack: ["Next.js", "React", "TypeScript"],
+    link: "https://github.com/lazurq-png/next.js-dashboard",
+  },
+];
+---
+
+<Layout>
+  <SiteNav />
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">/projects</p>
+      <h1>Selected work</h1>
+      <p class="intro">
+        A snapshot of the kind of systems, interfaces, and products I enjoy
+        building.
+      </p>
+    </section>
+
+    <section class="project-grid" aria-label="Project list">
+      {
+        projects.map((project) => (
+          <a
+            class="post-date"
+            style={`text-decoration: none;`}
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <article class="card">
+              <h2>{project.title}</h2>
+              <p>{project.summary}</p>
+              <ul class="tags" role="list">
+                {project.stack.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            </article>
+          </a>
+        ))
+      }
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .page-shell {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding-bottom: 3rem;
+  }
+
+  .hero {
+    margin-bottom: 2rem;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+
+  h1 {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: clamp(2rem, 3.6vw, 2.8rem);
+    margin: 0 0 0.75rem;
+    color: var(--ink);
+  }
+
+  .intro {
+    color: var(--ink-dim);
+    font-size: 1rem;
+    line-height: 1.7;
+    max-width: 42rem;
+    margin: 0;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--rule);
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
+
+  .card h2 {
+    font-size: 1.05rem;
+    margin-top: 0;
+    margin-bottom: 0.65rem;
+    color: var(--ink);
+  }
+
+  .card p {
+    color: var(--ink-dim);
+    line-height: 1.6;
+    margin: 0 0 1rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tags li {
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(232, 163, 61, 0.14);
+    color: var(--accent);
+    font-size: 0.8rem;
+  }
+</style>

@@ -1,16 +1,236 @@
 ---
-import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
+import SiteNav from "../components/SiteNav.astro";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const name = "Martin Larsson";
+const role = "Software Developer";
+const status = "Currently building things with Astro + Next.js";
+
+const bio = `I'm a developer working across systems and web —
+from close-to-the-metal C and C++ to modern TypeScript front ends.
+ I like tools that are fast, code that is honest about what it does,
+ and building things that hold up.`;
+
+const iconStack = [
+  {
+    label: "C",
+    name: "C",
+    bg: "#4A4F58",
+    fg: "#F4F3F0",
+    link: "https://cppreference.com/c/language",
+  },
+  {
+    label: "C++",
+    name: "C++",
+    bg: "#00599C",
+    fg: "#FFFFFF",
+    link: "https://cppreference.com/",
+  },
+  {
+    label: ".NET",
+    name: ".NET",
+    bg: "#512BD4",
+    fg: "#FFFFFF",
+    link: "https://learn.microsoft.com/en-us/dotnet/",
+  },
+  {
+    label: "C#",
+    name: "C#",
+    bg: "#9B4F96",
+    fg: "#FFFFFF",
+    link: "https://learn.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/",
+  },
+  {
+    label: "TS",
+    name: "TypeScript",
+    bg: "#3178C6",
+    fg: "#FFFFFF",
+    link: "https://www.typescriptlang.org/docs/",
+  },
+  {
+    label: "AS",
+    name: "Astro",
+    bg: "#FF5D01",
+    fg: "#17191E",
+    link: "https://docs.astro.build/",
+  },
+  {
+    label: "N",
+    name: "Next.js",
+    bg: "#F4F3F0",
+    fg: "#0B0D10",
+    link: "https://nextjs.org/docs",
+  },
+];
 ---
 
-<!-- Todo:
-	- Lägga till "om mig" sida med ikoner för olika programmerings språk och frameworks jag har erfarenhet av
-	- Lägga till blogsida
-	- Lägga till "projekt" sida med länkar till mina projekt på GitHub
--->
 <Layout>
-  <Welcome />
+  <SiteNav />
+  <main class="home-shell">
+    <section class="hero-card">
+      <p class="eyebrow">Me, myself and I</p>
+      <h1>{name}</h1>
+      <p class="role">{role}</p>
+      <p class="bio">{bio}</p>
+      <p class="status"><span class="dot"></span>{status}</p>
+
+      <div class="cta-row">
+        <a class="primary-link" href="/projects">View Projects</a>
+        <a class="secondary-link" href="/blog">Read Blog</a>
+      </div>
+    </section>
+
+    <section class="info-card" aria-label="Technology stack">
+      <p class="built-with">Languages/Skills</p>
+      <ul class="stack" role="list">
+        {
+          iconStack.map((item) => (
+            <li>
+              <a
+                class="badge"
+                style={`background:${item.bg}; color:${item.fg}; text-decoration: none;`}
+                title={item.name}
+                aria-label={item.name}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </main>
 </Layout>
+
+<style>
+  .home-shell {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .hero-card,
+  .info-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--rule);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+  }
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin: 0 0 0.75rem;
+  }
+
+  h1 {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: clamp(2rem, 5vw, 2.75rem);
+    line-height: 1.1;
+    margin: 0 0 0.4rem;
+    color: var(--ink);
+  }
+
+  .role {
+    font-size: 1.05rem;
+    color: var(--ink-dim);
+    margin: 0 0 1.25rem;
+  }
+
+  .bio {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+    max-width: 40rem;
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    margin: 0 0 1.3rem;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .primary-link,
+  .secondary-link {
+    text-decoration: none;
+    padding: 0.7rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid var(--rule);
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .primary-link {
+    background: var(--accent);
+    color: #111;
+    font-weight: 600;
+  }
+
+  .secondary-link {
+    color: var(--ink);
+  }
+
+  .primary-link:hover,
+  .secondary-link:hover {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+  }
+
+  .built-with {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 0 0 0.9rem;
+  }
+
+  .stack {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 5px;
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    font-size: 9px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    cursor: default;
+  }
+</style>

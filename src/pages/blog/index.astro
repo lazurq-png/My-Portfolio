@@ -1,0 +1,47 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import SiteNav from "../../components/SiteNav.astro";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<Layout>
+  <SiteNav />
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">/blog</p>
+      <h1>Notes and reflections</h1>
+      <p class="intro">
+        Short posts about building, design choices, and general thoughts while
+        learning new technologies.
+      </p>
+    </section>
+
+    <section class="post-list" aria-label="Blog posts">
+      {
+        posts.map((post) => (
+          <a
+            class="post-date"
+            style={`text-decoration: none;`}
+            href={`/blog/${post.id.replace(/\.(md|mdx)$/i, "")}/`}
+          >
+            <article class="post-card">
+              <div>
+                {post.data.pubDate.toLocaleDateString("en-GB", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </div>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+            </article>
+          </a>
+        ))
+      }
+    </section>
+  </main>
+</Layout>
