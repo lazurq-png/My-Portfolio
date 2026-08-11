@@ -15,24 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { post, slug } = Astro.props;
-const { Content, headings } = await render(post);
-const sectionHeadings = headings.filter((heading) => heading.depth === 2);
-const postSchema = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  headline: post.data.title,
-  description: post.data.description,
-  datePublished: post.data.pubDate.toISOString(),
-  url: Astro.site
-    ? new URL(`/blog/${slug}/`, Astro.site).toString()
-    : `/blog/${slug}/`,
-  author: {
-    "@type": "Person",
-    name: "Your Name",
-    url: "https://example.com/about/",
-  },
-  // Escape < so a post title/description can never close the <script> tag.
-}).replace(/</g, "\\u003c");
+const { Content } = await render(post);
 ---
 
 <Layout
@@ -41,50 +24,60 @@ const postSchema = JSON.stringify({
   canonicalPath={`/blog/${slug}/`}
   ogType="article"
 >
-  <a style={`text-decoration: none;`} href="/blog"> Back to Blog </a>
-
   <SiteNav />
+  <a style={`text-decoration: none;`} href="/blog">
+    <img src="/arrowdark.ico" />
+  </a>
   <main class="content-shell">
     <div
-      class="article-layout section"
+      class="article-layout"
       style="max-width: var(--max); padding-inline: 1.25rem;"
     >
-      <aside class="article-toc" aria-label="Article sections">
-        {
-          sectionHeadings.length > 0 && (
-            <nav>
-              {sectionHeadings.map((heading) => (
-                <a href={`#${heading.slug}`} data-heading-link={heading.slug}>
-                  {heading.text}
-                </a>
-              ))}
-            </nav>
-          )
-        }
-      </aside>
-
       <article class="article-shell" data-pagefind-body>
-        <header class="article-header">
-          <p class="post-meta">
-            <time datetime={post.data.pubDate.toISOString()}>
-              {
-                post.data.pubDate.toLocaleDateString("en-GB", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })
-              }
-            </time>
-          </p>
-          <h1>{post.data.title}</h1>
-        </header>
+        <p class="post-date">
+          <time datetime={post.data.pubDate.toISOString()}>
+            {
+              post.data.pubDate.toLocaleDateString("en-GB", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+            }
+          </time>
+        </p>
+        <h1 class="article-title">{post.data.title}</h1>
         <div class="article-prose">
           <Content />
         </div>
-        <section class="article-comments" aria-label="Comments">
-          <div id="remark42"></div>
-        </section>
       </article>
     </div>
   </main>
 </Layout>
+<style>
+  .article-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .article-prose {
+    font-size: 1.1rem;
+    line-height: 1.25;
+    margin: 0 0 1.25rem;
+    white-space: pre-line;
+    font-family: "Inter", sans-serif;
+  }
+  .article-title {
+    font-size: 2rem;
+    font-weight: 1000;
+    font-family: "Inter", sans-serif;
+  }
+  .article-shell {
+    max-width: var(--max);
+    margin: 0 auto;
+  }
+  .content-shell {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding-bottom: 3rem;
+  }
+</style>

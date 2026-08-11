@@ -15,8 +15,8 @@ const posts = (await getCollection("blog")).sort(
       <p class="eyebrow">/blog</p>
       <h1>Notes and reflections</h1>
       <p class="intro">
-        Short posts about building, design choices, and general thoughts while
-        learning new technologies.
+        Short posts on design choices and general thoughts while learning new
+        technologies.
       </p>
     </section>
 
@@ -25,7 +25,7 @@ const posts = (await getCollection("blog")).sort(
         posts.map((post) => (
           <a
             class="post-date"
-            style={`text-decoration: none;`}
+            style="text-decoration: none;"
             href={`/blog/${post.id.replace(/\.(md|mdx)$/i, "")}/`}
           >
             <article class="post-card">

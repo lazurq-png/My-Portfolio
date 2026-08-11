@@ -3,13 +3,13 @@ import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
 
 const name = "Martin Larsson";
-const role = "Software Developer";
+const role = "Software Engineer";
 const status = "Currently building things with Astro + Next.js";
 
-const bio = `I'm a developer working across systems and web —
-from close-to-the-metal C and C++ to modern TypeScript front ends.
- I like tools that are fast, code that is honest about what it does,
- and building things that hold up.`;
+const bio = `I am a Swedish software developer with a bachelor's in Computer Science.
+My experience spans a wide range of technologies, of which some are shown by the icons at the bottom of this page.
+I enjoy creating simple but efficient software solutions,and I like exploring new programming languages, technologies and frameworks.
+In my free time, I spend most of my time listening to audiobooks or playing video games with my friends. But anything considered "nerdy" is usually something I would at least be interested in trying out.`;
 
 const iconStack = [
   {
@@ -148,6 +148,7 @@ const iconStack = [
     color: var(--ink);
     margin: 0 0 1.25rem;
     max-width: 40rem;
+    white-space: pre-line;
   }
 
   .status {

@@ -11,8 +11,9 @@ const projects = [
     link: "https://github.com/lazurq-png/My-Portfolio",
   },
   {
-    title: "Next.js Dashboard Guide",
-    summary: "Learning how to use Next.js for building web applications.",
+    title: "Next.js Dashboard Template",
+    summary:
+      "Learning how to use Next.js to build interactive web applications.",
     stack: ["Next.js", "React", "TypeScript"],
     link: "https://github.com/lazurq-png/next.js-dashboard",
   },
@@ -25,10 +26,7 @@ const projects = [
     <section class="hero">
       <p class="eyebrow">/projects</p>
       <h1>Selected work</h1>
-      <p class="intro">
-        A snapshot of the kind of systems, interfaces, and products I enjoy
-        building.
-      </p>
+      <p class="intro">Template for showcasing my projects.</p>
     </section>
 
     <section class="project-grid" aria-label="Project list">
@@ -36,7 +34,7 @@ const projects = [
         projects.map((project) => (
           <a
             class="post-date"
-            style={`text-decoration: none;`}
+            style="text-decoration: none;"
             href={project.link}
             target="_blank"
             rel="noopener noreferrer"
@@ -58,39 +56,6 @@ const projects = [
 </Layout>
 
 <style>
-  .page-shell {
-    max-width: 72rem;
-    margin: 0 auto;
-    padding-bottom: 3rem;
-  }
-
-  .hero {
-    margin-bottom: 2rem;
-  }
-
-  .eyebrow {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    margin: 0 0 0.75rem;
-  }
-
-  h1 {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: clamp(2rem, 3.6vw, 2.8rem);
-    margin: 0 0 0.75rem;
-    color: var(--ink);
-  }
-
-  .intro {
-    color: var(--ink-dim);
-    font-size: 1rem;
-    line-height: 1.7;
-    max-width: 42rem;
-    margin: 0;
-  }
-
   .project-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));

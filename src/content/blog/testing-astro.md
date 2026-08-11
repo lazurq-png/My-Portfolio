@@ -1,8 +1,8 @@
 ---
 title: "Learning Astro.js"
-description: "Using Astro.js docs and copilot and claude free versions to make a decent looking portfolio website."
+description: "Using Astro.js docs, copilot's and claude's free versions to make a decent looking portfolio website."
 pubDate: 08-05-2026
-tags: ["astro", "portfolio"]
+tags: ["astro", "portfolio", "AI"]
 ---
 
 Initial creation of the project and repo + pushing changes to Github.
