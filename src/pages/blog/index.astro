@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import SiteNav from "../../components/SiteNav.astro";
+import { sanitizeSlug } from "../../lib/sanitize";
 
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -26,7 +27,7 @@ const posts = (await getCollection("blog")).sort(
           <a
             class="post-date"
             style="text-decoration: none;"
-            href={`/blog/${post.id.replace(/\.(md|mdx)$/i, "")}/`}
+            href={`/blog/${sanitizeSlug(post.id)}/`}
           >
             <article class="post-card">
               <div>

@@ -6,7 +6,11 @@ import SiteNav from "../../components/SiteNav.astro";
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
   return posts.map((post) => {
-    const slug = post.id.replace(/\.(md|mdx)$/i, "");
+    // Sanitize slug: remove directory traversal characters and non-URL-safe characters
+    const slug = post.id.replace(/\.(md|mdx)$/i, "")
+      .replace(/[^a-zA-Z0-9\-_]/g, "-")
+      .replace(/-+/g, "-")
+      .trim("-");
     return {
       params: { slug },
       props: { post, slug },
