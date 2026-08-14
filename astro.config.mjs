@@ -8,7 +8,7 @@ export default defineConfig(/** @type {any} */({
       src: [],
       'set-header': 'Content-Security-Policy',
       value:
-        "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.astro.build; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https:; font-src https:; connect-src 'self'",
+        "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdn.astro.build; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https:; font-src https:; connect-src 'self'",
     },
     {
       src: [],
