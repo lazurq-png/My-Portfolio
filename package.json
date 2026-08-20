@@ -9,12 +9,18 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest"
   },
   "dependencies": {
-    "astro": "^7.2.2"
+    "@iconify-json/devicon": "^1.2.62",
+    "astro": "^7.2.2",
+    "astro-icon": "^1.1.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.2.0",
+    "vitest": "^4.1.10",
     "wrangler": "^4.120.0"
   }
 }

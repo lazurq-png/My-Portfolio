@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SiteNav from "../components/SiteNav.astro";
+import { Icon } from "astro-icon/components";
 
 const name = "Martin Larsson";
 const role = "Software Engineer";
@@ -9,59 +10,8 @@ const status = "Currently building things with Astro + Next.js";
 const bio = `I am a Swedish software developer with a bachelor's in Computer Science.
 My experience spans a wide range of technologies, of which some are shown by the icons at the bottom of this page.
 I enjoy creating simple but efficient software solutions,and I like exploring new programming languages, technologies and frameworks.
-In my free time, I spend most of my time listening to audiobooks or playing video games with my friends. But anything considered "nerdy" is usually something I would at least be interested in trying out.`;
-
-const iconStack = [
-  {
-    label: "C",
-    name: "C",
-    bg: "#4A4F58",
-    fg: "#F4F3F0",
-    link: "https://cppreference.com/c/language",
-  },
-  {
-    label: "C++",
-    name: "C++",
-    bg: "#00599C",
-    fg: "#FFFFFF",
-    link: "https://cppreference.com/",
-  },
-  {
-    label: ".NET",
-    name: ".NET",
-    bg: "#512BD4",
-    fg: "#FFFFFF",
-    link: "https://learn.microsoft.com/en-us/dotnet/",
-  },
-  {
-    label: "C#",
-    name: "C#",
-    bg: "#9B4F96",
-    fg: "#FFFFFF",
-    link: "https://learn.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/",
-  },
-  {
-    label: "TS",
-    name: "TypeScript",
-    bg: "#3178C6",
-    fg: "#FFFFFF",
-    link: "https://www.typescriptlang.org/docs/",
-  },
-  {
-    label: "AS",
-    name: "Astro",
-    bg: "#FF5D01",
-    fg: "#17191E",
-    link: "https://docs.astro.build/",
-  },
-  {
-    label: "N",
-    name: "Next.js",
-    bg: "#F4F3F0",
-    fg: "#0B0D10",
-    link: "https://nextjs.org/docs",
-  },
-];
+In my free time, I spend most of my time listening to audiobooks or playing video games with my friends.
+But anything considered "nerdy" is usually something I would at least be interested in trying out.`;
 ---
 
 <Layout>
@@ -82,25 +32,15 @@ const iconStack = [
 
     <section class="info-card" aria-label="Technology stack">
       <p class="built-with">Languages/Skills</p>
-      <ul class="stack" role="list">
-        {
-          iconStack.map((item) => (
-            <li>
-              <a
-                class="badge"
-                style={`background:${item.bg}; color:${item.fg}; text-decoration: none;`}
-                title={item.name}
-                aria-label={item.name}
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+      <Icon name="devicon:c" class="badge" />
+      <Icon name="devicon:csharp" class="badge" />
+      <Icon name="devicon:cplusplus" class="badge" />
+      <Icon name="devicon:javascript" class="badge" />
+      <Icon name="devicon:typescript" class="badge" />
+      <Icon name="devicon:python" class="badge" />
+      <Icon name="devicon:astro" class="badge-dark" />
+      <Icon name="devicon:nextjs" class="badge-dark" />
+      <Icon name="devicon:css" class="badge" />
     </section>
   </main>
 </Layout>
@@ -221,17 +161,12 @@ const iconStack = [
   }
 
   .badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     width: 48px;
     height: 48px;
-    border-radius: 5px;
-    font-family: "IBM Plex Mono", monospace;
-    font-weight: 600;
-    font-size: 9px;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    cursor: default;
+  }
+  .badge-dark {
+    width: 48px;
+    height: 48px;
+    background: #d8dae0;
   }
 </style>

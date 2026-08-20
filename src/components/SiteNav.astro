@@ -1,64 +1,48 @@
 ---
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "My Projects" },
-  { href: "/blog", label: "Blog" },
-];
-
 const currentPath = Astro.url.pathname;
 ---
 
-<nav class="site-nav" aria-label="Primary">
-  <a class="brand"></a>
-  <div class="nav-links">
-    {
-      links.map((link) => (
-        <a
-          href={link.href}
-          class:list={["nav-link", { active: currentPath === link.href }]}
-        >
-          {link.label}
-        </a>
-      ))
-    }
-  </div>
-</nav>
+<header>
+  <nav class="site-nav" aria-label="Primary">
+    <div id="main-menu" class="nav-links">
+      <a style={`text-decoration: none;`} href="/">Home</a>
+      <a style={`text-decoration: none;`} href="/projects/">My Projects</a>
+      <a style={`text-decoration: none;`} href="/blog/">Blog</a>
+    </div>
+  </nav>
+</header>
 
 <style>
-  .site-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem 0 1.75rem;
-  }
-
-  .brand {
-    color: var(--ink);
-    text-decoration: none;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.95rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-
   .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    flex-wrap: wrap;
+    width: 100%;
+    margin: 0;
   }
 
-  .nav-link {
+  .nav-links a {
+    display: block;
+    text-align: center;
     text-decoration: none;
-    color: var(--ink-dim);
-    font-size: 0.95rem;
-    transition: color 180ms ease;
+    font-weight: bold;
+    color: #ececf1;
   }
 
-  .nav-link:hover,
-  .nav-link.active {
-    color: var(--ink);
+  .nav-links a:hover,
+  .nav-links a:focus {
+    background-color: #e8813d;
+  }
+
+  @media screen and (min-width: 768px) {
+    .nav-links {
+      margin-left: 5em;
+      display: block;
+      position: static;
+      width: auto;
+      background: none;
+    }
+
+    .nav-links a {
+      display: inline-block;
+      padding: 10px 10px;
+    }
   }
 </style>

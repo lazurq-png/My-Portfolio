@@ -8,8 +8,9 @@
 export function sanitizeSlug(slug: string): string {
   return slug
     .replace(/[^a-zA-Z0-9\-_]/g, "-")  // Replace unsafe chars with hyphen
-    .replace(/-+/g, "-")                 // Collapse multiple hyphens
-    .trim("-");                          // Remove leading/trailing hyphens
+    .replace(/-+/g, "-")               // Collapse multiple hyphens
+    .replace(/^-+|-+$/g, "")          // Remove leading/trailing hyphens
+    .replace(/_/g, "");               // Remove underscores
 }
 
 /**

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
@@ -110,9 +110,23 @@
     line-height: 1.6;
   }
 
-  @media (max-width: 640px) {
-    body {
+  @media (min-width: 300px) {
+    .page-shell {
+      padding-right: 1rem;
+      padding-left: 1rem;
+      text-align: left;
+    }
+    /* Changes layout to a horizontal row on tablets */
+    .stats-grid {
+      flex-direction: row;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-shell {
       padding: 1.1rem 1rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
   }
 </style>

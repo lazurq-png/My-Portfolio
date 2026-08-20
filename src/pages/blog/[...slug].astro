@@ -10,7 +10,8 @@ export async function getStaticPaths() {
     const slug = post.id.replace(/\.(md|mdx)$/i, "")
       .replace(/[^a-zA-Z0-9\-_]/g, "-")
       .replace(/-+/g, "-")
-      .trim("-");
+      // Remove leading and trailing dashes
+      .replace(/^-+|-+$/g, "");
     return {
       params: { slug },
       props: { post, slug },
