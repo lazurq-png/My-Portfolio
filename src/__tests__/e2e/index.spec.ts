@@ -1,34 +1,77 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Homepage', () => {
-  test.beforeEach(({ page }) => {
-    // Navigate to the homepage before each test
-    page.goto('/')
-  })
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+  });
 
   test('homepage loads successfully', async ({ page }) => {
-    // Given: the homepage
-    // When: we wait for the page to load
-    await page.waitForLoadState('networkidle')
-    
-    // Then: the page title should be correct
-    expect(await page.title()).toContain('Martin Larsson')
-    
-    // And: the page should be fully rendered
-    await page.waitForSelector('.hero-card')
-  })
+    await expect(page).toHaveTitle('Martin Larsson — Software Developer');
+    await expect(page.locator('.hero-card')).toBeVisible();
+  });
 
   test('homepage displays name and role correctly', async ({ page }) => {
-    // Given: the homepage loads
-    // When: we wait for elements to be visible and check the text
-    await page.waitForSelector('h1', { timeout: 10000 })
-    await page.waitForSelector('.role', { timeout: 10000 })
-    
-    const name = await page.textContent('h1')
-    const role = await page.textContent('.role')
-    
-    // Then: name and role should be visible and correct
-    expect(name).toContain('Martin')
-    expect(role).toContain('Software Engineer')
-  })
-})
+    await expect(
+      page.getByRole('heading', { name: 'Martin Larsson' })
+    ).toBeVisible();
+
+    await expect(page.locator('.role')).toBeVisible();
+    await expect(page.locator('.role')).toHaveText('Software Engineer');
+  });
+
+  test('homepage displays status message correctly', async ({ page }) => {
+    await expect(page.locator('.status')).toBeVisible();
+    await expect(page.locator('.status')).toContainText(
+      'Currently building things with Astro + Next.js'
+    );
+  });
+
+  test('homepage displays bio content', async ({ page }) => {
+    await expect(page.locator('.bio')).toBeVisible();
+    await expect(page.locator('.bio')).toContainText(
+      'Swedish software developer'
+    );
+  });
+
+  test('homepage navigation to projects works', async ({ page }) => {
+    const projectsLink = page.getByRole('link', { name: 'View Projects' });
+
+    await expect(projectsLink).toBeVisible();
+    await projectsLink.click();
+
+    await expect(page).toHaveURL(/\/projects\/?$/);
+    await expect(
+      page.getByRole('heading', { name: 'Selected work' })
+    ).toBeVisible();
+  });
+
+  test('homepage is responsive on mobile', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+
+    await expect(page.locator('.hero-card')).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Martin Larsson' })
+    ).toBeVisible();
+  });
+
+  test('homepage is responsive on desktop', async ({ page }) => {
+    await page.setViewportSize({ width: 1920, height: 1080 });
+
+    await expect(page.locator('.hero-card')).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Martin Larsson' })
+    ).toBeVisible();
+  });
+
+  test('homepage SEO meta tags are present', async ({ page }) => {
+    await expect(page).toHaveTitle('Martin Larsson — Software Developer');
+
+    const descriptionMeta = page.locator('meta[name="description"]');
+
+    await expect(descriptionMeta).toHaveAttribute(
+      'content',
+      'Portfolio website for Martin Larsson, a software developer working across systems, web, and modern tooling.'
+    );
+  });
+});
+
