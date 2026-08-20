@@ -16,4 +16,5 @@ chatGPT added duplicate tests from project and blog page inside of index.spec.ts
 Which created quite a headache when running tests that also failed cause of hardcoded data,
 like how many blog posts should show.
 10 when test was made, but that was before this post was made :)
+Changing from 4 workers to 1, made all tests pass. and it doesn't even seem that much slower.
 Also time management is something I need to get better at...

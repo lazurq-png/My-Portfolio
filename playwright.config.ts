@@ -9,7 +9,7 @@ export default defineConfig({
 
   retries: process.env.CI ? 2 : 0,
 
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
 
   reporter: 'html',
 
@@ -34,7 +34,11 @@ export default defineConfig({
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: { ...devices['Desktop Firefox'],
+        // added more time for firefox since it needs it.
+        actionTimeout: 60_000,
+        navigationTimeout: 60_000, },
+        
     },
 
     {
