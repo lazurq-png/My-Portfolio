@@ -30,12 +30,6 @@ jobs:
       - name: Run Vitest
         run: pnpm test:unit
 
-      - name: Install Webkit dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwoff1 libopus0 libwebpdemux2 libwebp6 libwebpmux3 libgstreamer-plugins-base1.0-0 libxslt1.1 libegl1 libgles2 gstreamer1.0-plugins-base gstreamer1.0-plugins-good libharfbuzz0b libhyphen0 libicu67 libcairo2 libpango-1.0-0 libpangoft2-1.0-0
-          npx playwright install-deps webkit
-
   e2e-tests:
     name: E2E tests
     runs-on: ubuntu-latest
@@ -61,6 +55,9 @@ jobs:
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps
+
+      - name: Install Playwright WebKit
+        run: pnpm exec playwright install --with-deps webkit
 
       - name: Run Playwright
         run: pnpm test:e2e
