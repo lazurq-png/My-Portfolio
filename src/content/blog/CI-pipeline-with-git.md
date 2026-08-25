@@ -13,3 +13,4 @@ Take 2!
 Some tests on safari failed in CI, because it is running headless.
 Trying to install webkit dependencies to make them pass.
 Trying again, this time with installs for webkit in e2e job instead of unti tests.
+One more try, this time with feeling.
