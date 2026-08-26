@@ -2,7 +2,7 @@
 title: "Testing tests to test"
 description: "Unit test with Vitest"
 pubDate: 08-18-2026
-tags: ["astro", "Testing", "Vitest"]
+tags: ["Astro", "Testing", "Vitest", "Portfolio"]
 ---
 
 Installed Vitest and added a test folder in the project.

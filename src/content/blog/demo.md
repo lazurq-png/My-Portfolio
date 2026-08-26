@@ -2,7 +2,7 @@
 title: "Demo"
 description: "typical demo of almost done website."
 pubDate: 08-21-2026
-tags: ["demo"]
+tags: ["Demo", "Portfolio"]
 ---
 
 Had a successful demo for both myself (customer) and both bosses.

@@ -2,7 +2,7 @@
 title: "Polish and UI improvements"
 description: "Fonts, icon size, actual bio text instead of AI written slop."
 pubDate: 08-11-2026
-tags: ["astro", "portfolio", "CSS"]
+tags: ["Astro", "CSS", "Portfolio"]
 ---
 
 Added a return/go back arrow that I also recolored to work for darkmode, when I add that feature later on today/tomorrow.

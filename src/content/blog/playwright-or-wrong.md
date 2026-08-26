@@ -2,7 +2,7 @@
 title: "Playwright tests"
 description: "Finishing playwright tests, hopefully"
 pubDate: 08-20-2026
-tags: ["astro", "Testing", "Playwright"]
+tags: ["Astro", "Testing", "Playwright", "Portfolio"]
 ---
 
 Started day with new concepts E2E and revisiting old knowledge.

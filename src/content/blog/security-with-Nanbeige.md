@@ -2,7 +2,7 @@
 title: "Security with Nanbeige AI"
 description: "Documenting decisions made by the AI and understanding why these risks are risks."
 pubDate: 08-13-2026
-tags: ["astro", "Security", "AI", "Documentation"]
+tags: ["Astro", "Security", "AI", "Documentation", "Portfolio"]
 ---
 
 Using a local version of the open source AI model Nanbeige4.2 3B I ran the following prompt:
