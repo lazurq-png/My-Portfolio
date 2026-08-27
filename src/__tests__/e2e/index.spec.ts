@@ -34,7 +34,7 @@ test.describe('Homepage', () => {
   });
 
   test('homepage navigation to projects works', async ({ page }) => {
-    const projectsLink = page.getByRole('link', { name: 'View Projects' });
+    const projectsLink = page.getByRole('link', { name: 'My Projects' });
 
     await expect(projectsLink).toBeVisible();
     await projectsLink.click();
