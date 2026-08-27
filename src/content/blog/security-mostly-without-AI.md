@@ -2,7 +2,7 @@
 title: "Security mostly without AI"
 description: "Cleaning up code left over by half done AI prompts and implementing fixes left from yesterday."
 pubDate: 08-14-2026
-tags: ["astro", "Security", "Documentation"]
+tags: ["Astro", "Security", "Documentation", "Portfolio"]
 ---
 
 Using the output from yesterdays prompts, I can still implement mentioned fixes by hand.

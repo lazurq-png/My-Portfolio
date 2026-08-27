@@ -2,7 +2,7 @@
 title: "Mocking all the tests"
 description: "Unit test with Vitest (again) and some playwright testing"
 pubDate: 08-19-2026
-tags: ["astro", "Testing", "Vitest", "Playwright"]
+tags: ["Astro", "Testing", "Vitest", "Playwright", "Portfolio"]
 ---
 
 Added tests for both sanitizeSlug() and sanitizeContentForDisplay() methods,

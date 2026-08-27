@@ -2,7 +2,7 @@
 title: "Mobile first design"
 description: "Fix styling and design to make sure it fits a phone screen"
 pubDate: 08-17-2026
-tags: ["astro", "portfolio"]
+tags: ["Astro", "Portfolio"]
 ---
 
 A few mobile first design pointers to remember:

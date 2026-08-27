@@ -2,7 +2,7 @@
 title: "Making interface more interactive"
 description: "Skill icons -> docs, blog posts -> the post etc"
 pubDate: 08-10-2026
-tags: ["astro", "css"]
+tags: ["Astro", "CSS", "Portfolio"]
 ---
 
 Added a link: "link to docs" prop to each item in the iconStack and swapped "span" to "a".

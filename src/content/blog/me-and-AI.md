@@ -2,7 +2,7 @@
 title: 'Me and my AI "friends"'
 description: "Brain the size of a football field and you want me to help code a portfolio website?"
 pubDate: 08-06-2026
-tags: ["astro", "portfolio", "AI"]
+tags: ["Astro", "AI", "Portfolio"]
 ---
 
 From what I can tell, Claude outperforms MAI outright in all respects other than ammount of prompts it allows per day/hour.
