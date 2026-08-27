@@ -35,4 +35,4 @@ pnpm-debug.log*
 .tidportal/
 
 # Coverage
-coverage/
+/coverage/
