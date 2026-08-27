@@ -33,3 +33,6 @@ pnpm-debug.log*
 # tidportalen
 .tidportal-timeline/
 .tidportal/
+
+# Coverage
+coverage/
