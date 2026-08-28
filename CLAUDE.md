@@ -2,21 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Shell environment
-
-`pnpm` is not on the default `PATH` in this environment (no admin rights to change it system-wide). `git` is also available via the path below, but note a system-installed git (`C:\Program Files\Git\cmd\git.exe`) already resolves on PATH by default — the copy below is only used because the invocation pattern here prepends it, shadowing the system one. Binaries live in:
-
-- `C:\Users\i221183\Binaries\node` (node, npm, pnpm, npx, yarn)
-- `C:\Users\i221183\Binaries\git\cmd` (git)
-
-Always run shell commands through **cmd.exe**, never PowerShell, prepending these to `PATH` for that invocation:
-
-```
-cmd.exe //c "set PATH=C:\Users\i221183\Binaries\node;C:\Users\i221183\Binaries\git\cmd;%PATH% && <command>"
-```
-
-Note the double-slash `//c` (not `/c`) — Git Bash's MSYS layer rewrites a lone `/c` into the Windows path `C:\` before cmd.exe ever sees it, silently swallowing the flag and dropping into an unusable interactive shell. `//c` prevents that path conversion.
-
 ## Commands
 
 Package manager is **pnpm** (see `pnpm-workspace.yaml` / `pnpm-lock.yaml`) — use `pnpm`, not `npm`/`yarn`.
