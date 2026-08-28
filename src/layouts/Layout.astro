@@ -13,13 +13,16 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Blocking, and placed above the stylesheets a classic script would otherwise
+         wait on, so the stored theme is applied before anything paints. -->
+    <script is:inline src="/theme-init.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
-    <div class="page-shell">
+    <div class="app-shell">
       <slot />
     </div>
   </body>
@@ -34,6 +37,14 @@
     --rule: #1d2026;
   }
 
+  :root[data-theme="light"] {
+    --bg: #f7f5f0;
+    --ink: #1b1d21;
+    --ink-dim: #5b616c;
+    --accent: #9c5c17;
+    --rule: #dcd7cc;
+  }
+
   html,
   body {
     margin: 0;
@@ -42,6 +53,15 @@
     background: var(--bg);
     color: var(--ink);
     font-family: "Manrope", sans-serif;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding-bottom: 3rem;
   }
 
   a {
@@ -111,7 +131,8 @@
   }
 
   @media (min-width: 300px) {
-    .page-shell {
+    .page-shell,
+    .app-shell {
       padding-right: 1rem;
       padding-left: 1rem;
       text-align: left;
@@ -122,8 +143,17 @@
     }
   }
 
+  @media (min-width: 768px) {
+    .app-shell {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+  }
+
   @media (min-width: 1024px) {
-    .page-shell {
+    .page-shell,
+    .app-shell {
       padding: 1.1rem 1rem 2rem;
       max-width: 1200px;
       margin: 0 auto;
