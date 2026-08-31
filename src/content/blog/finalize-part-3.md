@@ -22,3 +22,9 @@ Problem: Installing the same dependencies and programs everytime,
 instead of using playwrights containers.
 Fix: Rewrite jobs to use the proper playwright containers and use them
 instead of a flat ubuntu that needs to install every program.
+
+Edit:
+Firefox continued to fail tests, seemingly at random.
+The actual fix was to not run the container as root and
+giving Chromium enough shared memory by adding:
+"options: --user 1001 --ipc=host" to the workflow.
