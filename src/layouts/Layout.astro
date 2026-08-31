@@ -1,3 +1,29 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  ogType?: "website" | "article";
+}
+
+const DEFAULT_TITLE = "Martin Larsson — Software Developer";
+const DEFAULT_DESCRIPTION =
+  "Portfolio website for Martin Larsson, a software developer working across systems, web, and modern tooling.";
+
+const {
+  title = DEFAULT_TITLE,
+  description = DEFAULT_DESCRIPTION,
+  canonicalPath = Astro.url.pathname,
+  ogType = "website",
+} = Astro.props;
+
+// TODO: set `site` in astro.config.mjs to the deployed domain so canonical/og:url
+// become absolute URLs. Until then these stay root-relative, which is valid HTML
+// (resolved against the document URL) but weaker for crawlers.
+const canonical = Astro.site
+  ? new URL(canonicalPath, Astro.site).href
+  : canonicalPath;
+---
 <!doctype html>
 <html lang="en">
   <head>
@@ -6,11 +32,14 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
-    <title>Martin Larsson — Software Developer</title>
-    <meta
-      name="description"
-      content="Portfolio website for Martin Larsson, a software developer working across systems, web, and modern tooling."
-    />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Blocking, and placed above the stylesheets a classic script would otherwise

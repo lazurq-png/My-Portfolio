@@ -82,13 +82,18 @@ test.describe('Blog Posts', () => {
     });
 
     test('oldest blog post has SEO metadata', async ({ page }) => {
-      await expect(page).toHaveTitle('Martin Larsson — Software Developer');
+      await expect(page).toHaveTitle('Learning Astro.js — Martin Larsson');
 
       const descriptionMeta = page.locator('meta[name="description"]');
 
       await expect(descriptionMeta).toHaveAttribute(
         'content',
-        'Portfolio website for Martin Larsson, a software developer working across systems, web, and modern tooling.'
+        "Using Astro.js docs, copilot's and claude's free versions to make a decent looking portfolio website."
+      );
+
+      await expect(page.locator('meta[property="og:type"]')).toHaveAttribute(
+        'content',
+        'article'
       );
     });
   });

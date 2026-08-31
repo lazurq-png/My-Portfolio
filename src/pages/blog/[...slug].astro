@@ -2,16 +2,13 @@
 import { getCollection, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import SiteNav from "../../components/SiteNav.astro";
+import { sanitizeSlug } from "../../lib/sanitize";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
   return posts.map((post) => {
     // Sanitize slug: remove directory traversal characters and non-URL-safe characters
-    const slug = post.id.replace(/\.(md|mdx)$/i, "")
-      .replace(/[^a-zA-Z0-9\-_]/g, "-")
-      .replace(/-+/g, "-")
-      // Remove leading and trailing dashes
-      .replace(/^-+|-+$/g, "");
+    const slug = sanitizeSlug(post.id);
     return {
       params: { slug },
       props: { post, slug },
@@ -24,7 +21,7 @@ const { Content } = await render(post);
 ---
 
 <Layout
-  title={`${post.data.title} — Your Name`}
+  title={`${post.data.title} — Martin Larsson`}
   description={post.data.description}
   canonicalPath={`/blog/${slug}/`}
   ogType="article"
