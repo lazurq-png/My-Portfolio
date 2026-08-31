@@ -7,3 +7,6 @@ tags: ["Astro", "AI", "Portfolio"]
 
 Removed inline copy of santization of slugs in ..slug.
 Instead it now imports the sanitize method.
+
+Add ADR, fix pipeline to be faster e2e caching.
+Learning point form
