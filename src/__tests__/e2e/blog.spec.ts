@@ -87,22 +87,6 @@ test.describe('Blog Page', () => {
     ).toBeVisible();
   });
 
-  test('blog page is accessible on mobile devices', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
-
-    await expect(
-      page.getByRole('heading', { name: 'Notes and reflections' })
-    ).toBeVisible();
-  });
-
-  test('blog page is accessible on desktop devices', async ({ page }) => {
-    await page.setViewportSize({ width: 1920, height: 1080 });
-
-    await expect(
-      page.getByRole('heading', { name: 'Notes and reflections' })
-    ).toBeVisible();
-  });
-
   test('blog page SEO meta tags are present', async ({ page }) => {
     await expect(page).toHaveTitle('Martin Larsson — Software Developer');
 

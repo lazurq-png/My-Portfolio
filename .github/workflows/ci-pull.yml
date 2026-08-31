@@ -4,6 +4,12 @@ on:
   pull_request:
     branches: [master]
 
+# Superseded runs (force-push / rapid pushes to a PR) are cancelled rather
+# than left to burn every matrix leg to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unit-tests:
     name: Unit tests
@@ -30,42 +36,142 @@ jobs:
       - name: Run Vitest
         run: pnpm test:unit
 
-  e2e-tests:
-    name: E2E tests
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    timeout-minutes: 60
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-  
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
-  
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
-  
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-  
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps
-  
-      - name: Install Playwright WebKit
-        run: pnpm exec playwright install --with-deps webkit
-  
-      - name: Run Playwright
-        run: xvfb-run --auto-servernum pnpm test:e2e
-  
-      - name: Upload Playwright report
-        if: ${{ !cancelled() }}
+
+      - name: Build
+        run: pnpm build
+
+      # dist/ is ~200K, so this is far cheaper than recompiling via the dev
+      # server in each e2e leg -- and it tests the bundle actually deployed.
+      - name: Upload dist
         uses: actions/upload-artifact@v5
         with:
-          name: playwright-report
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  changes:
+    name: Detect changed areas
+    runs-on: ubuntu-latest
+    outputs:
+      specs: ${{ steps.specs.outputs.value }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Filter changed paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: .github/e2e-filters.yml
+
+      # `shared` is an anchor holder, not a spec -- drop it so the matrix only
+      # ever contains real src/__tests__/e2e/<name>.spec.ts basenames.
+      - name: Build spec matrix
+        id: specs
+        run: |
+          value=$(jq -c 'map(select(. != "shared"))' <<<'${{ steps.filter.outputs.changes }}')
+          echo "value=$value" >> "$GITHUB_OUTPUT"
+          echo "Specs to run: $value"
+
+  e2e-tests:
+    name: E2E (${{ matrix.spec }})
+    needs: [changes, build, unit-tests]
+    if: needs.changes.outputs.specs != '[]'
+    runs-on: ubuntu-latest
+    # Ships the browsers and their system deps preinstalled; must track the
+    # @playwright/test version in pnpm-lock.yaml.
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      # --user 1001 is the setup Playwright documents for GitHub Actions:
+      # container jobs run as root by default, which breaks browser launch.
+      # --ipc=host avoids Chromium crashing on Docker's 64MB default /dev/shm.
+      options: --user 1001 --ipc=host
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        spec: ${{ fromJSON(needs.changes.outputs.specs) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download dist
+        uses: actions/download-artifact@v5
+        with:
+          name: dist
+          path: dist
+
+      - name: Run Playwright
+        run: pnpm exec playwright test src/__tests__/e2e/${{ matrix.spec }}.spec.ts
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-report-${{ matrix.spec }}
           path: playwright-report/
-          retention-days: 30
+          retention-days: 7
+
+  # A skipped job never reports a status, which would leave a required check
+  # pending forever. Make THIS the required check on master, not e2e-tests.
+  e2e-gate:
+    name: E2E tests
+    needs: [changes, e2e-tests]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check e2e result
+        run: |
+          changes="${{ needs.changes.result }}"
+          result="${{ needs.e2e-tests.result }}"
+          echo "changes: $changes / e2e-tests: $result"
+          # A failed `changes` job also skips e2e-tests, which would otherwise
+          # read as a pass -- so require it to have succeeded first.
+          if [ "$changes" != "success" ]; then
+            echo "::error::changes job did not succeed ($changes)"
+            exit 1
+          fi
+          # "skipped" is a legitimate pass: no spec's paths were touched.
+          if [ "$result" = "success" ] || [ "$result" = "skipped" ]; then
+            exit 0
+          fi
+          exit 1

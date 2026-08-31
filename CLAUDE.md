@@ -2,21 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Shell environment
-
-`pnpm` is not on the default `PATH` in this environment (no admin rights to change it system-wide). `git` is also available via the path below, but note a system-installed git (`C:\Program Files\Git\cmd\git.exe`) already resolves on PATH by default — the copy below is only used because the invocation pattern here prepends it, shadowing the system one. Binaries live in:
-
-- `C:\Users\i221183\Binaries\node` (node, npm, pnpm, npx, yarn)
-- `C:\Users\i221183\Binaries\git\cmd` (git)
-
-Always run shell commands through **cmd.exe**, never PowerShell, prepending these to `PATH` for that invocation:
-
-```
-cmd.exe //c "set PATH=C:\Users\i221183\Binaries\node;C:\Users\i221183\Binaries\git\cmd;%PATH% && <command>"
-```
-
-Note the double-slash `//c` (not `/c`) — Git Bash's MSYS layer rewrites a lone `/c` into the Windows path `C:\` before cmd.exe ever sees it, silently swallowing the flag and dropping into an unusable interactive shell. `//c` prevents that path conversion.
-
 ## Commands
 
 Package manager is **pnpm** (see `pnpm-workspace.yaml` / `pnpm-lock.yaml`) — use `pnpm`, not `npm`/`yarn`.
@@ -40,8 +25,9 @@ Vitest is scoped to `src/__tests__` and explicitly excludes `e2e/`; Playwright i
 Static Astro portfolio site with no UI framework installed — pages are plain `.astro` components with scoped `<style>` blocks, deployed to **Cloudflare** as a static asset bundle (`wrangler.jsonc` points at `./dist`; see `docs/adr/cloudflare.md` for why Cloudflare was chosen over Vercel).
 
 - **Content collection**: `src/content.config.ts` defines the `blog` collection (Zod schema: `title`, `description`, `pubDate`, optional `updatedDate`/`heroImage`), loaded from `src/content/blog/*.md`.
-- **Blog routing**: `src/pages/blog/index.astro` lists posts (sorted by `pubDate` desc) and links to them via `sanitizeSlug()` from `src/lib/sanitize.ts`. `src/pages/blog/[...slug].astro` independently re-implements the same slug-sanitization logic inline inside `getStaticPaths()` rather than importing `sanitizeSlug` — keep both in sync if slug rules change.
-- **Layout is not prop-driven**: `src/layouts/Layout.astro` hardcodes its `<title>`/meta description and does not declare any props. `[...slug].astro` passes `title`, `description`, `canonicalPath`, and `ogType` into `<Layout>` but these are silently ignored — per-page/per-post SEO metadata does not currently work despite call sites assuming it does.
+- **Blog routing**: `src/pages/blog/index.astro` lists posts (sorted by `pubDate` desc); `src/pages/blog/[...slug].astro` generates the post pages. Both derive URLs from `sanitizeSlug()` in `src/lib/sanitize.ts` — that function is the single source of truth for slug rules.
+- **Layout props**: `src/layouts/Layout.astro` takes optional `title`, `description`, `canonicalPath`, and `ogType`, falling back to the site-wide title/description (and `Astro.url.pathname`/`"website"`) when omitted. It renders `<title>`, the meta description, `<link rel="canonical">`, and the Open Graph/Twitter tags from them. Only `[...slug].astro` passes props today; the other pages intentionally use the defaults. `astro.config.mjs` sets no `site`, so canonical/`og:url` are emitted root-relative — set `site` to the deployed domain to make them absolute.
 - **Nav is opt-in per page**: `SiteNav.astro` is not part of `Layout.astro` — every page imports and renders `<SiteNav />` itself.
 - **Security headers**: `astro.config.mjs` sets a strict CSP plus HSTS/X-Frame-Options/etc. at build config level. The CSP allowlists only `https://cdn.astro.build` for scripts and Google Fonts domains for styles/fonts — adding any new external resource (script, font, API) requires updating this CSP or it will be blocked at runtime.
-- **CI**: `.github/workflows/ci-push.yml` runs unit tests on push to `dev`; `.github/workflows/ci-pull.yml` runs unit tests + Playwright e2e (chromium/firefox/webkit/mobile) on PRs into `master`.
+- **CI**: `.github/workflows/ci-push.yml` runs unit tests on push to `dev`. `.github/workflows/ci-pull.yml` runs unit tests, a build, and Playwright e2e on PRs into `master`. The e2e job is a matrix with **one leg per spec file**, and legs are selected by `dorny/paths-filter` against `.github/e2e-filters.yml` — so a PR only runs the specs whose pages it touched. Because the specs navigate across page boundaries (e.g. `index.spec.ts` asserts against `/projects`), each filter lists every page its spec touches, not just the primary one; edit that file whenever a spec gains a new navigation. E2E runs in the `mcr.microsoft.com/playwright` container, whose tag must track the `@playwright/test` version in `pnpm-lock.yaml`. `e2e-gate` (not `e2e-tests`) is the job to mark as a required check — a skipped matrix never reports a status.
+- **E2E serves `dist/`**: in CI, `playwright.config.ts` points `webServer` at `pnpm preview` and the build is downloaded as an artifact, so e2e exercises the same bundle deployed to Cloudflare. Locally it still uses `pnpm dev`. Viewport coverage belongs to the Playwright *projects* (`Mobile Chrome` keeps `isMobile`/`hasTouch`, which is what catches a broken `<meta name="viewport">`) — don't reintroduce `setViewportSize` calls inside specs, they override the project viewport and duplicate work.

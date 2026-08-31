@@ -1,0 +1,50 @@
+# Path filters mapping changed files -> the e2e spec(s) that must re-run.
+#
+# Each key (except `shared`) is named after a file in src/__tests__/e2e/,
+# so dorny/paths-filter's `changes` output feeds the CI matrix directly.
+#
+# Specs are NOT page-scoped: every spec navigates across page boundaries, so
+# each filter lists every page it asserts against, not just its primary one.
+
+# Imported or honoured by all four pages -- any change re-runs everything.
+shared: &shared
+  - 'src/layouts/**'
+  - 'src/components/**'
+  - 'public/**'
+  - 'astro.config.mjs'
+  - 'playwright.config.ts'
+  - 'package.json'
+  - 'pnpm-lock.yaml'
+  - '.github/workflows/ci-pull.yml'
+  - '.github/e2e-filters.yml'
+
+# Clicks through to /projects and asserts the "Selected work" heading.
+index:
+  - *shared
+  - 'src/pages/index.astro'
+  - 'src/pages/projects.astro'
+
+# Clicks "Home" and asserts the homepage heading.
+projects:
+  - *shared
+  - 'src/pages/projects.astro'
+  - 'src/pages/index.astro'
+
+# Asserts post ordering across all posts, opens a post, and returns home.
+# Also asserts the /blog/<slug>/ href shape produced by sanitizeSlug.
+blog:
+  - *shared
+  - 'src/pages/blog/**'
+  - 'src/pages/index.astro'
+  - 'src/lib/sanitize.ts'
+  - 'src/content/**'
+  - 'src/content.config.ts'
+
+# Reaches the post through the /blog index, and asserts the *oldest* post's
+# exact title/date/description -- so any new post can change what it targets.
+blog-post:
+  - *shared
+  - 'src/pages/blog/**'
+  - 'src/lib/sanitize.ts'
+  - 'src/content/**'
+  - 'src/content.config.ts'

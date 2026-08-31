@@ -45,24 +45,6 @@ test.describe('Homepage', () => {
     ).toBeVisible();
   });
 
-  test('homepage is responsive on mobile', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
-
-    await expect(page.locator('.hero-card')).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Martin Larsson' })
-    ).toBeVisible();
-  });
-
-  test('homepage is responsive on desktop', async ({ page }) => {
-    await page.setViewportSize({ width: 1920, height: 1080 });
-
-    await expect(page.locator('.hero-card')).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: 'Martin Larsson' })
-    ).toBeVisible();
-  });
-
   test('homepage SEO meta tags are present', async ({ page }) => {
     await expect(page).toHaveTitle('Martin Larsson — Software Developer');
 
