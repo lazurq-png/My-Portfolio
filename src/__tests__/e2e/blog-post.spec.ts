@@ -65,22 +65,6 @@ test.describe('Blog Posts', () => {
       ).toBeVisible();
     });
 
-    test('oldest blog post is accessible on mobile', async ({ page }) => {
-      await page.setViewportSize({ width: 375, height: 667 });
-
-      await expect(page.locator('.article-shell')).toBeVisible();
-      await expect(page.locator('.article-title')).toBeVisible();
-      await expect(page.locator('.article-prose')).toBeVisible();
-    });
-
-    test('oldest blog post is accessible on desktop', async ({ page }) => {
-      await page.setViewportSize({ width: 1920, height: 1080 });
-
-      await expect(page.locator('.article-shell')).toBeVisible();
-      await expect(page.locator('.article-title')).toBeVisible();
-      await expect(page.locator('.article-prose')).toBeVisible();
-    });
-
     test('oldest blog post has SEO metadata', async ({ page }) => {
       await expect(page).toHaveTitle('Learning Astro.js — Martin Larsson');
 

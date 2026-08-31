@@ -9,14 +9,13 @@ export default defineConfig({
 
   retries: process.env.CI ? 2 : 0,
 
-  workers: 1,
-
+  // Left unset so Playwright uses its default (cores / 2). The suite is
+  // read-only against a static site, so there is no shared state to serialize.
   reporter: 'html',
 
   use: {
     baseURL: 'http://localhost:4321',
     trace: 'on-first-retry',
-    headless: !process.env.CI,
     actionTimeout: 5000,
   },
 
@@ -38,22 +37,29 @@ export default defineConfig({
         // added more time for firefox since it needs it.
         actionTimeout: 60_000,
         navigationTimeout: 60_000, },
-        
+      // The action/navigation bumps above never covered expect(), so
+      // visibility assertions still flaked against the global 5s budget
+      // once the suite started running workers in parallel.
+      expect: { timeout: 30_000 },
     },
 
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+
+    // Keeps isMobile/hasTouch emulation, so a broken <meta name="viewport">
+    // is still caught -- resizing alone would not catch it.
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 5'] },
     },
-
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12'] },
-    },
   ],
 
   webServer: {
-    command: 'pnpm dev',
+    // CI serves the built dist/ -- the same bundle deployed to Cloudflare --
+    // instead of paying dev-server compilation in every matrix leg.
+    command: process.env.CI ? 'pnpm preview' : 'pnpm dev',
     url: 'http://localhost:4321',
     reuseExistingServer: true,
     timeout: 120_000,

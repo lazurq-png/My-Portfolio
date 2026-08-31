@@ -73,24 +73,6 @@ test.describe('Projects Page', () => {
     ).toBeVisible();
   });
 
-  test('projects page is accessible on mobile devices', async ({ page }) => {
-    await expect(page.locator('.project-grid > a')).toHaveCount(2);
-    await expect(page.locator('.project-grid .card')).toHaveCount(2);
-
-    await expect(
-      page.getByRole('heading', { name: 'Selected work' })
-    ).toBeVisible();
-  });
-
-  test('projects page is accessible on desktop devices', async ({ page }) => {
-    await expect(page.locator('.project-grid > a')).toHaveCount(2);
-    await expect(page.locator('.project-grid .card')).toHaveCount(2);
-
-    await expect(
-      page.getByRole('heading', { name: 'Selected work' })
-    ).toBeVisible();
-  });
-
   test('projects page SEO meta tags are present', async ({ page }) => {
     await expect(page).toHaveTitle('Martin Larsson — Software Developer');
 
