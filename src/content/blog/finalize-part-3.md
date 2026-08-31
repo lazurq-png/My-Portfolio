@@ -2,7 +2,7 @@
 title: "Finalization part 3 with Claude"
 description: "Fixing some of the concerns in CLAUDE.md and adding nicer styling soonTM"
 pubDate: 08-31-2026
-tags: ["Astro", "AI", "Portfolio"]
+tags: ["Astro", "AI", "Portfolio", "CI"]
 ---
 
 Removed inline copy of santization of slugs in ..slug.
