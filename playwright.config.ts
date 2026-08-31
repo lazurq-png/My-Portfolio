@@ -11,7 +11,9 @@ export default defineConfig({
 
   // Left unset so Playwright uses its default (cores / 2). The suite is
   // read-only against a static site, so there is no shared state to serialize.
-  reporter: 'html',
+  // 'github' surfaces failures as inline PR annotations, so a CI failure is
+  // readable without downloading the html report artifact.
+  reporter: process.env.CI ? [['github'], ['list'], ['html']] : 'html',
 
   use: {
     baseURL: 'http://localhost:4321',

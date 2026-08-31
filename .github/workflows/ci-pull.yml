@@ -102,7 +102,12 @@ jobs:
     runs-on: ubuntu-latest
     # Ships the browsers and their system deps preinstalled; must track the
     # @playwright/test version in pnpm-lock.yaml.
-    container: mcr.microsoft.com/playwright:v1.62.1-noble
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      # --user 1001 is the setup Playwright documents for GitHub Actions:
+      # container jobs run as root by default, which breaks browser launch.
+      # --ipc=host avoids Chromium crashing on Docker's 64MB default /dev/shm.
+      options: --user 1001 --ipc=host
     timeout-minutes: 15
 
     strategy:
