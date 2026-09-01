@@ -24,6 +24,7 @@ const canonical = Astro.site
   ? new URL(canonicalPath, Astro.site).href
   : canonicalPath;
 ---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -46,7 +47,7 @@ const canonical = Astro.site
          wait on, so the stored theme is applied before anything paints. -->
     <script is:inline src="/theme-init.js"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -58,20 +59,100 @@ const canonical = Astro.site
 </html>
 
 <style is:global>
+  /* ------------------------------------------------------------------ *
+   * Design tokens. Every page pulls its type scale, spacing, surfaces
+   * and line length from here -- nothing below this block should
+   * hard-code a colour or a one-off font-size, or the pages drift apart
+   * again.
+   * ------------------------------------------------------------------ */
   :root {
+    color-scheme: dark;
+
     --bg: #0b0d10;
+    --surface: #14171c;
+    --surface-strong: #1a1e24;
     --ink: #edeae3;
-    --ink-dim: #868c97;
+    --ink-dim: #969ca7;
     --accent: #e8a33d;
-    --rule: #1d2026;
+    --accent-soft: rgba(232, 163, 61, 0.14);
+    --on-accent: #14161a;
+    --rule: #242931;
+
+    /* Inter is what the <link> above actually loads; the previous
+       "Manrope" was never fetched, so body text silently fell back to
+       the platform sans. */
+    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+
+    /* Fluid type scale -- one ramp, shared by every page. */
+    --step--1: 0.8125rem;
+    --step-0: 1rem;
+    --step-1: 1.0625rem;
+    --step-2: clamp(1.15rem, 1.05rem + 0.5vw, 1.35rem);
+    --step-3: clamp(1.5rem, 1.25rem + 1.2vw, 2rem);
+    --step-4: clamp(1.85rem, 1.4rem + 2.2vw, 2.75rem);
+
+    /* Spacing ramp. --gutter is the single horizontal inset for the
+       whole page and is applied once, on .app-shell, so the nav rail and
+       the main column always start the same distance from the edge. */
+    --gutter: 1.25rem;
+    --space-3xs: 0.25rem;
+    --space-2xs: 0.5rem;
+    --space-xs: 0.75rem;
+    --space-s: 1rem;
+    --space-m: 1.5rem;
+    --space-l: 2rem;
+    --space-xl: 3rem;
+
+    /* Reading measure: caps every run of body copy at the same row
+       length, on every page. */
+    --measure: 66ch;
+    --radius: 0.875rem;
+    --radius-s: 0.5rem;
+    --shell: 68rem;
+    --sidebar: 15rem;
   }
 
+  /* A note on the rem units above, because they are not all the same rem:
+     in a *declaration* rem is relative to the root font-size, but inside a
+     *media query* it is relative to the browser's initial font-size and
+     ignores the root entirely (verified in Chromium, Firefox and WebKit).
+     Today that difference is invisible, because `html` below is left at
+     1rem == the user's default. Add the old `html { font-size: 62.5% }`
+     10px trick and it stops being invisible: every value above would
+     shrink to 62.5% while all three breakpoints stayed exactly where they
+     are. Don't set a root font-size in px or %.
+
+     The media-query rem is also the reason the breakpoints are in rem
+     rather than px: a reader who has raised their browser's default font
+     size gets a proportionally later breakpoint (48rem is 960px at a 20px
+     default), so they keep the single-column layout until there is really
+     room for the rail. Page zoom scales both units identically and is not
+     a reason either way. */
+
   :root[data-theme="light"] {
+    color-scheme: light;
+
     --bg: #f7f5f0;
+    --surface: #fffdf9;
+    --surface-strong: #f1ede4;
     --ink: #1b1d21;
-    --ink-dim: #5b616c;
+    --ink-dim: #585e69;
     --accent: #9c5c17;
-    --rule: #dcd7cc;
+    --accent-soft: rgba(156, 92, 23, 0.12);
+    --on-accent: #fffdf9;
+    --rule: #ddd8cd;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   html,
@@ -81,111 +162,200 @@ const canonical = Astro.site
     min-height: 100%;
     background: var(--bg);
     color: var(--ink);
-    font-family: "Manrope", sans-serif;
-    transition: background-color 150ms ease, color 150ms ease;
+    font-family: var(--font-sans);
+    font-size: var(--step-0);
+    line-height: 1.6;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease;
   }
 
-  .app-shell {
-    display: flex;
-    flex-direction: column;
-    max-width: 72rem;
-    margin: 0 auto;
-    padding-bottom: 3rem;
+  /* Long URLs, package names and CLI flags are the usual cause of a
+     horizontal scrollbar on a 360px screen -- break them instead. */
+  body {
+    overflow-wrap: break-word;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    line-height: 1.2;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  pre {
+    overflow-x: auto;
   }
 
   a {
     color: inherit;
   }
-  .post-date {
-    margin: 0 0 0.5rem;
-    color: var(--accent);
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.8rem;
-  }
-  .page-shell {
-    max-width: 72rem;
-    margin: 0 auto;
-    padding-bottom: 3rem;
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-s);
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Shell. Mobile: a single centred column. >=48rem: nav rail + content.
+   * The gutter lives here and nowhere else, which is what keeps the left
+   * edge identical across every page.
+   * ------------------------------------------------------------------ */
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    width: 100%;
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    padding-block: 0 var(--space-xl);
+  }
+
+  /* Every page's <main>. min-width:0 lets the column shrink inside the
+     desktop flex row, so wide content wraps instead of overflowing. */
+  .page-shell {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    padding-block-start: var(--space-s);
+  }
+
+  /* ---- Shared page furniture ---- */
   .hero {
-    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
   }
 
   .eyebrow {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
     letter-spacing: 0.08em;
     color: var(--accent);
-    margin: 0 0 0.75rem;
+    margin: 0;
   }
 
   h1 {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: clamp(2rem, 3.6vw, 2.8rem);
-    margin: 0 0 0.75rem;
+    font-size: var(--step-4);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0;
     color: var(--ink);
   }
 
   .intro {
     color: var(--ink-dim);
-    font-size: 1rem;
+    font-size: var(--step-1);
     line-height: 1.7;
-    max-width: 42rem;
+    max-width: var(--measure);
     margin: 0;
   }
 
+  .post-date {
+    margin: 0;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+  }
+
+  /* ---- Card grid, shared by the blog index and the projects page ---- */
   .post-list {
     display: grid;
-    gap: 1rem;
+    gap: var(--space-s);
+  }
+
+  .card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: var(--radius);
   }
 
   .post-card {
+    height: 100%;
+    background: var(--surface);
     border: 1px solid var(--rule);
-    border-radius: 1rem;
-    padding: 1.25rem;
-    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius);
+    padding: var(--space-m);
+    transition:
+      border-color 160ms ease,
+      background-color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .card-link:hover .post-card,
+  .card-link:focus-visible .post-card {
+    border-color: var(--accent);
+    background: var(--surface-strong);
+    transform: translateY(-2px);
+  }
+
+  .post-card__date {
+    margin: 0 0 var(--space-2xs);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
   }
 
   .post-card h2 {
-    margin: 0 0 0.65rem;
+    margin: 0 0 var(--space-2xs);
     color: var(--ink);
-    font-size: 1.1rem;
+    font-size: var(--step-2);
+    font-weight: 600;
   }
 
   .post-card p {
     margin: 0;
+    max-width: var(--measure);
     color: var(--ink-dim);
     line-height: 1.6;
   }
 
-  @media (min-width: 300px) {
-    .page-shell,
-    .app-shell {
-      padding-right: 1rem;
-      padding-left: 1rem;
-      text-align: left;
-    }
-    /* Changes layout to a horizontal row on tablets */
-    .stats-grid {
-      flex-direction: row;
-    }
-  }
-
-  @media (min-width: 768px) {
+  /* The layout breakpoint. Hard-coded in three places -- here, the same
+     media query in SiteNav.astro, and the matchMedia() in public/nav.js --
+     which must move together. It cannot be a token: var() is invalid in a
+     media query, and @custom-media is an unimplemented draft. */
+  @media (min-width: 48rem) {
     .app-shell {
       flex-direction: row;
       align-items: flex-start;
-      gap: 1.5rem;
+      gap: var(--space-l);
+      padding-block-start: var(--space-l);
     }
-  }
 
-  @media (min-width: 1024px) {
-    .page-shell,
-    .app-shell {
-      padding: 1.1rem 1rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
+    .page-shell {
+      padding-block-start: 0;
+      gap: var(--space-l);
     }
   }
 </style>

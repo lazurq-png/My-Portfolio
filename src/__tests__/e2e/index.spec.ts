@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { navReady, openNav } from './helpers/nav';
 
 test.describe('Homepage', () => {
   test.beforeEach(async ({ page }) => {
@@ -34,6 +35,8 @@ test.describe('Homepage', () => {
   });
 
   test('homepage navigation to projects works', async ({ page }) => {
+    await openNav(page);
+
     const projectsLink = page.getByRole('link', { name: 'My Projects' });
 
     await expect(projectsLink).toBeVisible();
@@ -43,6 +46,43 @@ test.describe('Homepage', () => {
     await expect(
       page.getByRole('heading', { name: 'Selected work' })
     ).toBeVisible();
+  });
+
+  test('primary nav exposes links, theme toggle and social icons', async ({
+    page,
+  }) => {
+    await navReady(page);
+
+    const toggle = page.locator('#nav-toggle');
+    const menu = page.locator('#main-menu');
+
+    // Only the mobile project renders a visible toggle; on desktop the rail is
+    // always open, so the assertions below run against both layouts.
+    const isCollapsed = await toggle.isVisible();
+
+    if (isCollapsed) {
+      await expect(menu).toBeHidden();
+      await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+      await toggle.click();
+      await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    }
+
+    await expect(menu).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'My Projects' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Blog' })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Toggle color theme' })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: 'GitHub profile' })
+    ).toBeVisible();
+
+    if (isCollapsed) {
+      await toggle.click();
+      await expect(menu).toBeHidden();
+    }
   });
 
   test('homepage SEO meta tags are present', async ({ page }) => {

@@ -52,9 +52,7 @@ test.describe('Blog Posts', () => {
     test('oldest blog post can navigate back to the blog index', async ({
       page,
     }) => {
-      const backLink = page.locator('a[href="/blog"]').filter({
-        has: page.locator('img'),
-      });
+      const backLink = page.locator('main a.back-link[href="/blog"]');
 
       await expect(backLink).toBeVisible();
       await backLink.click();

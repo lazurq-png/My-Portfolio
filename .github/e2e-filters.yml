@@ -10,6 +10,7 @@
 shared: &shared
   - 'src/layouts/**'
   - 'src/components/**'
+  - 'src/__tests__/e2e/helpers/**'
   - 'public/**'
   - 'astro.config.mjs'
   - 'playwright.config.ts'
