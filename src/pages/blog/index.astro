@@ -24,13 +24,9 @@ const posts = (await getCollection("blog")).sort(
     <section class="post-list" aria-label="Blog posts">
       {
         posts.map((post) => (
-          <a
-            class="post-date"
-            style="text-decoration: none;"
-            href={`/blog/${sanitizeSlug(post.id)}/`}
-          >
+          <a class="card-link" href={`/blog/${sanitizeSlug(post.id)}/`}>
             <article class="post-card">
-              <div>
+              <div class="post-card__date">
                 {post.data.pubDate.toLocaleDateString("en-GB", {
                   year: "numeric",
                   month: "long",

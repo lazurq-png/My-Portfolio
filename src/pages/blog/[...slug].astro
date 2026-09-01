@@ -27,59 +27,173 @@ const { Content } = await render(post);
   ogType="article"
 >
   <SiteNav />
-  <a style={`text-decoration: none;`} href="/blog">
-    <img src="/arrowdark.ico" />
-  </a>
-  <main class="content-shell">
-    <div
-      class="article-layout"
-      style="max-width: var(--max); padding-inline: 1.25rem;"
-    >
-      <article class="article-shell" data-pagefind-body>
-        <p class="post-date">
-          <time datetime={post.data.pubDate.toISOString()}>
-            {
-              post.data.pubDate.toLocaleDateString("en-GB", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })
-            }
-          </time>
-        </p>
-        <h1 class="article-title">{post.data.title}</h1>
-        <div class="article-prose">
-          <Content />
-        </div>
-      </article>
-    </div>
+  <main class="page-shell">
+    <a class="back-link" href="/blog">
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M15 18l-6-6 6-6"></path>
+      </svg>
+      Back to blog
+    </a>
+
+    <article class="article-shell" data-pagefind-body>
+      <p class="post-date">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {
+            post.data.pubDate.toLocaleDateString("en-GB", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          }
+        </time>
+      </p>
+      <h1 class="article-title">{post.data.title}</h1>
+      <div class="article-prose">
+        <Content />
+      </div>
+    </article>
   </main>
 </Layout>
+
 <style>
-  .article-layout {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  /* Replaces the old arrowdark.ico: currentColor means it is legible in both
+     themes, and it now sits inside <main> instead of as a stray flex child
+     of .app-shell between the nav rail and the content. */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    align-self: flex-start;
+    /* Negative inline offset keeps the label optically flush with the body
+       copy while the padding still gives a 44px-tall touch target. */
+    margin-inline-start: calc(var(--space-2xs) * -1);
+    padding: var(--space-2xs);
+    border-radius: var(--radius-s);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--ink-dim);
+    text-decoration: none;
   }
-  .article-prose {
-    font-size: 1.1rem;
-    line-height: 1.25;
-    margin: 0 0 1.25rem;
-    white-space: pre-line;
-    font-family: "Inter", sans-serif;
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    color: var(--accent);
+    background: var(--accent-soft);
   }
-  .article-title {
-    font-size: 2rem;
-    font-weight: 1000;
-    font-family: "Inter", sans-serif;
-  }
+
   .article-shell {
-    max-width: var(--max);
-    margin: 0 auto;
+    /* Same measure as .intro and the homepage bio. */
+    max-width: var(--measure);
   }
-  .content-shell {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding-bottom: 3rem;
+
+  .article-title {
+    font-size: var(--step-4);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: var(--space-2xs) 0 var(--space-m);
+  }
+
+  .article-prose {
+    font-size: var(--step-1);
+    /* 1.25 was too tight to read a paragraph at this size. */
+    line-height: 1.75;
+    color: var(--ink);
+  }
+</style>
+
+<!-- Markdown from <Content /> is not part of this component's template, so it
+     never receives the scope hash -- these rules have to be global. They stay
+     namespaced under .article-prose so nothing leaks to the other pages. -->
+<style is:global>
+  /* The posts are written a line per thought, and Markdown would otherwise
+     collapse those into one running paragraph. Applied to the text blocks
+     rather than the wrapper on purpose: on the wrapper it also rendered the
+     newlines *between* the generated elements, which is what used to blow the
+     gap between two paragraphs out to a couple of blank lines. */
+  .article-prose :is(p, li) {
+    white-space: pre-line;
+  }
+
+  .article-prose > * {
+    margin-block: 0;
+  }
+
+  /* Wider than the ~1.75 line spacing inside a paragraph, so a real paragraph
+     break still reads as one. */
+  .article-prose > * + * {
+    margin-block-start: var(--space-l);
+  }
+
+  .article-prose :is(h2, h3) {
+    font-weight: 600;
+    margin-block: var(--space-xl) var(--space-2xs);
+  }
+
+  .article-prose h2 {
+    font-size: var(--step-3);
+  }
+
+  .article-prose h3 {
+    font-size: var(--step-2);
+  }
+
+  .article-prose a {
+    color: var(--accent);
+    text-underline-offset: 0.2em;
+  }
+
+  .article-prose :is(ul, ol) {
+    margin-block: var(--space-s);
+    padding-inline-start: 1.25rem;
+  }
+
+  .article-prose blockquote {
+    margin-inline: 0;
+    padding-inline-start: var(--space-s);
+    border-inline-start: 2px solid var(--accent);
+    color: var(--ink-dim);
+  }
+
+  .article-prose code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  .article-prose :not(pre) > code {
+    padding: 0.15em 0.35em;
+    border-radius: 0.3em;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  /* Scrolls inside its own box rather than widening the page on a phone. */
+  .article-prose pre {
+    overflow-x: auto;
+    padding: var(--space-s);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-s);
+    background: var(--surface);
+    font-size: var(--step--1);
+    line-height: 1.6;
+  }
+
+  .article-prose img {
+    border-radius: var(--radius-s);
+  }
+
+  .article-prose hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin-block: var(--space-l);
   }
 </style>

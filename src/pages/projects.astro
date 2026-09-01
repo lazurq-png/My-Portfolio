@@ -33,13 +33,12 @@ const projects = [
       {
         projects.map((project) => (
           <a
-            class="post-date"
-            style="text-decoration: none;"
+            class="card-link"
             href={project.link}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <article class="card">
+            <article class="post-card card">
               <h2>{project.title}</h2>
               <p>{project.summary}</p>
               <ul class="tags" role="list">
@@ -56,46 +55,38 @@ const projects = [
 </Layout>
 
 <style>
+  /* Single column on a phone; only splits once there is genuinely room for
+     two readable cards side by side. */
   .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1rem;
+    grid-template-columns: 1fr;
+    gap: var(--space-s);
   }
 
-  .card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--rule);
-    border-radius: 1rem;
-    padding: 1.25rem;
-  }
-
-  .card h2 {
-    font-size: 1.05rem;
-    margin-top: 0;
-    margin-bottom: 0.65rem;
-    color: var(--ink);
-  }
-
-  .card p {
-    color: var(--ink-dim);
-    line-height: 1.6;
-    margin: 0 0 1rem;
+  /* Local to this grid on purpose: it is about when two cards stop being
+     cramped, not about the nav rail, so it is not the shared 48rem
+     breakpoint and does not need to move with it. */
+  @media (min-width: 34rem) {
+    .project-grid {
+      grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    }
   }
 
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--space-2xs);
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: var(--space-s) 0 0;
   }
 
   .tags li {
-    padding: 0.35rem 0.65rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 999px;
-    background: rgba(232, 163, 61, 0.14);
+    background: var(--accent-soft);
     color: var(--accent);
-    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
   }
 </style>

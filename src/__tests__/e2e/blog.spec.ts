@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { openNav } from './helpers/nav';
 
 test.describe('Blog Page', () => {
   test.beforeEach(async ({ page }) => {
@@ -74,6 +75,8 @@ test.describe('Blog Page', () => {
   });
 
   test('blog page navigation back to homepage works', async ({ page }) => {
+    await openNav(page);
+
     const homeLink = page.getByRole('link', { name: 'Home' });
 
     await expect(homeLink).toBeVisible();

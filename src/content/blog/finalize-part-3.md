@@ -13,7 +13,7 @@ to make sure there is no useless fluff.
 
 Had claude analyze the pipeline and give me tips on how to make it faster.
 
-Learned:
+Learned/problemlist:
 Problem: Firefox still always fails 1-4 tests, when running more than 1 worker in playwright.
 Fix: Rewrote the specific override for timeouts for firefox in playwright config
 and gave it 2 retries to get from 1 fail down to 0.
