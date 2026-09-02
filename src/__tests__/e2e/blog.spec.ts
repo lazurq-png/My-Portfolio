@@ -24,32 +24,6 @@ test.describe('Blog Page', () => {
     await expect(intro).toContainText('technologies');
   });
 
-  test('blog page displays all blog posts', async ({ page }) => {
-    const postCards = page.locator('.post-list .post-card');
-
-    await expect(postCards.first()).toBeVisible();
-
-    for (const post of await postCards.all()) {
-      await expect(post.locator('h2')).toBeVisible();
-      await expect(post.locator('p')).toBeVisible();
-      await expect(post.locator('div').first()).toBeVisible();
-    }
-  });
-
-  test('blog page displays posts in reverse chronological order', async ({
-    page,
-  }) => {
-    const postDates = await page
-      .locator('.post-list .post-card > div:first-child')
-      .allTextContents();
-
-    const dates = postDates.map((date) => new Date(date.trim()).getTime());
-
-    for (let i = 1; i < dates.length; i++) {
-      expect(dates[i - 1]).toBeGreaterThanOrEqual(dates[i]);
-    }
-  });
-
   test('blog page displays post links correctly', async ({ page }) => {
     const postLinks = page.locator('.post-list > a');
 
@@ -88,16 +62,5 @@ test.describe('Blog Page', () => {
     await expect(
       page.getByRole('heading', { name: 'Martin Larsson' })
     ).toBeVisible();
-  });
-
-  test('blog page SEO meta tags are present', async ({ page }) => {
-    await expect(page).toHaveTitle('Martin Larsson — Software Developer');
-
-    const descriptionMeta = page.locator('meta[name="description"]');
-
-    await expect(descriptionMeta).toHaveAttribute(
-      'content',
-      'Portfolio website for Martin Larsson, a software developer working across systems, web, and modern tooling.'
-    );
   });
 });

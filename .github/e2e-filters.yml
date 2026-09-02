@@ -31,8 +31,9 @@ projects:
   - 'src/pages/projects.astro'
   - 'src/pages/index.astro'
 
-# Asserts post ordering across all posts, opens a post, and returns home.
-# Also asserts the /blog/<slug>/ href shape produced by sanitizeSlug.
+# Opens a post from the index and returns home. Also asserts the /blog/<slug>/
+# href shape produced by sanitizeSlug, so it depends on both the posts and the
+# slug rules.
 blog:
   - *shared
   - 'src/pages/blog/**'

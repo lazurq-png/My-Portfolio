@@ -1,10 +1,17 @@
 ---
-status: "accepted"
+status: "superseded by ADR-0014"
 date: "2026-08-14"
 decision-makers: "Martin Larsson (@lazurq-png)"
 ---
 
 # 0006. Set security headers in the build config
+
+> **Superseded by [0014](0014-emit-security-headers-as-a-generated-headers-file.md)
+> on 2026-09-01.** The mechanism this record chose does not exist: Astro has no
+> top-level `headers` config option, so the array below was silently discarded and
+> no header was ever served. The reasoning about *which* headers to send, and the
+> costs of each, is unaffected and remains the reference for the policy text —
+> 0014 carries it over unchanged. Only the delivery mechanism was replaced.
 
 ## Context and Problem Statement
 

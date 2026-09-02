@@ -63,7 +63,21 @@ export default defineConfig({
     // instead of paying dev-server compilation in every matrix leg.
     command: process.env.CI ? 'pnpm preview' : 'pnpm dev',
     url: 'http://localhost:4321',
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+
+    // Astro 7 detects "agent" environments (Claude Code, Cursor, ...) via
+    // am-i-vibing and silently runs `astro dev` detached:
+    //   agentDetected = !process.env.ASTRO_DEV_BACKGROUND && isRunByAgent()
+    // The command then returns immediately, so Playwright reports "webServer
+    // exited early", and a server that did start outlives the run -- Playwright
+    // never owned the detached grandchild, so neither Ctrl+C nor a clean exit
+    // stops it. Any non-empty value opts out and keeps it in the foreground.
+    env: { ASTRO_DEV_BACKGROUND: '1' },
+
+    // Let the server shut itself down so it removes its lock file. A hard kill
+    // leaves the lock behind, and the next run aborts with "Another astro dev
+    // server is already running".
+    gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
   },
 });

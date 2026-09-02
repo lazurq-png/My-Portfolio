@@ -106,3 +106,8 @@ reintroduce the overlap.
 
 Worth doing: restore Vitest's default exclusions explicitly alongside `'e2e'`, so
 the configuration is safe independently of `dir`.
+
+*[Editorial note, 2026-09-01: done — `vitest.config.ts` now spreads
+`configDefaults.exclude`. The scope rule this ADR sets out was also extended to
+four directories rather than two, adding `integration/` and `build/`; see
+[0015](0015-add-an-integration-test-scope.md).]*

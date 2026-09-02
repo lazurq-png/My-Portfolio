@@ -84,16 +84,4 @@ test.describe('Homepage', () => {
       await expect(menu).toBeHidden();
     }
   });
-
-  test('homepage SEO meta tags are present', async ({ page }) => {
-    await expect(page).toHaveTitle('Martin Larsson — Software Developer');
-
-    const descriptionMeta = page.locator('meta[name="description"]');
-
-    await expect(descriptionMeta).toHaveAttribute(
-      'content',
-      'Portfolio website for Martin Larsson, a software developer working across systems, web, and modern tooling.'
-    );
-  });
 });
-
