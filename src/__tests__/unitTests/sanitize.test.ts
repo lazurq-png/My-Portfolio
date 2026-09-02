@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest'
-import { sanitizeSlug, sanitizeContentForDisplay } from '../../lib/sanitize'
+import { sanitizeSlug } from '../../lib/sanitize'
 
 describe('Test sanitizeSlug method', () => {
   test('sanitize special characters while keeping letters, numbers and hyphens', () => {
@@ -54,49 +54,5 @@ describe('Test sanitizeSlug method', () => {
     const result = sanitizeSlug(input)
     
     expect(result).toBe('clean-post-title')
-  })
-})
-
-describe('Test the sanitizeContentForDisplay method', () => {
-  test('escapes HTML special characters', () => {
-    const input = 'Hello &amp; World <script>alert("xss")</script>'
-    
-    const result = sanitizeContentForDisplay(input)
-    
-    expect(result).toContain('&amp;amp;')
-    expect(result).toContain('&lt;script&gt;')
-  })
-
-  test('strips script tags', () => {
-    const input = '<div>Safe content</div><script>alert("xss")</script><div>More safe</div>'
-    
-    const result = sanitizeContentForDisplay(input)
-    
-    expect(result).not.toContain('<script>')
-    expect(result).toContain('Safe content')
-  })
-
-  test('removes event handler attributes', () =>
-    () => {
-      const input = '<img src="test.jpg" onerror="alert(\'xss\')" alt="test">'
-      
-      const result = sanitizeContentForDisplay(input)
-      
-      expect(result).not.toContain('onerror=')
-      expect(result).toContain('src="test.jpg"')
-    })
-
-  test('handles non-string input', () => {
-    const input1 = 123
-    const input2 = null
-    const input3 = undefined
-    
-    const result1 = sanitizeContentForDisplay(input1)
-    const result2 = sanitizeContentForDisplay(input2)
-    const result3 = sanitizeContentForDisplay(input3)
-    
-    expect(result1).toBe(123)
-    expect(result2).toBe(null)
-    expect(result3).toBe(undefined)
   })
 })

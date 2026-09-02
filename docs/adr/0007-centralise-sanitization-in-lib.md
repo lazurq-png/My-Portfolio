@@ -6,6 +6,15 @@ decision-makers: "Martin Larsson (@lazurq-png)"
 
 # 0007. Centralise sanitization in `src/lib/sanitize.ts`
 
+> **Editorial note, 2026-09-02.** `sanitizeContentForDisplay()` has been removed
+> from the module. It had no call site anywhere in the project, and it could not
+> have done what its name says: the escaping pass turned `<` into `&lt;` before
+> the script-stripping regex ran, so that regex could never match. Its tests went
+> with it. The decision this record makes — that these rules live in one shared
+> module rather than at each call site — is unaffected and still stands; the
+> module now exports `sanitizeSlug()` alone. Individual claims below that no
+> longer hold are marked inline.
+
 ## Context and Problem Statement
 
 Blog URLs are derived from content IDs, which come from filenames. Two separate
@@ -40,6 +49,8 @@ slug rules: the two pages cannot disagree, because they are running the same
 code. Commit `6e58de9` removed the last inline duplicate in favour of the shared
 function.
 
+*[2026-09-02: the module exports `sanitizeSlug()` only; see the note above.]*
+
 ### Consequences
 
 * Good, because the index and the detail route are structurally incapable of
@@ -48,17 +59,25 @@ function.
 * Good, because both functions are plain string transforms with no framework
   dependency, so they are directly unit-testable and covered by
   `src/__tests__/unitTests/sanitize.test.ts`.
+  <br>*[2026-09-02: one function now, still covered by that file.]*
 * Good, because there is one place to change if the URL scheme ever changes.
 * Bad, because `sanitizeSlug()` is lossy and not injective. It replaces unsafe
   characters with hyphens, collapses runs of hyphens, and strips underscores
   entirely — so `my_post` and `mypost` both produce `mypost`. Two differently
   named files can collide onto one URL, and nothing in the build detects it.
+  <br>*[2026-09-02: something does now — `src/__tests__/build/routes.test.ts`
+  compares the pages built against the posts on disk, so a collision fails
+  `pnpm test:build`. See [0015](0015-add-an-integration-test-scope.md). The
+  collision itself is still possible; it is no longer silent.]*
 * Bad, because `sanitizeContentForDisplay()` is a hand-rolled escaper. Its
   script-stripping regex matches only a simple, single-line, non-nested
   `<script>` form, and its event-handler removal is a blunt textual replacement.
   It is adequate here *only* because all content is author-written
   ([0002](0002-author-content-as-markdown-content-collection.md)); it must not be
   treated as a defence for untrusted input.
+  <br>*[2026-09-02: moot — the function is gone. It was never called, so removing
+  it changed no behaviour; the site's actual protection is that Astro escapes
+  interpolated values and all content is author-written.]*
 * Neutral, because a library would be more rigorous but would add a dependency,
   and — for a client-side sanitizer — a DOM at build time. Neither is warranted
   while the content is entirely first-party.
@@ -66,9 +85,10 @@ function.
 ### Confirmation
 
 `src/__tests__/unitTests/sanitize.test.ts` covers both functions and runs in both
-CI workflows. The invariant to hold going forward: any new code that constructs a
-blog URL must import `sanitizeSlug` rather than re-implement the rules — this is
-enforced by review, not by tooling.
+CI workflows. *[2026-09-02: covers `sanitizeSlug()`, the only export left.]*
+The invariant to hold going forward: any new code that constructs a blog URL must
+import `sanitizeSlug` rather than re-implement the rules — this is enforced by
+review, not by tooling.
 
 ## Pros and Cons of the Options
 
@@ -113,3 +133,9 @@ This ADR must be superseded before any third-party or reader-submitted content i
 rendered, because the second consequence above becomes a live vulnerability at
 that point rather than an acceptable simplification. A build-time check for slug
 collisions would also close the first.
+
+*[2026-09-02: the slug-collision check now exists (see the note on that
+consequence). The warning about untrusted content is now stronger, not weaker:
+with `sanitizeContentForDisplay()` removed there is no escaper in the project at
+all, so rendering third-party content would need a real sanitizer chosen on
+purpose — not the resurrection of the one deleted here.]*

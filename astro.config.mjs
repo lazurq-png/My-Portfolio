@@ -1,39 +1,41 @@
 // @ts-check
+import { writeFile } from 'node:fs/promises';
+
 import { defineConfig } from 'astro/config';
 
 import icon from 'astro-icon';
 
-// https://astro.build/config
-export default defineConfig(/** @type {any} */({
-  headers: [
-    {
-      src: [],
-      'set-header': 'Content-Security-Policy',
-      value:
-        "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdn.astro.build; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https:; font-src https:; connect-src 'self'",
-    },
-    {
-      src: [],
-      'set-header': 'X-Frame-Options',
-      value: 'DENY',
-    },
-    {
-      src: [],
-      'set-header': 'X-Content-Type-Options',
-      value: 'nosniff',
-    },
-    {
-      src: [],
-      'set-header': 'Strict-Transport-Security',
-      value:
-        'max-age=31536000; includeSubDomains; preload',
-    },
-    {
-      src: [],
-      'set-header': 'Referrer-Policy',
-      value: 'strict-origin-when-cross-origin',
-    },
-  ],
+import { renderHeadersFile } from './src/lib/headers.ts';
 
-  integrations: [icon()],
-}));
+/**
+ * Writes the security policy from `src/lib/headers.ts` into `dist/_headers`,
+ * which is the file Cloudflare reads to attach response headers to the static
+ * assets in `wrangler.jsonc`.
+ *
+ * This is a build-time hook rather than a config key because Astro has no
+ * top-level `headers` option -- the array that used to sit in this file was
+ * silently discarded by the config schema and never reached production. The
+ * policy still lives in the repository next to the code whose needs it encodes,
+ * which was the point of ADR 0006; only the delivery mechanism changed. See
+ * ADR 0014.
+ *
+ * Not wired into `server.headers` (dev/preview) on purpose: a `script-src 'self'`
+ * CSP blocks the dev server's inline HMR bootstrap.
+ *
+ * @returns {import('astro').AstroIntegration}
+ */
+function securityHeaders() {
+  return {
+    name: 'security-headers',
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        await writeFile(new URL('_headers', dir), renderHeadersFile(), 'utf8');
+      },
+    },
+  };
+}
+
+// https://astro.build/config
+export default defineConfig({
+  integrations: [icon(), securityHeaders()],
+});

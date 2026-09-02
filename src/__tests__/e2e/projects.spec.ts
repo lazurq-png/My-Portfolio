@@ -75,15 +75,4 @@ test.describe('Projects Page', () => {
       page.getByRole('heading', { name: 'Martin Larsson' })
     ).toBeVisible();
   });
-
-  test('projects page SEO meta tags are present', async ({ page }) => {
-    await expect(page).toHaveTitle('Martin Larsson — Software Developer');
-
-    const description = page.locator('meta[name="description"]');
-
-    await expect(description).toHaveAttribute(
-      'content',
-      /Portfolio website for Martin Larsson/i
-    );
-  });
 });

@@ -61,6 +61,13 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # Asserts the security headers and one-page-per-post routing against the
+      # artifact uploaded below -- the same bundle e2e runs on and Cloudflare
+      # serves. Has to live here rather than in unit-tests: there is no dist/
+      # in that job to look at.
+      - name: Check build output
+        run: pnpm test:build
+
       # dist/ is ~200K, so this is far cheaper than recompiling via the dev
       # server in each e2e leg -- and it tests the bundle actually deployed.
       - name: Upload dist

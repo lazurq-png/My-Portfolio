@@ -1,17 +1,6 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Blog Posts', () => {
-  test('blog page displays more than 0 posts', async ({ page }) => {
-    await page.goto('/blog', { waitUntil: 'domcontentloaded' });
-
-    const postLinks = page.locator('.post-list > a');
-
-    await expect(postLinks.first()).toBeVisible();
-
-    const postCount = await postLinks.count();
-    expect(postCount).toBeGreaterThan(0);
-  });
-
   test.describe('Oldest Blog Post', () => {
     test.beforeEach(async ({ page }) => {
       await page.goto('/blog', { waitUntil: 'domcontentloaded' });

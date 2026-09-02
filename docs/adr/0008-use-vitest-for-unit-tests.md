@@ -47,6 +47,10 @@ that is precisely where Jest would have needed the most work.
 * Good, because `vi.mock` handles the `astro:content` virtual module.
   `blog.test.ts` mocks `getCollection()` with `mockResolvedValue()` and resets it
   in `beforeEach`, covering both the empty and the populated case from one file.
+  <br>*[Editorial note, 2026-09-01: `blog.test.ts` was deleted in `62ea1fe` — its
+  tests asserted nothing. The claim about `vi.mock` holds; the empty and
+  populated cases are now covered by `src/__tests__/integration/blog-index.test.ts`
+  and `blog-routes.test.ts`. See [0015](0015-add-an-integration-test-scope.md).]*
 * Good, because coverage is on by default in the `test:unit` script, so a drop in
   coverage is visible on every run rather than needing a separate command.
 * Good, because the suite is fast enough to be the check that runs on every push

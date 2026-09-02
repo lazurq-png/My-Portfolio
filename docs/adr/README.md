@@ -19,7 +19,7 @@ is kept only where a real check exists.
 | [0003](0003-host-on-cloudflare-with-wrangler.md) | Host on Cloudflare, deploy with Wrangler | Accepted | 2026-08-11 |
 | [0004](0004-use-pnpm-as-package-manager.md) | Use pnpm as the package manager | Accepted | 2026-08-11 |
 | [0005](0005-no-ui-framework-scoped-styles-only.md) | Ship no UI framework; scoped styles only | Accepted | 2026-08-11 |
-| [0006](0006-set-security-headers-in-build-config.md) | Set security headers in the build config | Accepted | 2026-08-14 |
+| [0006](0006-set-security-headers-in-build-config.md) | Set security headers in the build config | Superseded by [0014](0014-emit-security-headers-as-a-generated-headers-file.md) | 2026-08-14 |
 | [0007](0007-centralise-sanitization-in-lib.md) | Centralise sanitization in `src/lib/sanitize.ts` | Accepted | 2026-08-14 |
 | [0008](0008-use-vitest-for-unit-tests.md) | Use Vitest for unit tests | Accepted | 2026-08-20 |
 | [0009](0009-use-playwright-for-e2e-tests.md) | Use Playwright for end-to-end tests | Accepted | 2026-08-20 |
@@ -27,6 +27,8 @@ is kept only where a real check exists.
 | [0011](0011-run-ci-on-github-actions.md) | Run CI on GitHub Actions, split by trigger | Accepted | 2026-08-25 |
 | [0012](0012-use-typescript-strict-config.md) | Use TypeScript in Astro's `strict` config | Accepted | 2026-08-26 |
 | [0013](0013-render-icons-with-astro-icon.md) | Render icons with astro-icon and a bundled icon set | Accepted | 2026-08-28 |
+| [0014](0014-emit-security-headers-as-a-generated-headers-file.md) | Emit security headers as a generated `_headers` file | Accepted | 2026-09-01 |
+| [0015](0015-add-an-integration-test-scope.md) | Add an integration test scope between the unit and e2e suites | Accepted | 2026-09-01 |
 
 ## Conventions
 
