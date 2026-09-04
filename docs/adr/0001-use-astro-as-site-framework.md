@@ -17,22 +17,28 @@ all?
 
 ## Decision Drivers
 
-* Content is the primary artefact; the framework must treat Markdown as a
+- Content is the primary artefact; the framework must treat Markdown as a
   first-class input rather than an afterthought.
-* The output should be plain static files, so hosting stays free and there is no
+- The output should be plain static files, so hosting stays free and there is no
   server-side execution surface to secure.
-* Minimal JavaScript shipped to the browser — nothing on these pages is
+- Minimal JavaScript shipped to the browser — nothing on these pages is
   interactive.
-* Low ceremony for a single maintainer.
-* The project doubles as a learning exercise in a current framework, which argues
+  <br>*[2026-09-04: the driver held, the premise did not. The site has since
+  gained a collapsing nav and a theme toggle, served as two small hand-written
+  files in `public/`. That is still minimal — no framework runtime reaches the
+  browser, which is what the driver was protecting — but "nothing is
+  interactive" is no longer accurate. See
+  [0005](0005-no-ui-framework-scoped-styles-only.md).]*
+- Low ceremony for a single maintainer.
+- The project doubles as a learning exercise in a current framework, which argues
   against hand-rolling everything.
 
 ## Considered Options
 
-* Astro
-* Next.js
-* Eleventy
-* Hand-written HTML and CSS, no build step
+- Astro
+- Next.js
+- Eleventy
+- Hand-written HTML and CSS, no build step
 
 ## Decision Outcome
 
@@ -44,20 +50,20 @@ alongside it.
 
 ### Consequences
 
-* Good, because the build emits a fully static `dist/` with no client runtime,
+- Good, because the build emits a fully static `dist/` with no client runtime,
   which is what makes the hosting decision in
   [0003](0003-host-on-cloudflare-with-wrangler.md) cheap and low-risk.
-* Good, because content collections give schema-validated frontmatter out of the
+- Good, because content collections give schema-validated frontmatter out of the
   box — see [0002](0002-author-content-as-markdown-content-collection.md).
-* Good, because component-scoped styles remove the need for a CSS framework —
+- Good, because component-scoped styles remove the need for a CSS framework —
   see [0005](0005-no-ui-framework-scoped-styles-only.md).
-* Bad, because `.astro` is a framework-specific component format. Nothing in
+- Bad, because `.astro` is a framework-specific component format. Nothing in
   `src/components/` or `src/layouts/` ports to another stack; leaving Astro means
   rewriting the view layer.
-* Bad, because Astro moves fast. The project is on `^7.2.7`, and major versions
+- Bad, because Astro moves fast. The project is on `^7.2.7`, and major versions
   have historically required migration work — related to the release-age pin
   discussed in [0004](0004-use-pnpm-as-package-manager.md).
-* Neutral, because adding interactivity later means adopting an island framework.
+- Neutral, because adding interactivity later means adopting an island framework.
   That decision is deliberately deferred, not foreclosed.
 
 ### Confirmation
@@ -72,40 +78,40 @@ static assets only.
 
 ### Astro
 
-* Good, because Markdown and content collections are core features, not plugins.
-* Good, because zero client-side JavaScript is the default rather than an
+- Good, because Markdown and content collections are core features, not plugins.
+- Good, because zero client-side JavaScript is the default rather than an
   optimisation to fight for.
-* Good, because it needs no accompanying UI framework for static pages.
-* Neutral, because `.astro` is a new syntax to learn — close enough to HTML and
+- Good, because it needs no accompanying UI framework for static pages.
+- Neutral, because `.astro` is a new syntax to learn — close enough to HTML and
   JSX that the cost is small.
-* Bad, because the ecosystem, and the pool of answers for unusual problems, is
+- Bad, because the ecosystem, and the pool of answers for unusual problems, is
   smaller than React's. The icon resolution problem recorded in
   [0013](0013-render-icons-with-astro-icon.md) is an example of that cost.
 
 ### Next.js
 
-* Good, because it has the largest ecosystem and the most transferable skills.
-* Bad, because it ships a React runtime to the browser for a site with no
+- Good, because it has the largest ecosystem and the most transferable skills.
+- Bad, because it ships a React runtime to the browser for a site with no
   interactivity at all.
-* Bad, because static export is a constrained subset of the framework, so much of
+- Bad, because static export is a constrained subset of the framework, so much of
   what makes Next.js valuable would be unusable here.
 
 ### Eleventy
 
-* Good, because it is light, fast, and produces pure static output.
-* Bad, because there is no typed content schema — the frontmatter validation
+- Good, because it is light, fast, and produces pure static output.
+- Bad, because there is no typed content schema — the frontmatter validation
   relied on in [0002](0002-author-content-as-markdown-content-collection.md)
   would have to be hand-built.
-* Bad, because it has no component-scoped styling, so
+- Bad, because it has no component-scoped styling, so
   [0005](0005-no-ui-framework-scoped-styles-only.md) would have needed a CSS
   toolchain instead.
 
 ### Hand-written HTML and CSS
 
-* Good, because there is no build step, no dependencies, and nothing to upgrade.
-* Bad, because every blog post would duplicate the page shell by hand. There are
-  16 posts already.
-* Bad, because there is no frontmatter validation, no automatic post index, and
+- Good, because there is no build step, no dependencies, and nothing to upgrade.
+- Bad, because every blog post would duplicate the page shell by hand. There are
+  more than 10 posts already.
+- Bad, because there is no frontmatter validation, no automatic post index, and
   no way to sort posts by date without maintaining the list manually.
 
 ## More Information

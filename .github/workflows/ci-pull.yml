@@ -19,10 +19,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      # No `version` input: the pnpm version comes from the `packageManager`
+      # field in package.json. Setting both makes action-setup fail the step
+      # whenever they disagree.
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -36,6 +37,39 @@ jobs:
       - name: Run Vitest
         run: pnpm test:unit
 
+  # Makes tsconfig.json's `strict` setting binding rather than advisory (ADR
+  # 0012). `astro check` covers the .astro templates too, so a bad <Layout>
+  # prop or an unguarded optional frontmatter field fails here rather than
+  # rendering `undefined` into a page. Deliberately not in ci-push.yml -- dev
+  # pushes stay cheap.
+  check:
+    name: Type check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      # No `version` input: the pnpm version comes from the `packageManager`
+      # field in package.json. Setting both makes action-setup fail the step
+      # whenever they disagree.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Runs `astro sync` itself, so the gitignored .astro/types.d.ts that the
+      # content-collection types live in is regenerated before checking.
+      - name: Run astro check
+        run: pnpm check
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -44,10 +78,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      # No `version` input: the pnpm version comes from the `packageManager`
+      # field in package.json. Setting both makes action-setup fail the step
+      # whenever they disagree.
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -104,7 +139,7 @@ jobs:
 
   e2e-tests:
     name: E2E (${{ matrix.spec }})
-    needs: [changes, build, unit-tests]
+    needs: [changes, build, unit-tests, check]
     if: needs.changes.outputs.specs != '[]'
     runs-on: ubuntu-latest
     # Ships the browsers and their system deps preinstalled; must track the
@@ -126,10 +161,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      # No `version` input: the pnpm version comes from the `packageManager`
+      # field in package.json. Setting both makes action-setup fail the step
+      # whenever they disagree.
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v6

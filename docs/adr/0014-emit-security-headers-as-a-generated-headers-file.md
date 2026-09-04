@@ -26,13 +26,25 @@ DOM, so neither could see a missing file. How should the policy be delivered so
 that it actually reaches the browser, and so that this class of failure is
 visible?
 
+*[2026-09-04: one premise above is wrong — `wrangler.jsonc` does not publish
+`./dist`, or anything. It is skipped entirely: Cloudflare Pages wants
+`pages_build_output_dir` and the file carries a Workers `assets` block, so the
+build log warns and ignores it. The output directory that actually ships is the
+one in the dashboard build settings. See the correction at the top of
+[0003](0003-host-on-cloudflare-with-wrangler.md), which postdates this record by
+three days. Nothing about this decision changes — the deployment reads
+`dist/_headers` either way, and `Parsed 1 valid header rule` in the deploy log
+confirms it. The same stale premise sits in the doc comment on
+`securityHeaders()` in [`astro.config.mjs`](../../astro.config.mjs), which is
+worth correcting there too.]*
+
 ## Decision Drivers
 
 * The policy must reach production. This is the requirement 0006 failed.
 * A delivery failure must break a check, not pass silently.
 * Keep 0006's real driver: the policy stays in the repository, versioned and
   reviewed in the same pull request as the change that needs it.
-* Must work with the Cloudflare static-asset deployment in
+* Must work with the Cloudflare Pages deployment in
   [0003](0003-host-on-cloudflare-with-wrangler.md).
 
 ## Considered Options
@@ -92,6 +104,12 @@ Verified against the deployment with
 `curl -sI https://<domain>/ | grep -i content-security-policy`, which returned
 nothing before this change.
 
+Re-verified 2026-09-04 against the preview deployment of commit `a1cf5f1`
+(`https://4f90a7c6.my-portfolio-72x.pages.dev`): all five headers are present on
+the live response and match `SECURITY_HEADERS` exactly. Cloudflare Pages reports
+`Parsed 1 valid header rule` in the deploy log, which is the earlier signal that
+`dist/_headers` was picked up — check that line before reaching for `curl`.
+
 ## Pros and Cons of the Options
 
 ### `astro:build:done` hook generating `dist/_headers`
@@ -136,5 +154,6 @@ Supersedes [0006](0006-set-security-headers-in-build-config.md), whose record of
 text. The scope that the verifying test lives in is described in
 [0015](0015-add-an-integration-test-scope.md).
 
-Cloudflare's `_headers` support for Workers static assets:
-<https://developers.cloudflare.com/workers/static-assets/headers/>
+Cloudflare Pages' `_headers` support — the page that applies to this deployment,
+and the one [`src/lib/headers.ts`](../../src/lib/headers.ts) itself cites:
+<https://developers.cloudflare.com/pages/configuration/headers/>

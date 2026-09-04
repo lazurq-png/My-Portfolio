@@ -16,7 +16,7 @@ is kept only where a real check exists.
 |---|---|---|---|
 | [0001](0001-use-astro-as-site-framework.md) | Use Astro as the site framework | Accepted | 2026-08-05 |
 | [0002](0002-author-content-as-markdown-content-collection.md) | Author content as Markdown in a typed content collection | Accepted | 2026-08-05 |
-| [0003](0003-host-on-cloudflare-with-wrangler.md) | Host on Cloudflare, deploy with Wrangler | Accepted | 2026-08-11 |
+| [0003](0003-host-on-cloudflare-with-wrangler.md) | Host on Cloudflare Pages, built and deployed from Git | Accepted (corrected 2026-09-04) | 2026-08-11 |
 | [0004](0004-use-pnpm-as-package-manager.md) | Use pnpm as the package manager | Accepted | 2026-08-11 |
 | [0005](0005-no-ui-framework-scoped-styles-only.md) | Ship no UI framework; scoped styles only | Accepted | 2026-08-11 |
 | [0006](0006-set-security-headers-in-build-config.md) | Set security headers in the build config | Superseded by [0014](0014-emit-security-headers-as-a-generated-headers-file.md) | 2026-08-14 |
@@ -51,3 +51,18 @@ This set was written retroactively on 2026-08-31, reconstructed from the commit
 history and the development blog in `src/content/blog/`. The `date:` field on
 each record is when the decision was actually made, not when it was written
 down. ADRs from here on should be authored alongside the change they describe.
+
+Two consequences of that, worth knowing before checking a record against the
+repository:
+
+- **A record may cite a commit that postdates its own `date:`.** 0005 is dated
+  2026-08-11 and cites `0b05d4a` (2026-08-27); 0007 is dated 2026-08-14 and cites
+  `6e58de9` (2026-08-31); 0008 is dated 2026-08-20 and cites `0f15e89`
+  (2026-08-27). These are not errors — the author knew what had happened by
+  2026-08-31 — but the `date:` field is not a horizon on what a record can refer
+  to.
+- **The retroactive records are the least reliable ones.** 0009 and 0011 in
+  particular describe a CI and Playwright setup that commit `9c60997` replaced on
+  the same day they were written, so parts of both were stale on arrival. They
+  carry editorial notes saying so. The records authored alongside their change —
+  0003, 0012, 0014, 0015 — have held up.

@@ -77,8 +77,10 @@ Only `pnpm-lock.yaml` is committed; the presence of a `package-lock.json` or
   allowlist and a minimum-release-age quarantine.
 * Good, because the strict module layout catches phantom dependencies.
 * Good, because installs are fast and disk-cheap through the shared store.
-* Neutral, because it needs `pnpm/action-setup` in CI — one extra step, and the
-  version is pinned there to `10`.
+* Neutral, because it needs `pnpm/action-setup` in CI — one extra step, which
+  deliberately takes no `version` input: the version comes from the
+  `packageManager` field in `package.json`, and supplying both fails the step
+  whenever they disagree.
 * Bad, because it is the least universally installed of the three, so it is one
   more thing to have present on any machine that touches the project.
 
