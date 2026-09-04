@@ -58,25 +58,25 @@ On a push, Cloudflare clones the repository at that commit and runs the build
 itself in its own environment:
 
 ```
-clone repo → pnpm install → pnpm run build → deploy dist/
+clone repo → pnpm install → pnpm run build:deploy → deploy dist/
 ```
 
 The build image detects `pnpm@10.11.1, nodejs@22.16.0` from the environment, then
 Corepack honours the `packageManager` field in `package.json` and fetches the
 pinned pnpm (11.25.0) before installing. The user build command is
-`pnpm run build`, and the asset output directory is `dist/`.
+`pnpm run build:deploy`, and the asset output directory is `dist/`.
 
-> *[2026-09-04: this record states three incompatible things about the build
-> command, and a reader cannot currently tell whether the deploy gate exists.
-> Here it is `pnpm run build`; the Consequences below say it "is therefore
-> `pnpm run build:deploy`"; the More Information says it will "keep running plain
-> `pnpm run build` and deploying unverified" until the dashboard field is
-> changed. The setting lives in the Cloudflare dashboard, so nothing in this
-> repository can settle it — `package.json` defines `build:deploy` either way.
-> **Resolve it by reading the most recent build log**: the line
-> `Executing user command: …` names the command actually run. Then correct this
-> passage to match and delete the two that do not. Until then, treat the gate as
-> unconfirmed rather than assuming either answer.]*
+> *[2026-09-04: this passage read `pnpm run build` until the deploy log for
+> commit `7274773` settled it. That log shows
+> `Executing user command: pnpm run build:deploy`, followed by all four stages
+> running — `astro check` (29 files, 0 errors), 59 unit and integration tests,
+> `astro build` (22 pages), and 13 build-output tests — before
+> `Success: Your site was deployed!`. The gate is live, so the Consequences
+> below describe the current setting rather than a proposal. Everything else
+> this record states about the build environment is confirmed by the same log:
+> the detected `pnpm@10.11.1, nodejs@22.16.0`, the Corepack fetch of 11.25.0,
+> the `wrangler.jsonc` warning appearing twice, `wrangler` and `workerd` being
+> installed and running their postinstall, and `Parsed 1 valid header rule`.]*
 
 Branches map to two environments:
 
@@ -110,6 +110,14 @@ Branches map to two environments:
   Keeping the chain in `package.json` rather than in the dashboard field means the
   gate is versioned and reviewable, and the dashboard holds only a pointer to it.
   It adds roughly 10 seconds to a build that took 16.
+  <br>*[2026-09-04: measured properly against the `7274773` deploy log, the cost
+  is higher than that estimate. `astro build` alone is ~3.7s; the full
+  `build:deploy` chain is ~28s — `astro check` ~9.2s, `test:unit` ~6.3s, the
+  build ~3.7s, `test:build` ~2.7s, plus pnpm's per-stage overhead. So the gate
+  adds roughly 24 seconds, not 10, to a build of about 4. It is still small
+  against the ~58s end-to-end pipeline, most of which is cloning and a 14.2s
+  install, and `astro check` — the slowest stage — is the one that catches what
+  the others cannot.]*
 * Bad, because that gate does not cover Playwright. `@playwright/test` is
   installed on the build image but the browsers are not, so
   [0009](0009-use-playwright-for-e2e-tests.md)'s suite runs only in
@@ -234,9 +242,14 @@ is kept so the links from
 
 **The build command must be set in the dashboard for the gate to exist.** The
 `build:deploy` script is inert on its own: Cloudflare runs whatever the Build
-settings say, and until that field reads `pnpm run build:deploy` it will keep
-running plain `pnpm run build` and deploying unverified. Confirm by looking for
-`Executing user command: pnpm run build:deploy` in the next build log.
+settings say, so if that field is ever reset to plain `pnpm run build` the site
+keeps deploying, unverified, with nothing in the repository to show it. Confirm
+by looking for `Executing user command: pnpm run build:deploy` in the build log.
+
+*[2026-09-04: confirmed present in the `7274773` log — the dashboard field is set
+and the gate is live. This paragraph is retained as the standing check, not as
+outstanding work: it is the one part of the deploy configuration that lives
+outside version control, so it is worth re-reading after any dashboard change.]*
 
 Two follow-ups remain:
 
