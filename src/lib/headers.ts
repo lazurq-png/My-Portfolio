@@ -25,7 +25,7 @@ export const SECURITY_HEADERS: ReadonlyArray<readonly [name: string, value: stri
  * Render the header set as a Cloudflare `_headers` file body: a path pattern
  * followed by indented `Name: value` lines.
  *
- * @see https://developers.cloudflare.com/workers/static-assets/headers/
+ * @see https://developers.cloudflare.com/pages/configuration/headers/
  */
 export function renderHeadersFile(
   headers: ReadonlyArray<readonly [string, string]> = SECURITY_HEADERS,

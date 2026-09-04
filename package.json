@@ -13,7 +13,8 @@
     "test:unit": "vitest run --coverage",
     "test:build": "vitest run --config vitest.build.config.ts",
     "test:e2e": "playwright test",
-    "check": "astro check"
+    "check": "astro check",
+    "build:deploy": "pnpm check && pnpm test:unit && pnpm build && pnpm test:build"
   },
   "dependencies": {
     "@iconify-json/devicon": "^1.2.62",
