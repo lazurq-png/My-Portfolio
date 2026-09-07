@@ -16,6 +16,15 @@ the layout, and be cheap to add to when the list grows. The CSP set in
 or asset origins beyond Google Fonts, so whatever is chosen must not fetch
 anything at runtime. How are icons rendered?
 
+*[2026-09-04: overstated, in a way that flatters the policy. `script-src` is
+indeed `'self'` plus `https://cdn.astro.build` only, so the driver holds for
+anything script-shaped — including Iconify's runtime API. But `img-src` is
+`'self' https:` and `font-src` is `https:`, so an icon fetched as an image from
+any HTTPS origin would not in fact be blocked. 0006 records both as a known
+weakness and lists narrowing them as a follow-up; until that happens, the CSP is
+a weaker argument for this decision than stated here. The build-time argument is
+unaffected and is the one that matters.]*
+
 ## Decision Drivers
 
 * No runtime network request, so the CSP stays as narrow as it is.

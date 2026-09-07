@@ -6,6 +6,14 @@ decision-makers: "Martin Larsson (@lazurq-png)"
 
 # 0005. Ship no UI framework; scoped styles only
 
+> **Editorial note, 2026-09-04.** Two premises below have since changed, and
+> neither changes the decision. The site now has interactive behaviour — a
+> responsive nav that collapses behind a hamburger, and a theme toggle — driven
+> by two hand-written files in `public/`, not by an island; the Confirmation
+> below (no `client:*` directive) still passes, and no UI framework has been
+> adopted. And the shared-token layer this record lists as its main cost now
+> exists in `Layout.astro`. Both are marked inline.
+
 ## Context and Problem Statement
 
 Astro can host components from React, Svelte, Vue and others, and the usual
@@ -54,6 +62,15 @@ here are actively trying to avoid.
   values are repeated across `index.astro`, `projects.astro`,
   `blog/index.astro` and `Layout.astro`, so a visual change means editing several
   files and risks them drifting apart.
+  <br>*[2026-09-04: resolved, by the cheaper fix this record proposed rather than
+  by a build step. The `<style is:global>` block in `Layout.astro` now owns the
+  colour, type-scale, spacing, radius and `--measure` tokens plus the
+  `.app-shell` / `.page-shell` / `.post-card` primitives, and pages compose those
+  instead of hard-coding values. The horizontal gutter is applied once, on
+  `.app-shell`, which is what keeps the nav rail and the content column aligned
+  on every page. The cost is now the inverse: nothing mechanically stops a page
+  from reintroducing a one-off colour or `font-size`, so the discipline is
+  enforced by review.]*
 * Bad, because styling that crosses component boundaries has to be handled per
   file. The navigation active-link fix in commit `0b05d4a` is an instance of
   that: scoping helps until the thing being styled depends on state owned
@@ -68,6 +85,15 @@ here are actively trying to avoid.
 today it holds only `astro`, `astro-icon` and an Iconify icon set. No `.astro`
 file may use a `client:*` directive; the first one to appear means this ADR needs
 superseding.
+
+*[2026-09-04: both still hold — `dependencies` is unchanged and there is no
+`client:*` directive anywhere in `src/`. But the check is now narrower than the
+decision it guards: `public/nav.js` and `public/theme-init.js` ship real
+client-side JavaScript that no `client:*` scan would catch. They are plain
+same-origin files precisely so they satisfy `script-src 'self'` without an
+inline hash or a CSP change ([0014](0014-emit-security-headers-as-a-generated-headers-file.md)).
+That choice — hand-written scripts in `public/` rather than an island — is a
+decision this record does not cover and that no ADR yet does.]*
 
 ## Pros and Cons of the Options
 
@@ -114,3 +140,7 @@ recorded in
 Revisit if the shared-token problem becomes expensive enough to be worth a build
 step — a plain CSS custom-property layer in `Layout.astro` is the cheaper fix and
 should be tried before Tailwind.
+
+*[2026-09-04: the cheaper fix was tried and worked, so the case for Tailwind is
+weaker now than when this was written, not stronger. See the note on that
+consequence.]*

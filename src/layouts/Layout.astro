@@ -341,6 +341,34 @@ const canonical = Astro.site
     line-height: 1.6;
   }
 
+  /* Pill list for a stack or a topic set. Global rather than scoped to
+     projects.astro because two components render it now -- the project card
+     and the preview dialog -- and a scoped rule does not cross that boundary.
+     --muted is for the tags that came from GitHub rather than from the copy,
+     so the curated stack still reads as the primary set. */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tags li {
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+
+  .tags--muted li {
+    background: var(--surface-strong);
+    color: var(--ink-dim);
+  }
+
   /* The layout breakpoint. Hard-coded in three places -- here, the same
      media query in SiteNav.astro, and the matchMedia() in public/nav.js --
      which must move together. It cannot be a token: var() is invalid in a

@@ -1,4 +1,5 @@
 import { describe, test, expect } from "vitest";
+import type { ImageFunction, SchemaContext } from "astro:content";
 import { collections } from "../../content.config";
 import { z } from "astro/zod";
 
@@ -11,14 +12,16 @@ import { z } from "astro/zod";
  * and pointing at the offending file.
  */
 
-// Astro's `image()` helper only exists inside the content pipeline. Posts here
-// carry no heroImage, so a permissive stand-in is enough to instantiate the
-// schema; swap it for something stricter if a post ever gains one.
-const schema = collections.blog.schema as (ctx: {
-  image: () => z.ZodTypeAny;
-}) => z.ZodTypeAny;
+// `schema` is declared as `S | ((context: SchemaContext) => S)`, so narrow it to
+// the function form this collection actually uses.
+const schema = collections.blog.schema as (context: SchemaContext) => z.ZodTypeAny;
 
-const blogSchema = schema({ image: () => z.any() });
+// Astro's `image()` helper only exists inside the content pipeline; outside it
+// there is nothing real to hand over. Posts here carry no heroImage, so a
+// permissive stand-in is enough to instantiate the schema -- swap it for
+// something stricter if a post ever gains one. The cast is the deliberately
+// fake part, confined to this one value rather than widening `schema` itself.
+const blogSchema = schema({ image: (() => z.any()) as unknown as ImageFunction });
 
 const posts = Object.entries(
   import.meta.glob<{ frontmatter: Record<string, unknown> }>(

@@ -61,6 +61,12 @@ that is precisely where Jest would have needed the most work.
 * Bad, because `exclude: ['e2e']` in `vitest.config.ts` replaces Vitest's default
   exclude list rather than adding to it. The `dir` setting is what keeps that
   from mattering; see [0010](0010-separate-unit-and-e2e-test-scopes.md).
+  <br>*[2026-09-04: fixed. `vitest.config.ts` now spreads
+  `configDefaults.exclude` alongside `'**/e2e/**'` and `'**/build/**'`, so the
+  built-in `node_modules`/`dist` exclusions survive and the config no longer
+  depends on `dir` to stay safe. 0010 recorded the same fix; this consequence
+  was missed at the time. [0015](0015-add-an-integration-test-scope.md) is where
+  the `build/` scope it now also excludes comes from.]*
 * Neutral, because `coverage/` is generated output and gitignored (commit
   `0f15e89`), so reports are local and per-run rather than tracked over time.
 

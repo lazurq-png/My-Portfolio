@@ -67,6 +67,13 @@ Zod schema requiring `title`, `description` and `pubDate`, and allowing optional
 pages behave both when the collection is empty and when it has entries.
 `pnpm build` fails on any frontmatter that violates the schema.
 
+*[2026-09-04: that file no longer exists — it was deleted in `62ea1fe` for
+asserting nothing. The empty and populated cases are now covered by
+`src/__tests__/integration/blog-index.test.ts` and `blog-routes.test.ts`, which
+mock `astro:content` the same way and render the pages through Astro's Container
+API. See [0015](0015-add-an-integration-test-scope.md). The `pnpm build` half of
+this Confirmation was always the stronger claim and is unchanged.]*
+
 ## Pros and Cons of the Options
 
 ### Astro content collection over local Markdown

@@ -1,5 +1,13 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "// exclude": "include is **/*, so every gitignored build artefact has to be listed here or `astro check` reports on generated code -- coverage/ alone emitted thousands of lines of diagnostics from its bundled prettify.js.",
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "test-results",
+    "playwright-report",
+    "blob-report"
+  ]
 }

@@ -50,25 +50,49 @@ ceremony `strictest` adds for a project of this size.
 * Good, because `Layout.astro`'s optional props are checked at every call site,
   which matters because only `[...slug].astro` passes them and the other pages
   rely on the defaults.
-* Bad, because `include: ["**/*"]` covers config files too, and
-  `astro.config.mjs` sidesteps the resulting friction with a
-  `/** @type {any} */` cast. The security header configuration
-  ([0006](0006-set-security-headers-in-build-config.md)) is therefore the one
-  place in the repository with no type checking at all — precisely where a silent
-  typo is most expensive.
-* Bad, because neither workflow runs `astro check` or `tsc --noEmit`. Type errors
-  are caught in the editor and by whatever `astro build` happens to reject; they
-  are not a gate on merging.
+* Bad, because `include: ["**/*"]` covers far more than the source. Config files
+  are checked, which is welcome; every gitignored build artefact was too, which
+  is not — `coverage/` alone emitted thousands of diagnostics from its bundled
+  `prettify.js` the first time `astro check` ran. `tsconfig.json` now excludes
+  `coverage`, `test-results`, `playwright-report` and `blob-report` alongside
+  `dist`, and that list has to grow whenever a tool starts writing somewhere new.
+* Neutral, because `astro.config.mjs` opts in with `// @ts-check` and types its
+  integration through `@returns {import('astro').AstroIntegration}`. The security
+  header configuration ([0006](0006-set-security-headers-in-build-config.md)) is
+  therefore checked after all, which matters because a silent typo there is
+  among the most expensive in the repository.
+* Bad, because the strict setting still costs the project TypeScript 7. The
+  native compiler does not expose the programmatic API `astro check` is built on,
+  so `typescript` is pinned to `^6.0.3` — the last release before the rewrite.
+  Because 7.x is the `latest` tag, an unpinned `pnpm add -D typescript` silently
+  reintroduces the break; pnpm only *warns* about the peer violation, and the
+  failure surfaces as a confusing error from `astro check` rather than from the
+  install. Astro tracks support at
+  <https://github.com/withastro/roadmap/discussions/1321>.
+* Neutral, because type errors gate merges into `master` but not pushes to `dev`.
+  `ci-pull.yml` runs the check; `ci-push.yml` deliberately does not, keeping day-
+  to-day pushes at the speed [0011](0011-run-ci-on-github-actions.md) chose them
+  for. A type error can therefore sit on `dev` until a pull request is opened.
 * Neutral, because `strictest` was not chosen. Its additions —
   `noUncheckedIndexedAccess` and similar — would add guards throughout for a
   class of bug that has not occurred here.
 
 ### Confirmation
 
-Currently **unconfirmed by tooling**: nothing in CI enforces this. Running
-`astro check` (or `tsc --noEmit`) as a job in
-[`ci-push.yml`](../../.github/workflows/ci-push.yml) would make this decision
-actually binding rather than advisory.
+**Confirmed by tooling.** `pnpm check` (`astro check`, via `@astrojs/check`) runs
+as the `check` job in [`ci-pull.yml`](../../.github/workflows/ci-pull.yml), so a
+type error cannot merge into `master`. The job also gates `e2e-tests`, which
+keeps a type error from spending the four-browser matrix's runner minutes.
+
+Two things are needed for it to actually block a merge: the job must be added to
+the branch protection required checks on `master`, and `typescript` must stay on
+6.x (see the consequence above).
+
+The first run over the existing codebase produced exactly one error — a
+hand-written cast in `src/__tests__/integration/content.test.ts` that described
+`image()` as returning `z.ZodTypeAny` where the real `ImageFunction` returns a
+specific `ZodObject`. All `.astro` templates and everything under `src/lib` were
+already clean.
 
 ## Pros and Cons of the Options
 
@@ -112,6 +136,10 @@ Configured in [`tsconfig.json`](../../tsconfig.json). Related:
 types derive from, and [0006](0006-set-security-headers-in-build-config.md) for
 the file that opts out of them.
 
-The two follow-ups are connected: adding `astro check` to CI, and removing the
-`any` cast from `astro.config.mjs` so that the check has something to say about
-it.
+Both original follow-ups are done: `astro check` runs in CI (see Confirmation),
+and `astro.config.mjs` no longer casts its integration to `any`.
+
+The remaining follow-up is the TypeScript 6 pin. When `@astrojs/check` supports
+the native compiler, unpin `typescript` and drop the note from `CLAUDE.md`. Until
+then, treat a `pnpm update` that moves `typescript` to 7.x as a break, not an
+upgrade.

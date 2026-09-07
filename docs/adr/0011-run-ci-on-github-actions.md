@@ -39,6 +39,16 @@ suite as two separate jobs on pull requests into `master`. The split puts the
 expensive suite exactly at the merge gate and keeps day-to-day pushes cheap,
 which no single-workflow arrangement does as clearly.
 
+*[2026-09-04: the split by trigger stands, but `ci-pull.yml` has grown from two
+jobs to six: `unit-tests`, `check` ([0012](0012-use-typescript-strict-config.md)),
+`build` (which is also the only place a `dist/` exists, so `pnpm test:build` runs
+there — [0015](0015-add-an-integration-test-scope.md)), `changes`, `e2e-tests`
+and `e2e-gate`. `changes` resolves `.github/e2e-filters.yml` into the spec matrix;
+`e2e-gate` exists because a skipped matrix never reports a status, so it — not
+`e2e-tests` — is the job to require on `master`, alongside `check`. The workflow
+also sets `concurrency` with `cancel-in-progress`, so a force-push stops burning
+the previous run's legs.]*
+
 ### Consequences
 
 * Good, because a push to `dev` gets an answer in well under a minute, so the
@@ -49,29 +59,61 @@ which no single-workflow arrangement does as clearly.
 * Good, because the Playwright HTML report is uploaded with `if: !cancelled()`
   and 30-day retention, so a CI-only failure can be inspected rather than guessed
   at.
-* Bad, because the checkout / pnpm / Node / install block is duplicated three
-  times across the two files. Changing the Node version or the pnpm major means
-  three edits, and missing one produces an inconsistency that is easy not to
-  notice.
-* Bad, because CI runs Node 24 while `package.json` declares
-  `engines.node >= 22.12.0`. The declared floor is never exercised, so the
-  project is verified on exactly one Node version and the range in `engines` is a
-  claim rather than a tested guarantee.
+  <br>*[2026-09-04: narrowed. The upload is now `if: failure()` with
+  `retention-days: 7`, per matrix leg. A green run stores nothing, which is the
+  point — but the seven-day window means a failure left unexamined for a week is
+  no longer diagnosable from the artifact. The `github` reporter is now also
+  enabled under CI, so failures surface as inline pull-request annotations
+  without downloading anything.]*
+* Bad, because the checkout / pnpm / Node / install block is duplicated in every
+  job that needs it — five copies across the two files. Changing the Node version
+  or the pnpm major means five edits, and missing one produces an inconsistency
+  that is easy not to notice.
+* Bad, because CI runs Node 24 while Cloudflare builds the deployed bundle on
+  Node 22.16.0 ([0003](0003-host-on-cloudflare-with-wrangler.md)). Every test in
+  these workflows therefore runs on a version that never ships, and the version
+  that ships is never tested. The `engines.node >= 22.12.0` floor is exercised in
+  production and nowhere else — the reverse of the usual mistake, and worse,
+  because the untested version is the one users get.
 * Bad, because getting WebKit working headless took roughly a dozen commits on a
   single day and the result is fragile: it needs
   `playwright install --with-deps`, a *second* explicit
   `playwright install --with-deps webkit`, and `xvfb-run --auto-servernum` to
   wrap the run. None of that is self-explanatory to a future reader of the
   workflow.
-* Neutral, because there is no deploy job. Deployment stays manual through
-  Wrangler ([0003](0003-host-on-cloudflare-with-wrangler.md)), which means CI
-  green does not imply the live site is current.
+  <br>*[2026-09-04: this was already out of date when written — `9c60997`
+  replaced all of it on 2026-08-31 with the
+  `mcr.microsoft.com/playwright:v1.62.1-noble` container, which ships the
+  browsers and their system dependencies. No `playwright install` step and no
+  `xvfb-run` remain. Two container options carry the residual fragility and are
+  commented in the workflow: `--user 1001`, because container jobs run as root
+  by default and that breaks browser launch, and `--ipc=host`, because Chromium
+  crashes on Docker's 64MB `/dev/shm`. The new maintenance burden is that the
+  image tag must track `@playwright/test` in `pnpm-lock.yaml`.]*
+* Neutral, because there is no deploy job and deployment does not go through these
+  workflows at all. Cloudflare Pages builds from its own clone on every push
+  ([0003](0003-host-on-cloudflare-with-wrangler.md)), so the relationship runs the
+  opposite way from what this record first assumed: the live site is always
+  current with its branch, and a deployed site does not imply these workflows went
+  green. What protects the deploy is Cloudflare's build command running
+  `pnpm run build:deploy`, which re-runs the type check and the unit suite in its
+  own environment — not any status reported from here.
+* Bad, because that arrangement makes the unit suite run twice per push, on two
+  different Node versions, with no mechanism to notice if the results diverge.
+  Playwright still runs only here, so the e2e suite gates the merge into `master`
+  but never gates a deploy.
 
 ### Confirmation
 
 Both workflows must be green. `ci-pull.yml` is the gate on `master`, so its
 status is the operative check; the e2e job has a 60-minute timeout to stop a hung
 browser from consuming the runner budget.
+
+*[2026-09-04: the timeout is now `timeout-minutes: 15`, per matrix leg rather
+than for the suite as a whole — a tighter budget, because each leg runs one spec.
+And "green" needs qualifying: the checks to require on `master` are `e2e-gate`
+and `check`. Requiring `e2e-tests` directly would leave a pull request pending
+forever whenever the path filter selects no specs.]*
 
 ## Pros and Cons of the Options
 
@@ -113,6 +155,15 @@ getting this working is recorded in
 `main` versus `master` mismatch and the WebKit dependency attempts are both in
 the commit history for 2026-08-25.
 
-Two follow-ups: factor the shared setup into a composite action to remove the
-triplication, and either add a Node 22 entry to a matrix or raise `engines` to
-match what is actually tested.
+Three follow-ups:
+
+1. Consider whether the duplication is worth removing — moving deployment into
+   this workflow behind the existing jobs, and turning the Cloudflare Git
+   integration off, would make one suite run instead of two and let the e2e job
+   gate the deploy. The cost is losing per-branch previews.
+2. Make CI test the Node version that actually ships. Cloudflare builds on Node
+   22.16.0, so the fix is to move these workflows to Node 22 or pin Cloudflare's
+   build to 24 — not, as this record first suggested, to raise `engines` to match
+   Node 24.
+3. Factor the shared checkout/pnpm/Node/install block into a composite action to
+   remove the duplication, now five copies across the two files.
