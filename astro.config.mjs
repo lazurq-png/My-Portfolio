@@ -9,8 +9,7 @@ import { renderHeadersFile } from './src/lib/headers.ts';
 
 /**
  * Writes the security policy from `src/lib/headers.ts` into `dist/_headers`,
- * which is the file Cloudflare reads to attach response headers to the static
- * assets in `wrangler.jsonc`.
+ * the file Cloudflare Pages reads to attach response headers to static assets.
  *
  * This is a build-time hook rather than a config key because Astro has no
  * top-level `headers` option -- the array that used to sit in this file was

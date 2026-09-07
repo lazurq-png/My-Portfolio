@@ -145,6 +145,33 @@ Branches map to two environments:
 * Bad, because `wrangler` is still a devDependency and is installed on every
   Cloudflare build (pulling `workerd`'s postinstall with it) despite taking no
   part in deployment.
+  <br>*[2026-09-07: **both are resolved — the two bullets above now describe
+  history rather than the current tree.** `wrangler.jsonc` was deleted, and
+  `wrangler` was dropped from `package.json` and `pnpm-lock.yaml`. Removal was
+  safe because Wrangler took no part in the deploy path (`clone → pnpm install
+  → pnpm run build:deploy → publish dist/`): no `@astrojs/cloudflare` adapter
+  is installed, nothing under `src/` imports it, and no workflow in
+  `.github/workflows/` invokes it. `pnpm install --frozen-lockfile` — the form
+  Cloudflare uses, and the one that fails loudly on a hand-edited
+  `package.json` — reports `Lockfile is up to date` and prunes 27 packages,
+  Wrangler's `workerd` dependency tree among them. Two effects to confirm on the
+  next deploy rather than assume: the `Found wrangler.json file … Skipping file
+  and continuing` warning should be absent from the build log, and the install
+  step should be faster for no longer fetching `workerd` and running its
+  postinstall.]*
+* Neutral, because the untracked `.wrangler/` directory that used to sit in the
+  working tree never had any bearing on a deploy. It was miniflare's on-disk
+  emulation state, written by a local `wrangler` invocation on 2026-08-11 and
+  untouched afterwards; this project declares no bindings, so it held **no files
+  at all** — only five empty directories. Git does not track empty directories,
+  so it stayed absent from the repository even though `.gitignore` had no rule
+  for it (`git check-ignore .wrangler` exited non-zero, and there is no
+  `core.excludesfile`) — which is why `git status` read clean while it existed.
+  Cloudflare builds from its own clone and so never saw it. It was deleted on
+  2026-09-07, a no-op for deployment. Recorded because the reasoning recurs: if
+  `wrangler` is ever reinstated *and* run locally, miniflare will recreate the
+  directory, that time with real state files, which would then show up as
+  untracked and want a `.gitignore` entry.
 * Bad, because the build environment runs **Node 22.16.0** while CI runs Node 24.
   The bundle that reaches production is therefore built on a version no test job
   ever exercises. It does at least mean `engines.node >= 22.12.0` is honoured
@@ -257,6 +284,24 @@ Two follow-ups remain:
    file to a valid Pages config with `pages_build_output_dir`. Leaving it as-is
    keeps a warning in every build log and a file that reads as authoritative but
    is ignored.
+   <br>*[2026-09-07: **done.** Both halves were taken: `wrangler.jsonc` deleted
+   and `wrangler` dropped as a devDependency. The file was removed rather than
+   converted to a valid Pages config — the right outcome, since a static site
+   deployed from Git needs no Wrangler configuration at all, and converting it
+   would have preserved a file whose only remaining job was to look
+   authoritative. The empty `.wrangler/` directory went with it, and the JSDoc
+   comment at the top of [`astro.config.mjs`](../../astro.config.mjs) — which had
+   described `dist/_headers` as attaching headers "to the static assets in
+   `wrangler.jsonc`", a restatement of the same misconception
+   [0014](0014-emit-security-headers-as-a-generated-headers-file.md) records —
+   was removed as the last live reference outside these ADRs. Cloudflare's own
+   `_headers` handling is unaffected: it is a Pages feature keyed on the file's
+   presence in the published directory, never something `wrangler.jsonc`
+   mediated. Verified by a full `pnpm run build:deploy` after the removal —
+   `astro check` 29 files / 0 errors, 59 unit and integration tests, 22 pages
+   built, 13 build-output tests — matching the counts in the `7274773` deploy log
+   exactly, so nothing the gate covers changed. **Only follow-up 2 (Node version
+   alignment) remains open.**]*
 2. Align the Node versions, so that what CI tests is what Cloudflare builds. A
    `.node-version` file in the repository is honoured by the Pages build image, so
    this one need not be a dashboard change.
