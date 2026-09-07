@@ -25,11 +25,16 @@ index:
   - 'src/pages/index.astro'
   - 'src/pages/projects.astro'
 
-# Clicks "Home" and asserts the homepage heading.
+# Clicks "Home" and asserts the homepage heading. Also drives the preview
+# dialogs, whose content comes from the `projects` collection -- so it depends
+# on the loader and its GitHub mapping, not just on the page.
 projects:
   - *shared
   - 'src/pages/projects.astro'
   - 'src/pages/index.astro'
+  - 'src/content.config.ts'
+  - 'src/lib/github.ts'
+  - 'src/lib/sanitize.ts'
 
 # Opens a post from the index and returns home. Also asserts the /blog/<slug>/
 # href shape produced by sanitizeSlug, so it depends on both the posts and the

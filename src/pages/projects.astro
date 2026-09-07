@@ -1,23 +1,16 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import SiteNav from "../components/SiteNav.astro";
+import { getCollection } from "astro:content";
 
-const projects = [
-  {
-    title: "Portfolio Site",
-    summary:
-      "A polished Astro-based portfolio experience with a lightweight, modern presentation.",
-    stack: ["Astro", "TypeScript", "CSS"],
-    link: "https://github.com/lazurq-png/My-Portfolio",
-  },
-  {
-    title: "Next.js Dashboard Template",
-    summary:
-      "Learning how to use Next.js to build interactive web applications.",
-    stack: ["Next.js", "React", "TypeScript", "PostgreSQL"],
-    link: "https://github.com/lazurq-png/next.js-dashboard",
-  },
-];
+import ProjectPreview from "../components/ProjectPreview.astro";
+import SiteNav from "../components/SiteNav.astro";
+import Layout from "../layouts/Layout.astro";
+import { sanitizeSlug } from "../lib/sanitize";
+
+// The list used to be a literal array here. It is a content collection now, so
+// the parts GitHub knows better than this file -- language, topics, stars, when
+// the repo was last touched -- are fetched at build time instead of copied here
+// to go stale. See the `projects` collection in src/content.config.ts.
+const projects = await getCollection("projects");
 ---
 
 <Layout>
@@ -32,27 +25,46 @@ const projects = [
     <section class="project-grid" aria-label="Project list">
       {
         projects.map((project) => (
-          <a
-            class="card-link"
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <article class="post-card card">
-              <h2>{project.title}</h2>
-              <p>{project.summary}</p>
-              <ul class="tags" role="list">
-                {project.stack.map((tag) => (
-                  <li>{tag}</li>
-                ))}
-              </ul>
-            </article>
-          </a>
+          <article class="post-card card">
+            {/* The title is the control that opens the preview, and its ::after
+                stretches over the whole card so anywhere on the card is a click
+                target. It has to be a real <button> rather than a click handler
+                on the <article>: that is what supplies Enter/Space, focus and
+                the "button" role for free.
+
+                The card carries no link of its own -- the only way out to
+                GitHub is the link inside the dialog. That makes the preview the
+                single route to a repository, so with JavaScript off the card is
+                inert and a project cannot be reached at all. Deliberate. */}
+            <h2>
+              <button
+                type="button"
+                class="card-open"
+                data-preview={sanitizeSlug(project.id)}
+                aria-haspopup="dialog"
+                disabled
+              >
+                {project.data.title}
+              </button>
+            </h2>
+            <p>{project.data.summary}</p>
+            <ul class="tags" role="list">
+              {project.data.stack.map((tag) => (
+                <li>{tag}</li>
+              ))}
+            </ul>
+          </article>
         ))
       }
     </section>
+
+    {projects.map((project) => <ProjectPreview project={project} />)}
   </main>
 </Layout>
+
+<!-- Same reasoning as nav.js and theme-init.js: a real same-origin file, so it
+     satisfies the `script-src 'self'` CSP without an inline hash. -->
+<script is:inline src="/projects.js" defer></script>
 
 <style>
   /* Single column on a phone; only splits once there is genuinely room for
@@ -72,21 +84,50 @@ const projects = [
     }
   }
 
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2xs);
-    list-style: none;
-    padding: 0;
-    margin: var(--space-s) 0 0;
+  /* The card is no longer wrapped in .card-link, so the hover lift Layout.astro
+     gives a linked card has to be restated against the card itself. position
+     is what the title button's overlay below is measured against. */
+  .project-grid .post-card {
+    position: relative;
   }
 
-  .tags li {
-    padding: 0.3rem 0.6rem;
-    border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-family: var(--font-mono);
-    font-size: var(--step--1);
+  /* Only lift a card that can actually be opened. With JavaScript off the
+     button stays disabled, and a card that lifts under the cursor while doing
+     nothing on click is a worse lie than one that never moves. */
+  .project-grid .post-card:has(.card-open:not(:disabled)):hover,
+  .project-grid .post-card:focus-within {
+    border-color: var(--accent);
+    background: var(--surface-strong);
+    transform: translateY(-2px);
+  }
+
+  /* Strip the button chrome so the title still reads as a heading; `font:
+     inherit` picks up the h2 sizing from Layout.astro. */
+  .card-open {
+    appearance: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+  }
+
+  /* The stretched hit area. Scoped to the enabled state so the whole card is
+     clickable only once the script has armed it. */
+  .card-open:not(:disabled) {
+    cursor: pointer;
+  }
+
+  .card-open:not(:disabled)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+
+  .project-grid .tags {
+    margin-block-start: var(--space-s);
   }
 </style>
