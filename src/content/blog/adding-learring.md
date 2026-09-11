@@ -12,3 +12,5 @@ Added index to learning skills output for easier navigation.
 
 Todo:
 Add weekly skill: summarize the weeks commits. concise extra prio on repeated mistakes or fixes of similar bugs.
+Also did a full ADR, ERD, requirements document and data model, for my latest Django learning project.
+Will add link in projects soonTM.
