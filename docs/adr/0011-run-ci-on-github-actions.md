@@ -49,6 +49,14 @@ and `e2e-gate`. `changes` resolves `.github/e2e-filters.yml` into the spec matri
 also sets `concurrency` with `cancel-in-progress`, so a force-push stops burning
 the previous run's legs.]*
 
+*[2026-09-11: a pull request whose every changed file is docs or blog
+(`docs/**`, `src/content/blog/**`, root `*.md`) now skips the e2e matrix. A
+second path filter in `changes` sets a `code` output, and `e2e-tests` requires
+it. Unit and integration tests, `check` and `build` still run on every pull
+request — `build` and `pnpm test:build` are what catch a post with bad
+frontmatter or a slug clash. `e2e-gate` already counts a skipped matrix as a
+pass, so the required check still reports. `ci-push.yml` is unchanged.]*
+
 ### Consequences
 
 * Good, because a push to `dev` gets an answer in well under a minute, so the
