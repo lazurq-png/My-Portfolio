@@ -51,6 +51,20 @@ const PROJECT_PICKS: ProjectPick[] = [
 			'Learning how to use Next.js to build interactive web applications.',
 		stack: ['Next.js', 'React', 'TypeScript', 'PostgreSQL'],
 	},
+	{
+		repo: 'lazurq-png/Questionable-candy',
+		title: 'Questionable Candy',
+		summary:
+			'A satirical candy storefront in the design stage.',
+		stack: ['Django', 'Python', 'PostgreSQL', 'CSS'],
+	},
+	{
+		repo: 'lazurq-png/blazor-learning',
+		title: 'Blazor Pizza Store',
+		summary:
+			'Learning Blazor components and state from the ASP.NET Core tutorial.',
+		stack: ['Blazor', 'C#', 'ASP.NET Core', 'SQLite'],
+	},
 ];
 
 const projects = defineCollection({
