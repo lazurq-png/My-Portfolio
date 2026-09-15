@@ -7,3 +7,4 @@ tags: ["Django", "TDD", "Blazor"]
 
 Found my old blazor learning project, very basic project following the ASP.NET Core tutorial, where I create a simple pizza website with pictures and events and so on.
 Added latest 2 additions to content.config.ts and pushing to test if they are added to portfolio website with previews etc.
+Played around a bit with the weekly quiz skill, feel like I am going a bit out of scope with adding too much fluff to it however...
