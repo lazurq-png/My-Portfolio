@@ -11,6 +11,8 @@ const links = [
 // next to GitHub, in both the mobile panel and the desktop rail. Nothing else
 // needs changing -- the markup and styling below are already in place.
 const linkedinUrl = "";
+
+const workEmail = "martin.larsson90@hotmail.com";
 ---
 
 <header class="site-header" id="site-header" data-open="false">
@@ -103,6 +105,31 @@ const linkedinUrl = "";
                  0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2
                  0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
             ></path>
+          </svg>
+        </a>
+
+        {/* A mailto: link, not an external site, so no target or rel. The
+            title shows the address on hover, since the rail has no room to
+            print it beside the icons. */}
+        <a
+          class="icon-btn"
+          href={`mailto:${workEmail}`}
+          aria-label={`Email ${workEmail}`}
+          title={workEmail}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+            <path d="m3 7 9 6 9-6"></path>
           </svg>
         </a>
 

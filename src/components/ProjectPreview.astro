@@ -12,10 +12,13 @@
  * <dialog>.showModal() supplies the focus trap, the Escape handler, the
  * backdrop and inertness of the page behind it. public/projects.js only opens
  * it; none of that is reimplemented.
+ *
+ * The image itself, and the choice between a hand-made one and GitHub's card,
+ * is ProjectImage.astro -- shared with the card on the projects page.
  */
 import type { CollectionEntry } from "astro:content";
 
-import { socialImageUrl } from "../lib/github";
+import ProjectImage from "./ProjectImage.astro";
 import { sanitizeSlug } from "../lib/sanitize";
 
 interface Props {
@@ -52,14 +55,7 @@ const stats = [
       click, which is how public/projects.js tells the two apart. */}
   <div class="preview__body">
     <div class="preview__media">
-      <img
-        src={socialImageUrl(repo)}
-        alt=""
-        width="1280"
-        height="640"
-        loading="lazy"
-        decoding="async"
-      />
+      <ProjectImage repo={repo} width={1280} />
     </div>
 
     <div class="preview__content">

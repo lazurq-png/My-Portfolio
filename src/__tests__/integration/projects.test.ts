@@ -215,6 +215,32 @@ describe("projects page with projects", () => {
   });
 });
 
+describe("a project with an image in src/assets/projects", () => {
+  beforeEach(() => {
+    mockGetCollection.mockResolvedValue([
+      enriched("lazurq-png/Questionable-candy", "Questionable Candy"),
+    ] as never);
+  });
+
+  test("shows the same image on the card as in the dialog", async () => {
+    const html = await render();
+    const card = html.slice(
+      html.indexOf('class="post-card card"'),
+      html.indexOf("</article>"),
+    );
+
+    expect(card).toContain("Questionable-candy");
+    expect(card).toContain('class="card-media"');
+  });
+
+  test("shows that image instead of the GitHub social card", async () => {
+    const html = await render();
+
+    expect(html).toContain("Questionable-candy.png");
+    expect(html).not.toContain("opengraph.githubassets.com");
+  });
+});
+
 describe("a project whose GitHub fetch failed", () => {
   beforeEach(() => {
     mockGetCollection.mockResolvedValue([

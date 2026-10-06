@@ -42,28 +42,35 @@ const PROJECT_PICKS: ProjectPick[] = [
 		title: 'Portfolio Site',
 		summary:
 			'A polished Astro-based portfolio experience with a lightweight, modern presentation.',
-		stack: ['Astro', 'TypeScript', 'CSS'],
+		stack: ['Astro', 'TypeScript', 'CSS', '20% AI'],
 	},
 	{
 		repo: 'lazurq-png/next.js-dashboard',
 		title: 'Next.js Dashboard Template',
 		summary:
 			'Learning how to use Next.js to build interactive web applications.',
-		stack: ['Next.js', 'React', 'TypeScript', 'PostgreSQL'],
+		stack: ['Next.js', 'React', 'TypeScript', 'PostgreSQL', '0% AI'],
 	},
 	{
 		repo: 'lazurq-png/Questionable-candy',
 		title: 'Questionable Candy',
 		summary:
 			'A satirical candy storefront in the design stage.',
-		stack: ['Django', 'Python', 'PostgreSQL', 'CSS'],
+		stack: ['Django', 'Python', 'PostgreSQL', 'CSS', '60% AI'],
 	},
 	{
 		repo: 'lazurq-png/blazor-learning',
 		title: 'Blazor Pizza Store',
 		summary:
 			'Learning Blazor components and state from the ASP.NET Core tutorial.',
-		stack: ['Blazor', 'C#', 'ASP.NET Core', 'SQLite'],
+		stack: ['Blazor', 'C#', 'ASP.NET Core', 'SQLite', '0% AI'],
+	},
+	{
+		repo: 'lazurq-png/Xenocats',
+		title: 'Xenocats',
+		summary:
+			'A simple dashboard next.js template with cats that attack mouse/elements.',
+		stack: ['Next.js', 'TypeScript', 'PostgreSQL', 'CSS', '90% AI'],
 	},
 ];
 
