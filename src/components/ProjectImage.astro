@@ -1,0 +1,48 @@
+---
+/**
+ * A project's picture: the hand-made image from src/assets/projects/ when there
+ * is one (see src/lib/projectImages.ts for the naming rule), otherwise GitHub's
+ * generated social card. Shared by the project card and its preview dialog so
+ * the two cannot disagree about which image a project has.
+ *
+ * Always 2:1 -- GitHub's card is, and so is the box both callers reserve.
+ * Decorative (`alt=""`): the project title sits right next to it in both.
+ */
+import { Image } from "astro:assets";
+
+import { socialImageUrl } from "../lib/github";
+import { projectImage } from "../lib/projectImages";
+
+interface Props {
+  /** `owner/name`. */
+  repo: string;
+  /** Rendered width in px; height follows at 2:1. */
+  width: number;
+}
+
+const { repo, width } = Astro.props;
+const local = projectImage(repo);
+const height = width / 2;
+---
+
+{
+  local ? (
+    <Image
+      src={local}
+      alt=""
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <img
+      src={socialImageUrl(repo)}
+      alt=""
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+    />
+  )
+}

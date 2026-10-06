@@ -80,6 +80,22 @@ describe("SiteNav structure", () => {
     expect(await render("/")).not.toContain("LinkedIn profile");
   });
 
+  test("links the work email address", async () => {
+    expect(await render("/")).toContain(
+      'href="mailto:martin.larsson90@hotmail.com"',
+    );
+  });
+
+  test("puts the email icon after GitHub and before the theme toggle", async () => {
+    const html = await render("/");
+    const github = html.indexOf("GitHub profile");
+    const email = html.indexOf("mailto:");
+    const theme = html.indexOf('id="theme-toggle"');
+
+    expect(github).toBeLessThan(email);
+    expect(email).toBeLessThan(theme);
+  });
+
   test("opens external profile links safely", async () => {
     const html = await render("/");
 

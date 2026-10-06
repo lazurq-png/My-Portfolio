@@ -78,6 +78,9 @@ test.describe('Homepage', () => {
     await expect(
       page.getByRole('link', { name: 'GitHub profile' })
     ).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /martin\.larsson90@hotmail\.com/ })
+    ).toBeVisible();
 
     if (isCollapsed) {
       await toggle.click();
