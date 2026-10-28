@@ -1,5 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// One explicit IPv4 address, on both the server and the tests. `localhost` resolves to
+// both ::1 and 127.0.0.1, and Node binds the dev/preview server to just one of them
+// (here ::1). Chromium retries the other family; Firefox sometimes does not, and fails
+// a random test per run with NS_ERROR_CONNECTION_REFUSED. Pinning both ends removes it.
+const HOST = "127.0.0.1";
+const ORIGIN = `http://${HOST}:4321`;
+
 export default defineConfig({
   testDir: "./src/__tests__/e2e",
 
@@ -16,7 +23,7 @@ export default defineConfig({
   reporter: process.env.CI ? [["github"], ["list"], ["html"]] : "html",
 
   use: {
-    baseURL: "http://localhost:4321",
+    baseURL: ORIGIN,
     trace: "on-first-retry",
     actionTimeout: 5000,
   },
@@ -63,8 +70,8 @@ export default defineConfig({
   webServer: {
     // CI serves the built dist/ -- the same bundle deployed to Cloudflare --
     // instead of paying dev-server compilation in every matrix leg.
-    command: process.env.CI ? "pnpm preview" : "pnpm dev",
-    url: "http://localhost:4321",
+    command: `${process.env.CI ? "pnpm preview" : "pnpm dev"} --host ${HOST}`,
+    url: ORIGIN,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
 
