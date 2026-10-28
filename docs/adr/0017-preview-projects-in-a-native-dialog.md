@@ -6,6 +6,11 @@ decision-makers: "Martin Larsson (@lazurq-png)"
 
 # 0017. Preview a project in a pre-rendered native `<dialog>`
 
+> **Amended 2026-10-28 by [0018](0018-self-host-project-preview-images.md):** the
+> preview image is no longer loaded from `opengraph.githubassets.com`. Where this
+> record calls that the one external request, or says `img-src 'self' https:`
+> covers it, that no longer applies.
+
 ## Context and Problem Statement
 
 Every card on `/projects` was a whole-card `<a target="_blank">` to GitHub, so

@@ -1,12 +1,12 @@
 import type { ImageMetadata } from "astro";
 
 /**
- * Hand-made preview images for projects, by convention rather than config:
- * drop `src/assets/projects/<repo-name>.png` in and that project's dialog uses
- * it instead of GitHub's generated social card. No file, no change.
+ * Preview images for projects, by convention rather than config: the file
+ * `src/assets/projects/<repo-name>.png` is that project's picture. Every curated
+ * project needs one (ADR 0018, enforced by `projectAssets.test.ts`).
  *
  * Bundled through astro:assets, so they ship from the site's own origin as
- * optimised WebP -- no CSP change, no network call at build time.
+ * optimised WebP -- no CSP change, no network call at build or view time.
  */
 const IMAGES = import.meta.glob<{ default: ImageMetadata }>(
   "../assets/projects/*.{png,jpg,jpeg,webp}",

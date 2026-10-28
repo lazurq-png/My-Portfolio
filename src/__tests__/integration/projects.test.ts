@@ -208,10 +208,11 @@ describe("projects page with projects", () => {
     expect(html).toContain("1 September 2026");
   });
 
-  test("points the preview image at the repo's social card", async () => {
-    expect(await render()).toContain(
-      "https://opengraph.githubassets.com/1/lazurq-png/My-Portfolio",
-    );
+  test("serves the preview image from the site, not from GitHub", async () => {
+    const html = await render();
+
+    expect(html).toContain("My-Portfolio.png");
+    expect(html).not.toContain("githubassets.com");
   });
 });
 

@@ -36,7 +36,7 @@ interface ProjectPick {
  * better -- stars, topics, when it was last touched -- is fetched below instead
  * of being copied here to go stale.
  */
-const PROJECT_PICKS: ProjectPick[] = [
+export const PROJECT_PICKS: ProjectPick[] = [
 	{
 		repo: 'lazurq-png/My-Portfolio',
 		title: 'Portfolio Site',

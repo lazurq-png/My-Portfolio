@@ -13,7 +13,7 @@
 export const SECURITY_HEADERS: ReadonlyArray<readonly [name: string, value: string]> = [
   [
     "Content-Security-Policy",
-    "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https://opengraph.githubassets.com; font-src https://fonts.gstatic.com; connect-src 'self'",
+    "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self'; font-src https://fonts.gstatic.com; connect-src 'self'",
   ],
   ["X-Frame-Options", "DENY"],
   ["X-Content-Type-Options", "nosniff"],

@@ -1,10 +1,5 @@
 import { describe, test, expect, vi, afterEach } from "vitest";
-import {
-  fetchRepo,
-  repoUrl,
-  socialImageUrl,
-  toRepoMeta,
-} from "../../lib/github";
+import { fetchRepo, repoUrl, toRepoMeta } from "../../lib/github";
 
 /**
  * The GitHub mapping, which the `projects` loader leans on being total.
@@ -132,16 +127,6 @@ describe("toRepoMeta", () => {
 });
 
 describe("url builders", () => {
-  test("socialImageUrl points at GitHub's Open Graph card", () => {
-    expect(socialImageUrl("lazurq-png/My-Portfolio")).toBe(
-      "https://opengraph.githubassets.com/1/lazurq-png/My-Portfolio",
-    );
-  });
-
-  test("socialImageUrl stays on an https host the CSP's img-src allows", () => {
-    expect(socialImageUrl("owner/name")).toMatch(/^https:\/\//);
-  });
-
   test("repoUrl builds the public repository URL", () => {
     expect(repoUrl("lazurq-png/next.js-dashboard")).toBe(
       "https://github.com/lazurq-png/next.js-dashboard",
