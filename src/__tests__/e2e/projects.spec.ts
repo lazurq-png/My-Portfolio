@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { openNav } from "./helpers/nav";
+import { navReady, openNav } from "./helpers/nav";
 
 /**
  * The projects page and its preview dialogs.
@@ -39,8 +39,10 @@ test.describe("Projects Page", () => {
   test("every project’s dialog links to a GitHub repository", async ({ page }) => {
     const links = page.locator("dialog.preview .preview__link");
 
+    // count() does not wait. The web-first assertion does, so a page still being
+    // (re)loaded -- the dev server reloads on its first request -- is not read as empty.
+    await expect(links).not.toHaveCount(0);
     const count = await links.count();
-    expect(count).toBeGreaterThan(0);
 
     for (let i = 0; i < count; i++) {
       await expect(links.nth(i)).toHaveAttribute("href", /^https:\/\/github\.com\/.+/);
@@ -81,6 +83,15 @@ test.describe("Projects Page", () => {
 
   test("the whole card hit-tests to the opener", async ({ page }) => {
     const card = page.locator(".project-grid .post-card").first();
+
+    // boundingBox() and elementFromPoint() do not wait, and beforeEach only waited
+    // for DOMContentLoaded, which comes before the stylesheet. Measured that early
+    // the card can have no box yet, or the overlay (which needs the CSS and the
+    // enabled button) is not there to be hit -- both seen on CI's WebKit.
+    await navReady(page);
+    await expect(card.locator(".card-open")).toBeEnabled();
+    await expect(card).toBeVisible();
+
     const box = await card.boundingBox();
 
     expect(box).not.toBeNull();
@@ -112,11 +123,16 @@ test.describe("Projects Page", () => {
     // -- a clicked button is never the previously-focused element there, so
     // there would be nothing for the dialog to restore focus to. The keyboard
     // path is the one where focus restoration actually matters.
+    // A disabled button cannot take focus, so wait for projects.js to arm it.
+    await expect(button).toBeEnabled();
     await button.focus();
     await page.keyboard.press("Enter");
 
     const dialog = page.locator("dialog[open]");
     await expect(dialog).toBeVisible();
+    // Visible is not yet focused: wait until showModal() has moved focus into the
+    // dialog, or Escape can race it and leave nothing to restore (flaked on CI WebKit).
+    await expect(button).not.toBeFocused();
 
     await page.keyboard.press("Escape");
 
