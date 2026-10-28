@@ -55,13 +55,15 @@ describe("dist/_headers", () => {
     expect(csp).toContain("form-action 'self'");
   });
 
-  test("allows only the external origins the site actually uses", () => {
+  test("allows no external origin at all", () => {
     const csp = lines.find((line) => line.startsWith("  Content-Security-Policy:"));
 
     expect(csp).toContain("script-src 'self';");
     expect(csp).toContain("img-src 'self';");
-    expect(csp).toContain("font-src https://fonts.gstatic.com;");
-    // A bare `https:` source would let any HTTPS origin back in.
-    expect(csp).not.toMatch(/\bhttps:(?=[;\s]|$)/);
+    expect(csp).toContain("style-src 'self' 'unsafe-inline';");
+    expect(csp).toContain("font-src 'self';");
+    // Everything -- scripts, styles, fonts, images -- is served from this origin.
+    // A bare `https:` or any named host is a new exception and needs an ADR.
+    expect(csp).not.toMatch(/https?:/);
   });
 });

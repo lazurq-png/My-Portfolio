@@ -23,7 +23,11 @@
     }
   };
 
-  if (read() === "light") {
+  // An explicit choice wins; with none, follow the operating system. Dark stays the
+  // fallback when matchMedia is unavailable or the OS expresses no light preference.
+  const stored = read();
+  const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)").matches ?? false;
+  if (stored === "light" || (stored === null && prefersLight)) {
     root.setAttribute("data-theme", "light");
   }
 

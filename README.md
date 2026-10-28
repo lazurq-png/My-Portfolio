@@ -50,7 +50,7 @@ The directory under `src/__tests__/` decides the scope, and each scope has one c
 | `unitTests/` | Pure functions | `pnpm test:unit` |
 | `integration/` | Module seams and `.astro` pages rendered through Astro's Container API | `pnpm test:unit` |
 | `build/` | Assertions about the built `dist/` (security headers, routes) | `pnpm test:build` |
-| `e2e/` | Playwright across Chromium, Firefox, WebKit and a mobile viewport | `pnpm test:e2e` |
+| `e2e/` | Playwright across Chromium, Firefox, WebKit and a mobile viewport, plus axe accessibility scans (Chromium) | `pnpm test:e2e` |
 
 ## Workflow and deploys
 
