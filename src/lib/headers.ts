@@ -13,12 +13,14 @@
 export const SECURITY_HEADERS: ReadonlyArray<readonly [name: string, value: string]> = [
   [
     "Content-Security-Policy",
-    "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' https://cdn.astro.build; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https:; font-src https:; connect-src 'self'",
+    "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' https://opengraph.githubassets.com; font-src https://fonts.gstatic.com; connect-src 'self'",
   ],
   ["X-Frame-Options", "DENY"],
   ["X-Content-Type-Options", "nosniff"],
   ["Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"],
   ["Referrer-Policy", "strict-origin-when-cross-origin"],
+  ["Permissions-Policy", "camera=(), microphone=(), geolocation=()"],
+  ["Cross-Origin-Opener-Policy", "same-origin"],
 ];
 
 /**
