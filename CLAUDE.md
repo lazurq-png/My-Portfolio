@@ -23,7 +23,7 @@ Use **pnpm**. Work on `dev`; production is a PR into `master`. Task workflows: `
 - Security headers come from `src/lib/headers.ts`. Astro has no top-level `headers` option, so don't add one.
   A new external origin is blocked until it is allowed there (see the `add-external-resource` skill).
 - e2e: `await navReady(page)` before probing the nav; no `setViewportSize` (projects own viewports).
-  `blog-post.spec.ts` asserts the oldest post (`testing-astro.md`) by exact text: don't edit that post.
+  `a11y.spec.ts` runs axe on the rendered pages in both themes: a colour-token change must keep contrast.
   Add pages to `.github/e2e-filters.yml` when a spec gains a navigation. Keep the Playwright container tag
   in `ci-pull.yml` equal to `@playwright/test`.
 - Cloudflare runs `pnpm run build:deploy` on every push, so that script **is** production config. The build

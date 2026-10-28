@@ -26,7 +26,7 @@ description: Write a new blog post for the portfolio. Use when asked to add, dra
 
 3. **Body**: write a line per thought. `white-space: pre-line` is applied to paragraphs and list
    items, so single newlines render as line breaks. No reflowing, and Prettier never touches `.md`.
-4. **Do not edit the oldest post** (`testing-astro.md`, "Learning Astro.js"): `blog-post.spec.ts`
-   asserts its exact title, date and description.
+4. `blog-post.spec.ts` reads the oldest post's frontmatter at run time, so editing any post is safe.
+   Two posts must not share the oldest `pubDate` (the spec fails with a clear message).
 5. **Verify**: `pnpm build && pnpm test:build` (`routes.test.ts` compares built pages with the
    posts on disk). CI skips e2e for blog-only PRs, so the build is the check.
