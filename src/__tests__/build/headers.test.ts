@@ -58,4 +58,16 @@ describe("dist/_headers", () => {
     expect(csp).toContain("frame-ancestors 'none'");
     expect(csp).toContain("form-action 'self'");
   });
+
+  test("allows only the external origins the site actually uses", () => {
+    const csp = lines.find((line) =>
+      line.startsWith("  Content-Security-Policy:"),
+    );
+
+    expect(csp).toContain("script-src 'self';");
+    expect(csp).toContain("img-src 'self';");
+    expect(csp).toContain("font-src https://fonts.gstatic.com;");
+    // A bare `https:` source would let any HTTPS origin back in.
+    expect(csp).not.toMatch(/\bhttps:(?=[;\s]|$)/);
+  });
 });

@@ -89,17 +89,6 @@ export function toRepoMeta(raw: unknown): RepoMeta | null {
   };
 }
 
-/**
- * The repository's social preview card, as GitHub renders it for Open Graph.
- *
- * The leading path segment is an opaque cache key -- any value serves, and a
- * constant keeps the URL stable between builds so a CDN can cache it. Allowed
- * by the site CSP under `img-src 'self' https:` without an allowlist entry.
- */
-export function socialImageUrl(nameWithOwner: string): string {
-  return `https://opengraph.githubassets.com/1/${nameWithOwner}`;
-}
-
 /** Public repo URL for a `owner/name` pair. */
 export function repoUrl(nameWithOwner: string): string {
   return `https://github.com/${nameWithOwner}`;

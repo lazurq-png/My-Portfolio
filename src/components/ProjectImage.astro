@@ -1,16 +1,22 @@
 ---
 /**
- * A project's picture: the hand-made image from src/assets/projects/ when there
- * is one (see src/lib/projectImages.ts for the naming rule), otherwise GitHub's
- * generated social card. Shared by the project card and its preview dialog so
- * the two cannot disagree about which image a project has.
+ * A project's picture: the image in src/assets/projects/ named after the repo
+ * (see src/lib/projectImages.ts for the naming rule). Shared by the project card
+ * and its preview dialog so the two cannot disagree about which image a project
+ * has.
  *
- * Always 2:1 -- GitHub's card is, and so is the box both callers reserve.
- * Decorative (`alt=""`): the project title sits right next to it in both.
+ * Self-hosted on purpose (ADR 0018). The pictures used to be hot-linked from
+ * GitHub's Open Graph host, which rate-limits per IP and answered 429 often
+ * enough to leave broken-image icons in the cards. A project with no file renders
+ * nothing here and the caller's reserved 2:1 box stays as a plain panel --
+ * `projects.test.ts` fails if a curated project has no file, so that is a
+ * fallback and not a state the site is meant to be in.
+ *
+ * Always 2:1, the box both callers reserve. Decorative (`alt=""`): the project
+ * title sits right next to it in both.
  */
 import { Image } from "astro:assets";
 
-import { socialImageUrl } from "../lib/github";
 import { projectImage } from "../lib/projectImages";
 
 interface Props {
@@ -26,18 +32,9 @@ const height = width / 2;
 ---
 
 {
-  local ? (
+  local && (
     <Image
       src={local}
-      alt=""
-      width={width}
-      height={height}
-      loading="lazy"
-      decoding="async"
-    />
-  ) : (
-    <img
-      src={socialImageUrl(repo)}
       alt=""
       width={width}
       height={height}

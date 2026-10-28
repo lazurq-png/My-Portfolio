@@ -31,6 +31,7 @@ is kept only where a real check exists.
 | [0015](0015-add-an-integration-test-scope.md) | Add an integration test scope between the unit and e2e suites | Accepted | 2026-09-01 |
 | [0016](0016-load-projects-from-github-at-build-time.md) | Load the projects list from the GitHub API at build time | Accepted | 2026-09-07 |
 | [0017](0017-preview-projects-in-a-native-dialog.md) | Preview a project in a pre-rendered native `<dialog>` | Accepted | 2026-09-07 |
+| [0018](0018-self-host-project-preview-images.md) | Self-host the project preview images instead of hot-linking GitHub's | Accepted | 2026-10-28 |
 
 ## Conventions
 
