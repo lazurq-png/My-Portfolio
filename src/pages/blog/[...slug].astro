@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import SiteNav from "../../components/SiteNav.astro";
+import { formatDate } from "../../lib/dates";
 import { sanitizeSlug } from "../../lib/sanitize";
 
 export async function getStaticPaths() {
@@ -47,12 +48,8 @@ const { Content } = await render(post);
 
     <article class="article-shell" data-pagefind-body>
       <p class="post-date">
-        <time datetime={post.data.pubDate.toISOString()}>
-          {post.data.pubDate.toLocaleDateString("en-GB", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+        <time datetime={post.data.pubDate.toISOString().slice(0, 10)}>
+          {formatDate(post.data.pubDate)}
         </time>
       </p>
       <h1 class="article-title">{post.data.title}</h1>

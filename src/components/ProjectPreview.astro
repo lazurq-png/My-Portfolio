@@ -18,6 +18,7 @@
  */
 import type { CollectionEntry } from "astro:content";
 
+import { formatDate } from "../lib/dates";
 import ProjectImage from "./ProjectImage.astro";
 import { sanitizeSlug } from "../lib/sanitize";
 
@@ -34,11 +35,7 @@ const slug = sanitizeSlug(project.id);
 const dialogId = `preview-${slug}`;
 const headingId = `${dialogId}-title`;
 
-const updated = pushedAt?.toLocaleDateString("en-GB", {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
+const updated = pushedAt && formatDate(pushedAt);
 
 // A project whose fetch failed has none of these, and shows no stats row at all
 // rather than a row of blanks.

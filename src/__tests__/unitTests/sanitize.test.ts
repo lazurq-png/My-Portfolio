@@ -48,6 +48,16 @@ describe("Test sanitizeSlug method", () => {
     expect(result).toBe("");
   });
 
+  test("never leaves a leading or doubled hyphen around a removed underscore", () => {
+    expect(sanitizeSlug("_-foo")).toBe("foo");
+    expect(sanitizeSlug("foo-_")).toBe("foo");
+    expect(sanitizeSlug("a-_-b")).toBe("a-b");
+  });
+
+  test("still drops underscores without a separator", () => {
+    expect(sanitizeSlug("de_mo")).toBe("demo");
+  });
+
   test("handles already clean input", () => {
     const input = "clean-post-title";
 

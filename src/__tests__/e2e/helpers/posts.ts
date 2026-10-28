@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { formatDate, toCalendarDate } from "../../../lib/dates";
 
 const POSTS_DIR = join(process.cwd(), "src", "content", "blog");
 
@@ -29,20 +30,18 @@ function read(file: string): PostFacts {
   const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---/.exec(text)?.[1];
   if (!frontmatter) throw new Error(`${file} has no frontmatter`);
 
-  // Same coercion as the content schema's `z.coerce.date()`, and the same local-time
-  // formatting as the pages, so both sides agree whatever the machine's time zone.
-  const pubDate = new Date(field(frontmatter, "pubDate"));
+  // The same parse and format the content schema and the pages use (src/lib/dates),
+  // so this side cannot drift from what the site renders.
+  const raw = field(frontmatter, "pubDate");
+  const pubDate = toCalendarDate(raw);
+  if (!(pubDate instanceof Date)) throw new Error(`${file} has an unparseable pubDate "${raw}"`);
 
   return {
     id: file.replace(/\.md$/, ""),
     title: field(frontmatter, "title"),
     description: field(frontmatter, "description"),
     pubDate,
-    displayDate: pubDate.toLocaleDateString("en-GB", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }),
+    displayDate: formatDate(pubDate),
   };
 }
 

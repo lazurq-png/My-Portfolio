@@ -2,6 +2,7 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
+import { toCalendarDate } from "./lib/dates";
 import { fetchRepo, repoUrl, toRepoMeta } from "./lib/github";
 
 const blog = defineCollection({
@@ -13,8 +14,9 @@ const blog = defineCollection({
       title: z.string(),
       description: z.string(),
       // Transform string to Date object
-      pubDate: z.coerce.date(),
-      updatedDate: z.coerce.date().optional(),
+      // A calendar day, normalised to UTC midnight whatever its format (see lib/dates).
+      pubDate: z.preprocess(toCalendarDate, z.coerce.date()),
+      updatedDate: z.preprocess(toCalendarDate, z.coerce.date()).optional(),
       heroImage: z.optional(image()),
     }),
 });
