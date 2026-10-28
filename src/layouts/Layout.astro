@@ -1,4 +1,6 @@
 ---
+import { Font } from "astro:assets";
+
 export interface Props {
   title?: string;
   description?: string;
@@ -17,12 +19,12 @@ const {
   ogType = "website",
 } = Astro.props;
 
-// TODO: set `site` in astro.config.mjs to the deployed domain so canonical/og:url
-// become absolute URLs. Until then these stay root-relative, which is valid HTML
-// (resolved against the document URL) but weaker for crawlers.
-const canonical = Astro.site
-  ? new URL(canonicalPath, Astro.site).href
-  : canonicalPath;
+// `site` is set in astro.config.mjs, so canonical, og:url and og:image come out
+// absolute -- crawlers and link-preview scrapers need that. The `?? Astro.url`
+// only keeps this total if `site` is ever removed again.
+const base = Astro.site ?? Astro.url;
+const canonical = new URL(canonicalPath, base).href;
+const ogImage = new URL("/og-image.png", base).href;
 ---
 
 <!doctype html>
@@ -40,16 +42,19 @@ const canonical = Astro.site
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta property="og:image:alt" content="The home page of Martin Larsson's portfolio" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
     <!-- Blocking, and placed above the stylesheets a classic script would otherwise
          wait on, so the stored theme is applied before anything paints. -->
     <script is:inline src="/theme-init.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Self-hosted by Astro's Fonts API (ADR 0019): downloaded at build time and
+         served from this origin, so no third-party request and no CSP exception. -->
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-plex-mono" />
   </head>
   <body>
     <div class="app-shell">
@@ -78,11 +83,11 @@ const canonical = Astro.site
     --on-accent: #14161a;
     --rule: #242931;
 
-    /* Inter is what the <link> above actually loads; the previous
-       "Manrope" was never fetched, so body text silently fell back to
-       the platform sans. */
-    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+    /* --font-inter and --font-plex-mono are defined by the <Font> components in
+       <head> (Astro Fonts API, configured in astro.config.mjs) and already carry
+       generated fallbacks; the stacks after them are only a last resort. */
+    --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
 
     /* Fluid type scale -- one ramp, shared by every page. */
     --step--1: 0.8125rem;
@@ -138,8 +143,8 @@ const canonical = Astro.site
     --surface-strong: #f1ede4;
     --ink: #1b1d21;
     --ink-dim: #585e69;
-    --accent: #9c5c17;
-    --accent-soft: rgba(156, 92, 23, 0.12);
+    --accent: #93550f;
+    --accent-soft: rgba(147, 85, 15, 0.12);
     --on-accent: #fffdf9;
     --rule: #ddd8cd;
   }

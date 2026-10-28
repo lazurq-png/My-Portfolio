@@ -1,11 +1,11 @@
 // @ts-check
-import { writeFile } from 'node:fs/promises';
+import { writeFile } from "node:fs/promises";
 
-import { defineConfig } from 'astro/config';
+import sitemap from "@astrojs/sitemap";
+import { defineConfig, fontProviders } from "astro/config";
+import icon from "astro-icon";
 
-import icon from 'astro-icon';
-
-import { renderHeadersFile } from './src/lib/headers.ts';
+import { renderHeadersFile } from "./src/lib/headers.ts";
 
 /**
  * Writes the security policy from `src/lib/headers.ts` into `dist/_headers`,
@@ -25,10 +25,10 @@ import { renderHeadersFile } from './src/lib/headers.ts';
  */
 function securityHeaders() {
   return {
-    name: 'security-headers',
+    name: "security-headers",
     hooks: {
-      'astro:build:done': async ({ dir }) => {
-        await writeFile(new URL('_headers', dir), renderHeadersFile(), 'utf8');
+      "astro:build:done": async ({ dir }) => {
+        await writeFile(new URL("_headers", dir), renderHeadersFile(), "utf8");
       },
     },
   };
@@ -36,5 +36,27 @@ function securityHeaders() {
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [icon(), securityHeaders()],
+  // The deployed origin. Makes canonical, og:url and og:image absolute, and is what
+  // the sitemap integration builds its URLs from.
+  site: "https://my-portfolio-72x.pages.dev",
+  integrations: [icon(), sitemap(), securityHeaders()],
+  // Responsive <Image>: emits srcset/sizes so a phone is not sent the 1280px dialog image.
+  image: { layout: "constrained", responsiveStyles: true },
+  // Self-hosted fonts (ADR 0019): fetched from Google at build time, served from /_astro/.
+  fonts: [
+    {
+      provider: fontProviders.google(),
+      name: "Inter",
+      cssVariable: "--font-inter",
+      weights: [400, 500, 600, 700],
+      styles: ["normal"],
+    },
+    {
+      provider: fontProviders.google(),
+      name: "IBM Plex Mono",
+      cssVariable: "--font-plex-mono",
+      weights: [400, 500, 600],
+      styles: ["normal"],
+    },
+  ],
 });

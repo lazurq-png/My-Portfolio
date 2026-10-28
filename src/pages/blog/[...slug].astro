@@ -28,7 +28,7 @@ const { Content } = await render(post);
 >
   <SiteNav />
   <main class="page-shell">
-    <a class="back-link" href="/blog">
+    <a class="back-link" href="/blog/">
       <svg
         viewBox="0 0 24 24"
         width="16"
@@ -48,13 +48,11 @@ const { Content } = await render(post);
     <article class="article-shell" data-pagefind-body>
       <p class="post-date">
         <time datetime={post.data.pubDate.toISOString()}>
-          {
-            post.data.pubDate.toLocaleDateString("en-GB", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })
-          }
+          {post.data.pubDate.toLocaleDateString("en-GB", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}
         </time>
       </p>
       <h1 class="article-title">{post.data.title}</h1>

@@ -39,8 +39,7 @@ const render = () =>
     request: new Request("http://localhost/blog/"),
   });
 
-const cardCount = (html: string) =>
-  [...html.matchAll(/class="post-card"/g)].length;
+const cardCount = (html: string) => [...html.matchAll(/class="post-card"/g)].length;
 
 const postHrefs = (html: string) =>
   [...html.matchAll(/<a class="card-link" href="([^"]*)"/g)].map((m) => m[1]);
@@ -82,11 +81,7 @@ describe("blog index with posts", () => {
   test("orders them newest first regardless of collection order", async () => {
     const html = await render();
 
-    expect(postHrefs(html)).toEqual([
-      "/blog/newest/",
-      "/blog/middle/",
-      "/blog/older/",
-    ]);
+    expect(postHrefs(html)).toEqual(["/blog/newest/", "/blog/middle/", "/blog/older/"]);
   });
 
   test("builds each href from the sanitized slug, with a trailing slash", async () => {

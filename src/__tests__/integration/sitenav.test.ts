@@ -24,9 +24,7 @@ const render = (path: string) =>
 
 /** The href of every link carrying aria-current="page". */
 function currentLinks(html: string): string[] {
-  return [...html.matchAll(/<a href="([^"]*)"[^>]*aria-current="page"/g)].map(
-    (match) => match[1],
-  );
+  return [...html.matchAll(/<a href="([^"]*)"[^>]*aria-current="page"/g)].map((match) => match[1]);
 }
 
 describe("SiteNav active link", () => {
@@ -81,9 +79,7 @@ describe("SiteNav structure", () => {
   });
 
   test("links the work email address", async () => {
-    expect(await render("/")).toContain(
-      'href="mailto:martin.larsson90@hotmail.com"',
-    );
+    expect(await render("/")).toContain('href="mailto:martin.larsson90@hotmail.com"');
   });
 
   test("puts the email icon after GitHub and before the theme toggle", async () => {
@@ -99,8 +95,6 @@ describe("SiteNav structure", () => {
   test("opens external profile links safely", async () => {
     const html = await render("/");
 
-    expect(html).toMatch(
-      /href="https:\/\/github\.com[^"]*"[^>]*rel="noopener noreferrer"/,
-    );
+    expect(html).toMatch(/href="https:\/\/github\.com[^"]*"[^>]*rel="noopener noreferrer"/);
   });
 });

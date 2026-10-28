@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from "vitest/config";
 
 // The dist/ output contract, kept in its own config because it needs a build to
 // have run first -- it cannot join the suite that gates every push. Plain
@@ -10,6 +10,6 @@ import { defineConfig } from 'vitest/config'
 // driving that from the command line is exactly how the scopes get tangled.
 export default defineConfig({
   test: {
-    dir: './src/__tests__/build',
+    dir: "./src/__tests__/build",
   },
-})
+});

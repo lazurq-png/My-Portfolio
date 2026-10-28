@@ -48,10 +48,20 @@ blog:
   - 'src/content.config.ts'
 
 # Reaches the post through the /blog index, and asserts the *oldest* post's
-# exact title/date/description -- so any new post can change what it targets.
+# title/date/description read from its frontmatter at run time, so any new post can change what it targets.
 blog-post:
   - *shared
   - 'src/pages/blog/**'
   - 'src/lib/sanitize.ts'
   - 'src/content/**'
   - 'src/content.config.ts'
+
+# Scans every page (home, projects, blog index, one post, the 404) in both themes,
+# plus the open project dialog and the open mobile menu, with axe. It picks the
+# oldest post from the Markdown at run time, so posts and the content schema matter.
+a11y:
+  - *shared
+  - 'src/pages/**'
+  - 'src/content/**'
+  - 'src/content.config.ts'
+  - 'src/lib/sanitize.ts'

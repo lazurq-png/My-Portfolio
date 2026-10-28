@@ -16,29 +16,26 @@ const posts = (await getCollection("blog")).sort(
       <p class="eyebrow">/blog</p>
       <h1>Notes and reflections</h1>
       <p class="intro">
-        Short posts on design choices and general thoughts while learning new
-        technologies.
+        Short posts on design choices and general thoughts while learning new technologies.
       </p>
     </section>
 
     <section class="post-list" aria-label="Blog posts">
-      {
-        posts.map((post) => (
-          <a class="card-link" href={`/blog/${sanitizeSlug(post.id)}/`}>
-            <article class="post-card">
-              <div class="post-card__date">
-                {post.data.pubDate.toLocaleDateString("en-GB", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </div>
-              <h2>{post.data.title}</h2>
-              <p>{post.data.description}</p>
-            </article>
-          </a>
-        ))
-      }
+      {posts.map((post) => (
+        <a class="card-link" href={`/blog/${sanitizeSlug(post.id)}/`}>
+          <article class="post-card">
+            <div class="post-card__date">
+              {post.data.pubDate.toLocaleDateString("en-GB", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </div>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+          </article>
+        </a>
+      ))}
     </section>
   </main>
 </Layout>

@@ -118,15 +118,10 @@ export async function fetchRepo(
 
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(
-    `https://api.github.com/repos/${nameWithOwner}`,
-    { headers },
-  );
+  const response = await fetch(`https://api.github.com/repos/${nameWithOwner}`, { headers });
 
   if (!response.ok) {
-    throw new Error(
-      `GitHub API ${response.status} ${response.statusText} for ${nameWithOwner}`,
-    );
+    throw new Error(`GitHub API ${response.status} ${response.statusText} for ${nameWithOwner}`);
   }
 
   return response.json();

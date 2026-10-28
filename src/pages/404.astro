@@ -1,0 +1,46 @@
+---
+import SiteNav from "../components/SiteNav.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<!-- Cloudflare Pages serves dist/404.html for any path that matches nothing. -->
+<Layout title="Page not found — Martin Larsson" description="This page does not exist.">
+  <SiteNav />
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">/404</p>
+      <h1>Page not found</h1>
+      <p class="intro">
+        There is nothing at this address. It may have moved, or the link may have a typo.
+      </p>
+      <p class="links">
+        <a href="/">Home</a>
+        <a href="/projects/">My projects</a>
+        <a href="/blog/">Blog</a>
+      </p>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin-block-start: var(--space-m);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+
+  .links a {
+    padding: var(--space-2xs);
+    margin: calc(var(--space-2xs) * -1);
+    border-radius: var(--radius-s);
+    color: var(--accent);
+  }
+
+  .links a:hover,
+  .links a:focus-visible {
+    background: var(--accent-soft);
+  }
+</style>

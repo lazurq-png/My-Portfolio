@@ -24,10 +24,9 @@ const schema = collections.blog.schema as (context: SchemaContext) => z.ZodTypeA
 const blogSchema = schema({ image: (() => z.any()) as unknown as ImageFunction });
 
 const posts = Object.entries(
-  import.meta.glob<{ frontmatter: Record<string, unknown> }>(
-    "/src/content/blog/*.md",
-    { eager: true },
-  ),
+  import.meta.glob<{ frontmatter: Record<string, unknown> }>("/src/content/blog/*.md", {
+    eager: true,
+  }),
 );
 
 describe("blog content collection", () => {

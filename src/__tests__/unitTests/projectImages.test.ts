@@ -12,9 +12,7 @@ describe("findProjectImage", () => {
   });
 
   test("is case-sensitive, as the Linux build on Cloudflare is", () => {
-    expect(findProjectImage("lazurq-png/Questionable-candy", images)).toBe(
-      "candy",
-    );
+    expect(findProjectImage("lazurq-png/Questionable-candy", images)).toBe("candy");
     expect(findProjectImage("lazurq-png/xenocats", images)).toBeUndefined();
   });
 

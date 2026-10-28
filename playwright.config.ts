@@ -1,7 +1,14 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
+
+// One explicit IPv4 address, on both the server and the tests. `localhost` resolves to
+// both ::1 and 127.0.0.1, and Node binds the dev/preview server to just one of them
+// (here ::1). Chromium retries the other family; Firefox sometimes does not, and fails
+// a random test per run with NS_ERROR_CONNECTION_REFUSED. Pinning both ends removes it.
+const HOST = "127.0.0.1";
+const ORIGIN = `http://${HOST}:4321`;
 
 export default defineConfig({
-  testDir: './src/__tests__/e2e',
+  testDir: "./src/__tests__/e2e",
 
   fullyParallel: true,
 
@@ -13,11 +20,11 @@ export default defineConfig({
   // read-only against a static site, so there is no shared state to serialize.
   // 'github' surfaces failures as inline PR annotations, so a CI failure is
   // readable without downloading the html report artifact.
-  reporter: process.env.CI ? [['github'], ['list'], ['html']] : 'html',
+  reporter: process.env.CI ? [["github"], ["list"], ["html"]] : "html",
 
   use: {
-    baseURL: 'http://localhost:4321',
-    trace: 'on-first-retry',
+    baseURL: ORIGIN,
+    trace: "on-first-retry",
     actionTimeout: 5000,
   },
 
@@ -29,16 +36,18 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
 
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'],
+      name: "firefox",
+      use: {
+        ...devices["Desktop Firefox"],
         // added more time for firefox since it needs it.
         actionTimeout: 60_000,
-        navigationTimeout: 60_000, },
+        navigationTimeout: 60_000,
+      },
       // The action/navigation bumps above never covered expect(), so
       // visibility assertions still flaked against the global 5s budget
       // once the suite started running workers in parallel.
@@ -46,23 +55,23 @@ export default defineConfig({
     },
 
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: "webkit",
+      use: { ...devices["Desktop Safari"] },
     },
 
     // Keeps isMobile/hasTouch emulation, so a broken <meta name="viewport">
     // is still caught -- resizing alone would not catch it.
     {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
+      name: "Mobile Chrome",
+      use: { ...devices["Pixel 5"] },
     },
   ],
 
   webServer: {
     // CI serves the built dist/ -- the same bundle deployed to Cloudflare --
     // instead of paying dev-server compilation in every matrix leg.
-    command: process.env.CI ? 'pnpm preview' : 'pnpm dev',
-    url: 'http://localhost:4321',
+    command: `${process.env.CI ? "pnpm preview" : "pnpm dev"} --host ${HOST}`,
+    url: ORIGIN,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
 
@@ -73,11 +82,11 @@ export default defineConfig({
     // exited early", and a server that did start outlives the run -- Playwright
     // never owned the detached grandchild, so neither Ctrl+C nor a clean exit
     // stops it. Any non-empty value opts out and keeps it in the foreground.
-    env: { ASTRO_DEV_BACKGROUND: '1' },
+    env: { ASTRO_DEV_BACKGROUND: "1" },
 
     // Let the server shut itself down so it removes its lock file. A hard kill
     // leaves the lock behind, and the next run aborts with "Another astro dev
     // server is already running".
-    gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
+    gracefulShutdown: { signal: "SIGTERM", timeout: 5_000 },
   },
 });

@@ -11,10 +11,13 @@ import Layout from "../../layouts/Layout.astro";
  * from here.
  */
 
+// The deployed origin, as in astro.config.mjs: the container does not read that file.
+const SITE = "https://my-portfolio-72x.pages.dev";
+
 let container: AstroContainer;
 
 beforeAll(async () => {
-  container = await AstroContainer.create();
+  container = await AstroContainer.create({ astroConfig: { site: SITE } });
 });
 
 const render = (props: Record<string, unknown>, path = "/") =>
@@ -26,14 +29,10 @@ const render = (props: Record<string, unknown>, path = "/") =>
 const attr = (html: string, selector: RegExp) => html.match(selector)?.[1];
 
 const title = (html: string) => attr(html, /<title>([^<]*)<\/title>/);
-const description = (html: string) =>
-  attr(html, /<meta name="description" content="([^"]*)"/);
-const canonical = (html: string) =>
-  attr(html, /<link rel="canonical" href="([^"]*)"/);
-const ogType = (html: string) =>
-  attr(html, /<meta property="og:type" content="([^"]*)"/);
-const ogUrl = (html: string) =>
-  attr(html, /<meta property="og:url" content="([^"]*)"/);
+const description = (html: string) => attr(html, /<meta name="description" content="([^"]*)"/);
+const canonical = (html: string) => attr(html, /<link rel="canonical" href="([^"]*)"/);
+const ogType = (html: string) => attr(html, /<meta property="og:type" content="([^"]*)"/);
+const ogUrl = (html: string) => attr(html, /<meta property="og:url" content="([^"]*)"/);
 
 describe("Layout with no props", () => {
   test("falls back to the site-wide title and description", async () => {
@@ -50,7 +49,7 @@ describe("Layout with no props", () => {
   });
 
   test("defaults canonicalPath to the current pathname", async () => {
-    expect(canonical(await render({}, "/projects/"))).toBe("/projects/");
+    expect(canonical(await render({}, "/projects/"))).toBe(`${SITE}/projects/`);
   });
 });
 
@@ -67,7 +66,7 @@ describe("Layout with props", () => {
 
     expect(title(html)).toBe(props.title);
     expect(description(html)).toBe(props.description);
-    expect(canonical(html)).toBe(props.canonicalPath);
+    expect(canonical(html)).toBe(`${SITE}${props.canonicalPath}`);
     expect(ogType(html)).toBe("article");
   });
 
@@ -75,9 +74,7 @@ describe("Layout with props", () => {
     const html = await render(props);
 
     expect(html).toContain(`<meta property="og:title" content="${props.title}">`);
-    expect(html).toContain(
-      `<meta property="og:description" content="${props.description}">`,
-    );
+    expect(html).toContain(`<meta property="og:description" content="${props.description}">`);
   });
 
   test("keeps og:url and canonical in step", async () => {
@@ -89,23 +86,28 @@ describe("Layout with props", () => {
   test("prefers an explicit canonicalPath over the current pathname", async () => {
     const html = await render({ canonicalPath: "/blog/a-post/" }, "/somewhere-else/");
 
-    expect(canonical(html)).toBe("/blog/a-post/");
+    expect(canonical(html)).toBe(`${SITE}/blog/a-post/`);
   });
 });
 
-describe("Layout canonical URLs", () => {
+describe("Layout absolute URLs", () => {
   /**
-   * astro.config.mjs sets no `site`, so canonical and og:url are emitted
-   * root-relative -- valid, but weaker for crawlers, which is the standing TODO
-   * in Layout.astro. This test is the tripwire for that change: set `site` and
-   * it fails, telling you the URLs went absolute as intended. The absolute
-   * branch stays uncovered until then rather than being faked here.
+   * `site` is set in astro.config.mjs, so everything a crawler or a link-preview
+   * scraper reads must be absolute: canonical, og:url and the preview image.
    */
-  test("emits root-relative URLs while `site` is unset", async () => {
+  test("emits absolute canonical and og:url", async () => {
     const html = await render({}, "/blog/");
 
-    expect(canonical(html)).toBe("/blog/");
-    expect(canonical(html)).not.toMatch(/^https?:\/\//);
+    expect(canonical(html)).toBe(`${SITE}/blog/`);
+    expect(ogUrl(html)).toBe(`${SITE}/blog/`);
+  });
+
+  test("points og:image and twitter:image at the shared preview image", async () => {
+    const html = await render({});
+
+    expect(attr(html, /<meta property="og:image" content="([^"]*)"/)).toBe(`${SITE}/og-image.png`);
+    expect(attr(html, /<meta name="twitter:image" content="([^"]*)"/)).toBe(`${SITE}/og-image.png`);
+    expect(attr(html, /<meta name="twitter:card" content="([^"]*)"/)).toBe("summary_large_image");
   });
 });
 

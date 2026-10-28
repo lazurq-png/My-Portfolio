@@ -31,15 +31,6 @@ const local = projectImage(repo);
 const height = width / 2;
 ---
 
-{
-  local && (
-    <Image
-      src={local}
-      alt=""
-      width={width}
-      height={height}
-      loading="lazy"
-      decoding="async"
-    />
-  )
-}
+{local && (
+  <Image src={local} alt="" width={width} height={height} loading="lazy" decoding="async" />
+)}

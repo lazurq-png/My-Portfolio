@@ -28,7 +28,10 @@ export function findProjectImage<T>(
   if (!name) return undefined;
 
   for (const [path, mod] of Object.entries(images)) {
-    const base = path.split("/").pop()?.replace(/\.[^.]+$/, "");
+    const base = path
+      .split("/")
+      .pop()
+      ?.replace(/\.[^.]+$/, "");
     if (base === name) return mod.default;
   }
   return undefined;

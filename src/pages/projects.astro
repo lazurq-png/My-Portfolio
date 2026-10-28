@@ -24,10 +24,9 @@ const projects = await getCollection("projects");
     </section>
 
     <section class="project-grid" aria-label="Project list">
-      {
-        projects.map((project) => (
-          <article class="post-card card">
-            {/* The title is the control that opens the preview, and its ::after
+      {projects.map((project) => (
+        <article class="post-card card">
+          {/* The title is the control that opens the preview, and its ::after
                 stretches over the whole card so anywhere on the card is a click
                 target. It has to be a real <button> rather than a click handler
                 on the <article>: that is what supplies Enter/Space, focus and
@@ -37,34 +36,35 @@ const projects = await getCollection("projects");
                 GitHub is the link inside the dialog. That makes the preview the
                 single route to a repository, so with JavaScript off the card is
                 inert and a project cannot be reached at all. Deliberate. */}
-            {/* Not positioned, so the opener's overlay still paints over it
+          {/* Not positioned, so the opener's overlay still paints over it
                 and a click on the picture opens the dialog like anywhere else. */}
-            <div class="card-media">
-              <ProjectImage repo={project.data.repo} width={640} />
-            </div>
-            <h2>
-              <button
-                type="button"
-                class="card-open"
-                data-preview={sanitizeSlug(project.id)}
-                aria-haspopup="dialog"
-                disabled
-              >
-                {project.data.title}
-              </button>
-            </h2>
-            <p>{project.data.summary}</p>
-            <ul class="tags" role="list">
-              {project.data.stack.map((tag) => (
-                <li>{tag}</li>
-              ))}
-            </ul>
-          </article>
-        ))
-      }
+          <div class="card-media">
+            <ProjectImage repo={project.data.repo} width={640} />
+          </div>
+          <h2>
+            <button
+              type="button"
+              class="card-open"
+              data-preview={sanitizeSlug(project.id)}
+              aria-haspopup="dialog"
+              disabled
+            >
+              {project.data.title}
+            </button>
+          </h2>
+          <p>{project.data.summary}</p>
+          <ul class="tags" role="list">
+            {project.data.stack.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        </article>
+      ))}
     </section>
 
-    {projects.map((project) => <ProjectPreview project={project} />)}
+    {projects.map((project) => (
+      <ProjectPreview project={project} />
+    ))}
   </main>
 </Layout>
 
