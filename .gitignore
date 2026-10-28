@@ -39,3 +39,6 @@ pnpm-debug.log*
 
 # Learning
 /learning-notes/
+
+# Claude Code (per-user)
+.claude/settings.local.json

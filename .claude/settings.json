@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(export PATH=*)",
+      "Bash(pnpm check)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm format)",
+      "Bash(pnpm build)",
+      "Bash(pnpm build:deploy)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm exec vitest *)",
+      "Bash(pnpm exec playwright *)",
+      "Bash(pnpm exec eslint *)",
+      "Bash(pnpm exec prettier *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)"
+    ],
+    "ask": ["Bash(git push*)", "Bash(pnpm add *)", "Bash(pnpm remove *)"],
+    "deny": ["Bash(pnpm add *typescript*)", "Bash(npm install*)", "Bash(npm i *)", "Bash(yarn *)"]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PATH=\"$HOME/Binaries/node:$PATH\" node .claude/hooks/format.mjs"
+          }
+        ]
+      }
+    ]
+  }
+}
