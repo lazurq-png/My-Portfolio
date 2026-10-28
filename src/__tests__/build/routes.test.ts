@@ -21,14 +21,10 @@ describe("generated blog routes", () => {
   let routeDirs: string[];
 
   beforeAll(async () => {
-    postFiles = (await readdir("src/content/blog")).filter((name) =>
-      /\.mdx?$/.test(name),
-    );
+    postFiles = (await readdir("src/content/blog")).filter((name) => /\.mdx?$/.test(name));
 
     const entries = await readdir("dist/blog", { withFileTypes: true }).catch(() => {
-      throw new Error(
-        "dist/blog is missing. Run `pnpm build` before `pnpm test:build`.",
-      );
+      throw new Error("dist/blog is missing. Run `pnpm build` before `pnpm test:build`.");
     });
 
     routeDirs = entries.filter((entry) => entry.isDirectory()).map((e) => e.name);

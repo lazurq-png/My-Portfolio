@@ -74,6 +74,10 @@ jobs:
       - name: Run astro check
         run: pnpm check
 
+      # ESLint (incl. a11y rules for .astro templates) + Prettier formatting check.
+      - name: Lint
+        run: pnpm lint
+
   build:
     name: Build
     runs-on: ubuntu-latest

@@ -21,9 +21,7 @@ describe("dist/_headers", () => {
     try {
       contents = await readFile("dist/_headers", "utf8");
     } catch {
-      throw new Error(
-        "dist/_headers is missing. Run `pnpm build` before `pnpm test:build`.",
-      );
+      throw new Error("dist/_headers is missing. Run `pnpm build` before `pnpm test:build`.");
     }
     lines = contents.split("\n");
   });
@@ -47,9 +45,7 @@ describe("dist/_headers", () => {
   });
 
   test("keeps the CSP a strict allowlist", () => {
-    const csp = lines.find((line) =>
-      line.startsWith("  Content-Security-Policy:"),
-    );
+    const csp = lines.find((line) => line.startsWith("  Content-Security-Policy:"));
 
     // The four directives ADR 0006 calls the point of the policy: anything new
     // and external has to break at runtime until the policy is widened on purpose.
@@ -60,9 +56,7 @@ describe("dist/_headers", () => {
   });
 
   test("allows only the external origins the site actually uses", () => {
-    const csp = lines.find((line) =>
-      line.startsWith("  Content-Security-Policy:"),
-    );
+    const csp = lines.find((line) => line.startsWith("  Content-Security-Policy:"));
 
     expect(csp).toContain("script-src 'self';");
     expect(csp).toContain("img-src 'self';");

@@ -41,26 +41,29 @@ const skills = [
       <h1>{name}</h1>
       <p class="role">{role}</p>
       <div class="bio">
-        {bio.map((paragraph) => <p>{paragraph}</p>)}
+        {bio.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
       </div>
-      <p class="status"><span class="dot"></span>{status}</p>
+      <p class="status">
+        <span class="dot"></span>
+        {status}
+      </p>
     </section>
 
     <section class="info-card" aria-label="Technology stack">
       <p class="section-label">Languages / Skills</p>
       <ul class="stack" role="list">
-        {
-          skills.map((skill) => (
-            <li class="stack-item">
-              <Icon
-                name={skill.name}
-                class={skill.plate ? "badge badge-plate" : "badge"}
-                title={skill.label}
-              />
-              <span class="stack-label">{skill.label}</span>
-            </li>
-          ))
-        }
+        {skills.map((skill) => (
+          <li class="stack-item">
+            <Icon
+              name={skill.name}
+              class={skill.plate ? "badge badge-plate" : "badge"}
+              title={skill.label}
+            />
+            <span class="stack-label">{skill.label}</span>
+          </li>
+        ))}
       </ul>
     </section>
   </main>

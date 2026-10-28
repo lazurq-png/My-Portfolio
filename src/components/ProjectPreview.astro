@@ -26,8 +26,7 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { repo, title, summary, stack, link, language, topics, stars, pushedAt } =
-  project.data;
+const { repo, title, summary, stack, link, language, topics, stars, pushedAt } = project.data;
 
 // sanitizeSlug turns `owner/name` into a DOM-safe `owner-name`. Reused rather
 // than rewritten so there is still one set of slug rules in the codebase.
@@ -63,45 +62,40 @@ const stats = [
       <p class="preview__summary">{summary}</p>
 
       <ul class="tags" role="list">
-        {stack.map((tag) => <li>{tag}</li>)}
+        {stack.map((tag) => (
+          <li>{tag}</li>
+        ))}
       </ul>
 
-      {
-        stats.length > 0 && (
-          <dl class="preview__stats">
-            {stats.map((stat) => (
-              <div class="preview__stat">
-                <dt>{stat.label}</dt>
-                <dd>{stat.value}</dd>
-              </div>
-            ))}
-          </dl>
-        )
-      }
+      {stats.length > 0 && (
+        <dl class="preview__stats">
+          {stats.map((stat) => (
+            <div class="preview__stat">
+              <dt>{stat.label}</dt>
+              <dd>{stat.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
 
-      {
-        topics.length > 0 && (
-          <ul class="tags tags--muted" role="list" aria-label="GitHub topics">
-            {topics.slice(0, 6).map((topic) => (
-              <li>{topic}</li>
-            ))}
-          </ul>
-        )
-      }
+      {topics.length > 0 && (
+        <ul class="tags tags--muted" role="list" aria-label="GitHub topics">
+          {topics.slice(0, 6).map((topic) => (
+            <li>{topic}</li>
+          ))}
+        </ul>
+      )}
 
       <footer class="preview__actions">
-        <a
-          class="preview__link"
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a class="preview__link" href={link} target="_blank" rel="noopener noreferrer">
           View on GitHub &rarr;
         </a>
         {/* method="dialog" closes the dialog with no JavaScript at all, so the
             widget is never a trap once it is open. */}
         <form method="dialog">
-          <button type="submit" class="preview__close">Close</button>
+          <button type="submit" class="preview__close">
+            Close
+          </button>
         </form>
       </footer>
     </div>

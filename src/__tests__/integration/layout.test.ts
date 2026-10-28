@@ -26,14 +26,10 @@ const render = (props: Record<string, unknown>, path = "/") =>
 const attr = (html: string, selector: RegExp) => html.match(selector)?.[1];
 
 const title = (html: string) => attr(html, /<title>([^<]*)<\/title>/);
-const description = (html: string) =>
-  attr(html, /<meta name="description" content="([^"]*)"/);
-const canonical = (html: string) =>
-  attr(html, /<link rel="canonical" href="([^"]*)"/);
-const ogType = (html: string) =>
-  attr(html, /<meta property="og:type" content="([^"]*)"/);
-const ogUrl = (html: string) =>
-  attr(html, /<meta property="og:url" content="([^"]*)"/);
+const description = (html: string) => attr(html, /<meta name="description" content="([^"]*)"/);
+const canonical = (html: string) => attr(html, /<link rel="canonical" href="([^"]*)"/);
+const ogType = (html: string) => attr(html, /<meta property="og:type" content="([^"]*)"/);
+const ogUrl = (html: string) => attr(html, /<meta property="og:url" content="([^"]*)"/);
 
 describe("Layout with no props", () => {
   test("falls back to the site-wide title and description", async () => {
@@ -75,9 +71,7 @@ describe("Layout with props", () => {
     const html = await render(props);
 
     expect(html).toContain(`<meta property="og:title" content="${props.title}">`);
-    expect(html).toContain(
-      `<meta property="og:description" content="${props.description}">`,
-    );
+    expect(html).toContain(`<meta property="og:description" content="${props.description}">`);
   });
 
   test("keeps og:url and canonical in step", async () => {

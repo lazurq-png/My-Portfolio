@@ -32,10 +32,7 @@
     if (!toggle) return;
 
     const syncPressed = () =>
-      toggle.setAttribute(
-        "aria-pressed",
-        String(root.getAttribute("data-theme") === "light"),
-      );
+      toggle.setAttribute("aria-pressed", String(root.getAttribute("data-theme") === "light"));
 
     syncPressed();
 

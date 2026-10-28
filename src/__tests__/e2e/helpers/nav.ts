@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Page } from "@playwright/test";
 
 /**
  * Which nav layout is showing is decided by a media query in an external
@@ -6,7 +6,7 @@ import { expect, type Page } from '@playwright/test';
  * before this resolves and every viewport looks like the unstyled one.
  */
 export async function navReady(page: Page) {
-  await page.waitForLoadState('load');
+  await page.waitForLoadState("load");
 }
 
 /**
@@ -17,12 +17,12 @@ export async function navReady(page: Page) {
 export async function openNav(page: Page) {
   await navReady(page);
 
-  const toggle = page.locator('#nav-toggle');
+  const toggle = page.locator("#nav-toggle");
 
   if (!(await toggle.isVisible())) return;
 
-  if ((await toggle.getAttribute('aria-expanded')) === 'true') return;
+  if ((await toggle.getAttribute("aria-expanded")) === "true") return;
 
   await toggle.click();
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
 }

@@ -72,11 +72,9 @@ const render = () =>
     request: new Request("http://localhost/projects"),
   });
 
-const cardCount = (html: string) =>
-  [...html.matchAll(/class="post-card card"/g)].length;
+const cardCount = (html: string) => [...html.matchAll(/class="post-card card"/g)].length;
 
-const dialogIds = (html: string) =>
-  [...html.matchAll(/<dialog id="([^"]+)"/g)].map((m) => m[1]);
+const dialogIds = (html: string) => [...html.matchAll(/<dialog id="([^"]+)"/g)].map((m) => m[1]);
 
 const previewTargets = (html: string) =>
   [...html.matchAll(/data-preview="([^"]+)"/g)].map((m) => m[1]);
@@ -136,9 +134,7 @@ describe("projects page with projects", () => {
   });
 
   test("ships every card opener disabled for the no-JavaScript case", async () => {
-    const buttons = [
-      ...(await render()).matchAll(/<button[^>]*class="card-open"[^>]*>/g),
-    ];
+    const buttons = [...(await render()).matchAll(/<button[^>]*class="card-open"[^>]*>/g)];
 
     expect(buttons).toHaveLength(2);
 
@@ -161,9 +157,9 @@ describe("projects page with projects", () => {
   });
 
   test("puts the only GitHub link inside the dialog, not on the card", async () => {
-    const links = [
-      ...(await render()).matchAll(/class="preview__link" href="([^"]*)"/g),
-    ].map((m) => m[1]);
+    const links = [...(await render()).matchAll(/class="preview__link" href="([^"]*)"/g)].map(
+      (m) => m[1],
+    );
 
     expect(links).toEqual([
       "https://github.com/lazurq-png/My-Portfolio",
@@ -174,9 +170,7 @@ describe("projects page with projects", () => {
   test("renders no anchor at all inside the card grid", async () => {
     // The dialog is the only route to a repository. A link back on a card
     // would also sit under the opener's stretched overlay and be unclickable.
-    const grid = /<section class="project-grid"[\s\S]*?<\/section>/.exec(
-      await render(),
-    );
+    const grid = /<section class="project-grid"[\s\S]*?<\/section>/.exec(await render());
 
     expect(grid).not.toBeNull();
     expect(grid![0]).not.toContain("<a ");
@@ -225,10 +219,7 @@ describe("a project with an image in src/assets/projects", () => {
 
   test("shows the same image on the card as in the dialog", async () => {
     const html = await render();
-    const card = html.slice(
-      html.indexOf('class="post-card card"'),
-      html.indexOf("</article>"),
-    );
+    const card = html.slice(html.indexOf('class="post-card card"'), html.indexOf("</article>"));
 
     expect(card).toContain("Questionable-candy");
     expect(card).toContain('class="card-media"');

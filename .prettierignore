@@ -1,0 +1,21 @@
+# Markdown is never reformatted: the ADRs are immutable records (docs/adr/README.md)
+# and the blog posts are authored a line per thought, which a formatter would reflow.
+*.md
+
+# Build output and generated files
+dist/
+.astro/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+pnpm-lock.yaml
+
+# Not source code
+*.yml
+*.yaml
+*.svg
+.vscode/
+.claude/
+learning-notes/
+src/content/blog/

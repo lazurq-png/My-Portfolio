@@ -1,11 +1,11 @@
 // @ts-check
-import { writeFile } from 'node:fs/promises';
+import { writeFile } from "node:fs/promises";
 
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 
-import icon from 'astro-icon';
+import icon from "astro-icon";
 
-import { renderHeadersFile } from './src/lib/headers.ts';
+import { renderHeadersFile } from "./src/lib/headers.ts";
 
 /**
  * Writes the security policy from `src/lib/headers.ts` into `dist/_headers`,
@@ -25,10 +25,10 @@ import { renderHeadersFile } from './src/lib/headers.ts';
  */
 function securityHeaders() {
   return {
-    name: 'security-headers',
+    name: "security-headers",
     hooks: {
-      'astro:build:done': async ({ dir }) => {
-        await writeFile(new URL('_headers', dir), renderHeadersFile(), 'utf8');
+      "astro:build:done": async ({ dir }) => {
+        await writeFile(new URL("_headers", dir), renderHeadersFile(), "utf8");
       },
     },
   };

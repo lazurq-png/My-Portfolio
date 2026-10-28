@@ -20,9 +20,7 @@ const {
 // TODO: set `site` in astro.config.mjs to the deployed domain so canonical/og:url
 // become absolute URLs. Until then these stay root-relative, which is valid HTML
 // (resolved against the document URL) but weaker for crawlers.
-const canonical = Astro.site
-  ? new URL(canonicalPath, Astro.site).href
-  : canonicalPath;
+const canonical = Astro.site ? new URL(canonicalPath, Astro.site).href : canonicalPath;
 ---
 
 <!doctype html>
