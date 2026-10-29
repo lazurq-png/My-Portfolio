@@ -57,12 +57,13 @@ The directory under `src/__tests__/` decides the scope, and each scope has one c
 
 Work happens on `dev` and reaches production through a pull request into `master`.
 
-- A push to `dev` runs lint and the unit/integration tests in GitHub Actions
+- A push to `dev` runs lint, the type check and the unit/integration tests in GitHub Actions
   (`.github/workflows/ci-push.yml`).
-- A PR into `master` runs the full suite (`ci-pull.yml`): lint, unit/integration, type check,
-  build + build-output tests, and a Playwright matrix with one job per spec, limited to the specs
-  whose pages the PR touched. Mark **`e2e-gate`** and **`check`** as the required checks; a skipped
-  matrix never reports a status.
+- A PR into `master` runs the full suite (`ci-pull.yml`): lint, type check and unit/integration
+  in the **Unit tests** job, build + build-output tests, and a Playwright matrix with one job per
+  spec, limited to the specs whose pages the PR touched. The `master` ruleset requires a PR and the
+  **Unit tests**, **Build** and **E2E tests** checks ("E2E tests" is the `e2e-gate` job; a skipped
+  matrix never reports a status), so everything on `master` has passed the full suite.
 - **Cloudflare Pages deploys on every push, independently of GitHub Actions.** It runs the build
   command below, so `build:deploy` in `package.json` is production configuration: breaking it
   disables the only deploy gate. Playwright is not part of it.

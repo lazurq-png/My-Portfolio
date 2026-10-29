@@ -23,6 +23,11 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # Strict TypeScript over .ts and .astro (ADR 0012), on every dev push too:
+      # it takes seconds, and it is the same check Cloudflare's build runs.
+      - name: Type check
+        run: pnpm check
+
       # docs/overview.html must be re-stamped after an ADR changes (docs/README.md).
       - name: Docs overview in sync
         run: pnpm docs:check

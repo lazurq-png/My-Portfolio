@@ -39,20 +39,22 @@ suite as two separate jobs on pull requests into `master`. The split puts the
 expensive suite exactly at the merge gate and keeps day-to-day pushes cheap,
 which no single-workflow arrangement does as clearly.
 
-*[2026-09-04: the split by trigger stands, but `ci-pull.yml` has grown from two
-jobs to six: `unit-tests`, `check` ([0012](0012-use-typescript-strict-config.md)),
-`build` (which is also the only place a `dist/` exists, so `pnpm test:build` runs
-there — [0015](0015-add-an-integration-test-scope.md)), `changes`, `e2e-tests`
-and `e2e-gate`. `changes` resolves `.github/e2e-filters.yml` into the spec matrix;
+*[Updated 2026-10-29: the split by trigger stands. `ci-push.yml` runs lint, the
+type check, the docs check and the unit suite. `ci-pull.yml` has five jobs:
+`unit-tests` (lint, type check
+([0012](0012-use-typescript-strict-config.md)), docs check, Vitest), `build`
+(the only place a `dist/` exists, so `pnpm test:build` runs there —
+[0015](0015-add-an-integration-test-scope.md)), `changes`, `e2e-tests` and
+`e2e-gate`. `changes` resolves `.github/e2e-filters.yml` into the spec matrix;
 `e2e-gate` exists because a skipped matrix never reports a status, so it — not
-`e2e-tests` — is the job to require on `master`, alongside `check`. The workflow
-also sets `concurrency` with `cancel-in-progress`, so a force-push stops burning
-the previous run's legs.]*
+`e2e-tests` — is the job to require on `master`. The workflow also sets
+`concurrency` with `cancel-in-progress`, so a force-push stops burning the
+previous run's legs.]*
 
 *[2026-09-11: a pull request whose every changed file is docs or blog
 (`docs/**`, `src/content/blog/**`, root `*.md`) now skips the e2e matrix. A
 second path filter in `changes` sets a `code` output, and `e2e-tests` requires
-it. Unit and integration tests, `check` and `build` still run on every pull
+it. `unit-tests` and `build` still run on every pull
 request — `build` and `pnpm test:build` are what catch a post with bad
 frontmatter or a slug clash. `e2e-gate` already counts a skipped matrix as a
 pass, so the required check still reports. `ci-push.yml` is unchanged.]*
@@ -114,9 +116,16 @@ browser from consuming the runner budget.
 
 *[2026-09-04: the timeout is now `timeout-minutes: 15`, per matrix leg rather
 than for the suite as a whole — a tighter budget, because each leg runs one spec.
-And "green" needs qualifying: the checks to require on `master` are `e2e-gate`
-and `check`. Requiring `e2e-tests` directly would leave a pull request pending
-forever whenever the path filter selects no specs.]*
+And "green" needs qualifying: the checks to require on `master` are
+`Unit tests`, `Build` and `E2E tests` (the `e2e-gate` job). Requiring
+`e2e-tests` directly would leave a pull request pending forever whenever the path
+filter selects no specs.]*
+
+*[2026-10-29: the `master` ruleset requires a pull request and exactly those
+three checks, so every commit Cloudflare publishes from `master` has passed the
+full suite, browser tests included. That is why the deploy itself is not gated
+on these workflows: Cloudflare's build re-runs everything except Playwright, and
+the ruleset has already covered Playwright.]*
 
 ## Pros and Cons of the Options
 

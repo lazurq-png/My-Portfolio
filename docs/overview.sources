@@ -11,8 +11,8 @@ fe801e5a621406a6  adr/0007-centralise-sanitization-in-lib.md
 adb5cc5c46e4386e  adr/0008-use-vitest-for-unit-tests.md
 3463a443d617e0b3  adr/0009-use-playwright-for-e2e-tests.md
 ecb1f13f06b1c8cc  adr/0010-separate-unit-and-e2e-test-scopes.md
-8150e4226e30261e  adr/0011-run-ci-on-github-actions.md
-fef24e65a1a3d943  adr/0012-use-typescript-strict-config.md
+2f397b0447bc11aa  adr/0011-run-ci-on-github-actions.md
+bfe2fb4be75dbc12  adr/0012-use-typescript-strict-config.md
 35575b53985f1f52  adr/0013-render-icons-with-astro-icon.md
 846238ecf8bc3ae0  adr/0014-emit-security-headers-as-a-generated-headers-file.md
 f7f3a4c7eb60b991  adr/0015-add-an-integration-test-scope.md
