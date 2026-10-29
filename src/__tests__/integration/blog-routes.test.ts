@@ -40,8 +40,8 @@ describe("blog post getStaticPaths", () => {
 
     const [route] = await getStaticPaths();
 
-    expect(route.props.post).toBe(entry);
-    expect(route.props.slug).toBe("a-post");
+    expect(route?.props.post).toBe(entry);
+    expect(route?.props.slug).toBe("a-post");
   });
 
   test("sanitizes an id that would otherwise escape the blog directory", async () => {
@@ -49,7 +49,7 @@ describe("blog post getStaticPaths", () => {
 
     const [route] = await getStaticPaths();
 
-    expect(route.params.slug).toBe("etc-passwd");
+    expect(route?.params.slug).toBe("etc-passwd");
   });
 
   test("renders an empty collection as no routes at all", async () => {

@@ -24,7 +24,9 @@ const render = (path: string) =>
 
 /** The href of every link carrying aria-current="page". */
 function currentLinks(html: string): string[] {
-  return [...html.matchAll(/<a href="([^"]*)"[^>]*aria-current="page"/g)].map((match) => match[1]);
+  return [...html.matchAll(/<a href="([^"]*)"[^>]*aria-current="page"/g)].flatMap(
+    (match) => match[1] ?? [],
+  );
 }
 
 describe("SiteNav active link", () => {
