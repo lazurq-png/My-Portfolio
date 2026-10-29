@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=22.23.4"
   },
   "scripts": {
     "dev": "astro dev",
@@ -16,6 +16,8 @@
     "check": "astro check",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write . && eslint --fix .",
+    "docs:check": "node scripts/docs-guard.mjs",
+    "docs:stamp": "node scripts/docs-guard.mjs --stamp",
     "build:deploy": "pnpm lint && pnpm check && pnpm test:unit && pnpm build && pnpm test:build"
   },
   "dependencies": {

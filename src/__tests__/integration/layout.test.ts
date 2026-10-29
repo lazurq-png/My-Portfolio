@@ -111,6 +111,25 @@ describe("Layout absolute URLs", () => {
   });
 });
 
+describe("Layout with noindex", () => {
+  test("asks crawlers not to index the page", async () => {
+    expect(await render({ noindex: true }, "/typo/")).toContain(
+      '<meta name="robots" content="noindex">',
+    );
+  });
+
+  test("emits no canonical or og:url, which would name the mistyped path", async () => {
+    const html = await render({ noindex: true }, "/typo/");
+
+    expect(canonical(html)).toBeUndefined();
+    expect(ogUrl(html)).toBeUndefined();
+  });
+
+  test("leaves indexable pages alone", async () => {
+    expect(await render({})).not.toContain('name="robots"');
+  });
+});
+
 describe("Layout document shell", () => {
   test("renders slotted content inside the app shell", async () => {
     const html = await container.renderToString(Layout, {

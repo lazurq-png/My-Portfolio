@@ -176,6 +176,20 @@ describe("projects page with projects", () => {
     expect(grid![0]).not.toContain("<a ");
   });
 
+  test("links every repository in a <noscript> list, for visitors without JavaScript", async () => {
+    // With JavaScript off the openers stay disabled, so this list is the only way out.
+    // SiteNav has a <noscript> of its own, so anchor on this list's class.
+    const fallback = /<noscript>\s*<section class="noscript-links"[\s\S]*?<\/noscript>/.exec(
+      await render(),
+    );
+
+    expect(fallback).not.toBeNull();
+    expect([...fallback![0].matchAll(/<a href="([^"]*)"/g)].map((m) => m[1])).toEqual([
+      "https://github.com/lazurq-png/My-Portfolio",
+      "https://github.com/lazurq-png/next.js-dashboard",
+    ]);
+  });
+
   test("opens external links safely", async () => {
     const html = await render();
 

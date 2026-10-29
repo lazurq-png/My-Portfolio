@@ -1,0 +1,6 @@
+# Formatting-only commits. GitHub's blame view skips these automatically; locally run
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+# once per clone.
+
+# chore: add ESLint and Prettier, format the code once
+8ecccdc90ce141e9eab05798f224a2e86822dbb7

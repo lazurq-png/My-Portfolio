@@ -51,8 +51,7 @@ here are actively trying to avoid.
 ### Consequences
 
 * Good, because `dist/` ships no framework runtime at all, so the CSP's
-  `script-src` can stay narrow — `'self'` plus `https://cdn.astro.build` and
-  nothing else.
+  `script-src` can stay narrow: `'self'` and nothing else.
 * Good, because styles are colocated with the markup they style and scoped to it.
   Deleting a component deletes its CSS, so there is no orphaned stylesheet
   accumulating over time.

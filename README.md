@@ -14,7 +14,8 @@ no UI framework, hosted on Cloudflare Pages.
 
 ## Getting started
 
-Prerequisites: **Node.js ≥ 22.12** and **pnpm** (the exact version is pinned in `package.json`'s
+Prerequisites: **Node.js**, the version in `.node-version` (currently 24; Astro refuses to start
+below 22.23.4) and **pnpm** (the exact version is pinned in `package.json`'s
 `packageManager`; `corepack enable` picks it up).
 
 ```bash
@@ -56,12 +57,13 @@ The directory under `src/__tests__/` decides the scope, and each scope has one c
 
 Work happens on `dev` and reaches production through a pull request into `master`.
 
-- A push to `dev` runs lint and the unit/integration tests in GitHub Actions
+- A push to `dev` runs lint, the type check and the unit/integration tests in GitHub Actions
   (`.github/workflows/ci-push.yml`).
-- A PR into `master` runs the full suite (`ci-pull.yml`): lint, unit/integration, type check,
-  build + build-output tests, and a Playwright matrix with one job per spec, limited to the specs
-  whose pages the PR touched. Mark **`e2e-gate`** and **`check`** as the required checks; a skipped
-  matrix never reports a status.
+- A PR into `master` runs the full suite (`ci-pull.yml`): lint, type check and unit/integration
+  in the **Unit tests** job, build + build-output tests, and a Playwright matrix with one job per
+  spec, limited to the specs whose pages the PR touched. The `master` ruleset requires a PR and the
+  **Unit tests**, **Build** and **E2E tests** checks ("E2E tests" is the `e2e-gate` job; a skipped
+  matrix never reports a status), so everything on `master` has passed the full suite.
 - **Cloudflare Pages deploys on every push, independently of GitHub Actions.** It runs the build
   command below, so `build:deploy` in `package.json` is production configuration: breaking it
   disables the only deploy gate. Playwright is not part of it.
@@ -76,19 +78,19 @@ These live only in the Cloudflare dashboard, so check them there if a deploy mis
 | Production branch | `master` (`dev` publishes a preview) |
 | Build command | `pnpm run build:deploy` |
 | Build output directory | `dist` |
-| Node.js version | 22.16.0 (CI uses Node 24, so the unit suite effectively runs on both) |
+| Node.js version | Not set here: Pages reads `.node-version` from the repo, as CI does. A `NODE_VERSION` variable in the dashboard would override it, so leave it unset |
 | `GITHUB_TOKEN` (optional) | Raises GitHub's API limit from 60 to 5000 requests/hour for the projects page; the build works without it |
 
 ## Project layout
 
 ```
 src/
-  pages/        index, projects, blog/index, blog/[...slug]
+  pages/        index, projects, blog/index, blog/[...slug], 404
   layouts/      Layout.astro: head tags, design tokens, shared primitives
   components/   SiteNav, ProjectImage, ProjectPreview
   content/blog/ Markdown posts
   content.config.ts  blog collection + the GitHub-backed projects collection
-  lib/          github.ts, headers.ts, projectImages.ts, sanitize.ts
+  lib/          dates.ts, github.ts, headers.ts, projectImages.ts, sanitize.ts
   assets/projects/   one image per project, named exactly after the repo
 public/         same-origin scripts (nav.js, projects.js, theme-init.js)
 docs/adr/       Architecture Decision Records
@@ -106,9 +108,11 @@ Adding things:
 
 ## Decisions
 
-Why the site looks the way it does is recorded in [`docs/adr/`](docs/adr/README.md): Astro with no
-UI framework, a security-header policy generated into `dist/_headers`, GitHub data fetched at build
-time, a native `<dialog>` for project previews, self-hosted preview images, and more.
+Why the site looks the way it does: **[`docs/overview.html`](docs/overview.html)** is a short,
+plain-language summary of every decision (open it in a browser; each card opens its full record).
+The records themselves are in [`docs/adr/`](docs/adr/), indexed for agents in
+[`docs/README.md`](docs/README.md). After changing an ADR, update both and run `pnpm docs:stamp`;
+`pnpm docs:check` fails CI until the page is current.
 
 ## Working with Claude Code
 

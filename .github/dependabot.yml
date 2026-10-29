@@ -4,11 +4,22 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # TypeScript 7 drops the programmatic API `astro check` is built on (see CLAUDE.md).
+      # Lift this once withastro/roadmap#1321 lands.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
     groups:
+      # A PR of its own, because it is the one bump that needs a manual edit: the e2e
+      # container tag in ci-pull.yml must match, and Dependabot does not update
+      # `container:` images. integration/playwrightVersion.test.ts fails until it does.
+      playwright:
+        patterns: ["@playwright/test"]
       minor-and-patch:
         update-types: [minor, patch]
   - package-ecosystem: github-actions
-    directory: /
+    # The composite action pins actions too, and "/" alone only covers the workflows.
+    directories: ["/", "/.github/actions/*"]
     schedule:
       interval: weekly
     groups:

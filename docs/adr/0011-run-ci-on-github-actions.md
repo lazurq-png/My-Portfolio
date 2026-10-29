@@ -39,20 +39,22 @@ suite as two separate jobs on pull requests into `master`. The split puts the
 expensive suite exactly at the merge gate and keeps day-to-day pushes cheap,
 which no single-workflow arrangement does as clearly.
 
-*[2026-09-04: the split by trigger stands, but `ci-pull.yml` has grown from two
-jobs to six: `unit-tests`, `check` ([0012](0012-use-typescript-strict-config.md)),
-`build` (which is also the only place a `dist/` exists, so `pnpm test:build` runs
-there — [0015](0015-add-an-integration-test-scope.md)), `changes`, `e2e-tests`
-and `e2e-gate`. `changes` resolves `.github/e2e-filters.yml` into the spec matrix;
+*[Updated 2026-10-29: the split by trigger stands. `ci-push.yml` runs lint, the
+type check, the docs check and the unit suite. `ci-pull.yml` has five jobs:
+`unit-tests` (lint, type check
+([0012](0012-use-typescript-strict-config.md)), docs check, Vitest), `build`
+(the only place a `dist/` exists, so `pnpm test:build` runs there —
+[0015](0015-add-an-integration-test-scope.md)), `changes`, `e2e-tests` and
+`e2e-gate`. `changes` resolves `.github/e2e-filters.yml` into the spec matrix;
 `e2e-gate` exists because a skipped matrix never reports a status, so it — not
-`e2e-tests` — is the job to require on `master`, alongside `check`. The workflow
-also sets `concurrency` with `cancel-in-progress`, so a force-push stops burning
-the previous run's legs.]*
+`e2e-tests` — is the job to require on `master`. The workflow also sets
+`concurrency` with `cancel-in-progress`, so a force-push stops burning the
+previous run's legs.]*
 
 *[2026-09-11: a pull request whose every changed file is docs or blog
 (`docs/**`, `src/content/blog/**`, root `*.md`) now skips the e2e matrix. A
 second path filter in `changes` sets a `code` output, and `e2e-tests` requires
-it. Unit and integration tests, `check` and `build` still run on every pull
+it. `unit-tests` and `build` still run on every pull
 request — `build` and `pnpm test:build` are what catch a post with bad
 frontmatter or a slug clash. `e2e-gate` already counts a skipped matrix as a
 pass, so the required check still reports. `ci-push.yml` is unchanged.]*
@@ -73,16 +75,11 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   no longer diagnosable from the artifact. The `github` reporter is now also
   enabled under CI, so failures surface as inline pull-request annotations
   without downloading anything.]*
-* Bad, because the checkout / pnpm / Node / install block is duplicated in every
-  job that needs it — five copies across the two files. Changing the Node version
-  or the pnpm major means five edits, and missing one produces an inconsistency
-  that is easy not to notice.
-* Bad, because CI runs Node 24 while Cloudflare builds the deployed bundle on
-  Node 22.16.0 ([0003](0003-host-on-cloudflare-with-wrangler.md)). Every test in
-  these workflows therefore runs on a version that never ships, and the version
-  that ships is never tested. The `engines.node >= 22.12.0` floor is exercised in
-  production and nowhere else — the reverse of the usual mistake, and worse,
-  because the untested version is the one users get.
+* Neutral, because the pnpm / Node / install steps live once, in the composite
+  action `.github/actions/setup`, and every job calls it after its checkout.
+* Neutral, because CI and Cloudflare's build
+  ([0003](0003-host-on-cloudflare-with-wrangler.md)) both take Node.js from
+  `.node-version`, so the tests run on the version that ships.
 * Bad, because getting WebKit working headless took roughly a dozen commits on a
   single day and the result is fragile: it needs
   `playwright install --with-deps`, a *second* explicit
@@ -91,7 +88,7 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   workflow.
   <br>*[2026-09-04: this was already out of date when written — `9c60997`
   replaced all of it on 2026-08-31 with the
-  `mcr.microsoft.com/playwright:v1.62.1-noble` container, which ships the
+  official `mcr.microsoft.com/playwright` container, which ships the
   browsers and their system dependencies. No `playwright install` step and no
   `xvfb-run` remain. Two container options carry the residual fragility and are
   commented in the workflow: `--user 1001`, because container jobs run as root
@@ -106,8 +103,8 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   green. What protects the deploy is Cloudflare's build command running
   `pnpm run build:deploy`, which re-runs the type check and the unit suite in its
   own environment — not any status reported from here.
-* Bad, because that arrangement makes the unit suite run twice per push, on two
-  different Node versions, with no mechanism to notice if the results diverge.
+* Bad, because that arrangement makes the unit suite run twice per push (on the
+  same Node.js version, both reading `.node-version`).
   Playwright still runs only here, so the e2e suite gates the merge into `master`
   but never gates a deploy.
 
@@ -119,9 +116,16 @@ browser from consuming the runner budget.
 
 *[2026-09-04: the timeout is now `timeout-minutes: 15`, per matrix leg rather
 than for the suite as a whole — a tighter budget, because each leg runs one spec.
-And "green" needs qualifying: the checks to require on `master` are `e2e-gate`
-and `check`. Requiring `e2e-tests` directly would leave a pull request pending
-forever whenever the path filter selects no specs.]*
+And "green" needs qualifying: the checks to require on `master` are
+`Unit tests`, `Build` and `E2E tests` (the `e2e-gate` job). Requiring
+`e2e-tests` directly would leave a pull request pending forever whenever the path
+filter selects no specs.]*
+
+*[2026-10-29: the `master` ruleset requires a pull request and exactly those
+three checks, so every commit Cloudflare publishes from `master` has passed the
+full suite, browser tests included. That is why the deploy itself is not gated
+on these workflows: Cloudflare's build re-runs everything except Playwright, and
+the ruleset has already covered Playwright.]*
 
 ## Pros and Cons of the Options
 
@@ -132,8 +136,7 @@ forever whenever the path filter selects no specs.]*
 * Good, because the two files are individually short and readable.
 * Neutral, because "which workflow runs when" is one more thing to know, though
   the filenames make it obvious.
-* Bad, because the shared setup steps are duplicated with no composite action to
-  factor them out.
+* Neutral, because the shared setup steps are factored into one composite action.
 
 ### One workflow on both triggers
 
@@ -169,9 +172,8 @@ Three follow-ups:
    this workflow behind the existing jobs, and turning the Cloudflare Git
    integration off, would make one suite run instead of two and let the e2e job
    gate the deploy. The cost is losing per-branch previews.
-2. Make CI test the Node version that actually ships. Cloudflare builds on Node
-   22.16.0, so the fix is to move these workflows to Node 22 or pin Cloudflare's
-   build to 24 — not, as this record first suggested, to raise `engines` to match
-   Node 24.
-3. Factor the shared checkout/pnpm/Node/install block into a composite action to
-   remove the duplication, now five copies across the two files.
+2. Make CI test the Node.js version that actually ships. *[Done 2026-10-29: both
+   read `.node-version`.]*
+3. Factor the shared pnpm/Node/install block into a composite action. *[Done
+   2026-10-29: `.github/actions/setup`. Checkout stays in each job, because the
+   action can only be found once the repository is checked out.]*

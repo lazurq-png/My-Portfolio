@@ -1,16 +1,24 @@
 # CLAUDE.md
 
 Static Astro portfolio on Cloudflare Pages. Commands, test scopes, deploys and layout: [README.md](README.md).
-Reasons: [docs/adr/](docs/adr/README.md). This file is only what is easy to get wrong.
+Reasons: [docs/README.md](docs/README.md), one row per ADR; open a full ADR only when the task touches it.
+`docs/overview.html` is the human version: don't read it for facts. This file is only what is easy to get wrong.
 
 Use **pnpm**. Work on `dev`; production is a PR into `master`. Task workflows: `.claude/skills/`.
 
 ## Gotchas
 
-- `typescript` is pinned `^6.0.3`: TS 7 breaks `astro check`, and a bare `pnpm add -D typescript` reinstates it.
+- `typescript` is held on 6.x for now: TS 7 breaks `astro check`, and a bare `pnpm add -D typescript` installs 7.
+  Astro tracks support in withastro/roadmap#1321.
+- Version changes (Node, TypeScript, any package): with no risk and no reason not to, just upgrade and
+  say so. When there is any risk or trade-off (breaking changes, a hold-back, tooling support), ask first
+  with the pros and cons of upgrading vs staying put. Never hold back silently.
 - `tsconfig.json` has `include: ["**/*"]`: add any new gitignored build dir to its `exclude`.
 - `vitest.config.ts` uses `getViteConfig` (not `defineConfig`) so `.astro` and `astro:content` resolve. Leave it.
-- Prettier ignores `*.md` on purpose: ADRs are immutable, posts are one line per thought. Never reformat them.
+- Prettier ignores `*.md` on purpose: ADRs and posts are hand-formatted (posts one line per thought).
+- ADRs: fix a wrong or stale one in place; they must never block work. Only a night run leaves them alone.
+  No Node or package versions in ADRs. After changing one, update its `docs/README.md` row and its
+  `docs/overview.html` card, then `pnpm docs:stamp` (`pnpm docs:check` fails CI otherwise).
 - Astro 7 detaches `astro dev` under an agent; set `ASTRO_DEV_BACKGROUND=1` to keep a server in the foreground.
 - The `projects` loader fetches GitHub at build time and is fail-soft (`build:deploy` is the deploy gate).
   Keep `html_url` required in `GITHUB_REPO_SCHEMA` and `store.clear()` in `load`. Delete `.astro/` if a

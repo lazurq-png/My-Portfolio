@@ -1,0 +1,25 @@
+name: Setup
+description: pnpm, Node.js and the project's dependencies -- the steps every CI job needs after checkout.
+
+# One copy of the setup instead of one per job. Checkout stays in each job:
+# GitHub can only find this file once the repository is checked out.
+runs:
+  using: composite
+  steps:
+    # No `version` input: the pnpm version comes from the `packageManager`
+    # field in package.json. Setting both makes action-setup fail the step
+    # whenever they disagree.
+    - name: Setup pnpm
+      uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+
+    # .node-version is also what Cloudflare Pages builds with, so CI tests the
+    # Node.js version that ships.
+    - name: Setup Node.js
+      uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+      with:
+        node-version-file: .node-version
+        cache: pnpm
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile

@@ -168,6 +168,26 @@ test.describe("Projects Page", () => {
     await expect(dialog).toBeHidden();
   });
 
+  test.describe("with JavaScript off", () => {
+    test.use({ javaScriptEnabled: false });
+
+    test("the cards stay inert and a plain link list leads to GitHub", async ({ page }) => {
+      await expect(page.locator(".card-open").first()).toBeDisabled();
+
+      const fallback = page.getByRole("region", { name: "Project repositories" });
+      await expect(fallback).toBeVisible();
+      await expect(fallback.getByRole("link", { name: "Portfolio Site" })).toHaveAttribute(
+        "href",
+        "https://github.com/lazurq-png/My-Portfolio",
+      );
+    });
+  });
+
+  test("the no-JavaScript link list stays hidden when scripts run", async ({ page }) => {
+    await expect(page.locator(".card-open").first()).toBeEnabled();
+    await expect(page.getByRole("region", { name: "Project repositories" })).toHaveCount(0);
+  });
+
   test("projects page navigation back to homepage works", async ({ page }) => {
     await openNav(page);
 

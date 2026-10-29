@@ -32,10 +32,10 @@ const projects = await getCollection("projects");
                 on the <article>: that is what supplies Enter/Space, focus and
                 the "button" role for free.
 
-                The card carries no link of its own -- the only way out to
-                GitHub is the link inside the dialog. That makes the preview the
-                single route to a repository, so with JavaScript off the card is
-                inert and a project cannot be reached at all. Deliberate. */}
+                The card carries no link of its own -- with JavaScript on, the
+                only way out to GitHub is the link inside the dialog. With it off
+                the card is inert, and the <noscript> list below the grid is the
+                way out instead. */}
           {/* Not positioned, so the opener's overlay still paints over it
                 and a click on the picture opens the dialog like anywhere else. */}
           <div class="card-media">
@@ -61,6 +61,24 @@ const projects = await getCollection("projects");
         </article>
       ))}
     </section>
+
+    {/* With JavaScript off the openers stay disabled and the dialogs never open,
+          so this is the only way to reach a repository. Outside the grid on
+          purpose: a link inside a card would sit under the opener's overlay. */}
+    <noscript>
+      <section class="noscript-links" aria-label="Project repositories">
+        <h2>On GitHub</h2>
+        <ul role="list">
+          {projects.map((project) => (
+            <li>
+              <a href={project.data.link} target="_blank" rel="noopener noreferrer">
+                {project.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </noscript>
 
     {projects.map((project) => (
       <ProjectPreview project={project} />
@@ -154,5 +172,22 @@ const projects = await getCollection("projects");
 
   .project-grid .tags {
     margin-block-start: var(--space-s);
+  }
+
+  .noscript-links {
+    margin-block-start: var(--space-m);
+  }
+
+  .noscript-links ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin: var(--space-s) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .noscript-links a {
+    color: var(--accent);
   }
 </style>

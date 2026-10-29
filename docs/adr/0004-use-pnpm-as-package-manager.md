@@ -34,9 +34,7 @@ package manager decides which one. Which manager?
 Chosen option: "pnpm". Beyond the content-addressed store and its speed, pnpm is
 the only one of the three that makes dependency build scripts an explicit
 allowlist. `pnpm-workspace.yaml` uses that: `allowBuilds` permits build scripts
-for `esbuild`, `sharp` and `workerd` and nothing else, and
-`minimumReleaseAgeExclude` carries a single deliberate exemption for
-`astro@7.2.2`.
+for `esbuild` and `sharp` and nothing else.
 
 ### Consequences
 
@@ -54,10 +52,6 @@ for `esbuild`, `sharp` and `workerd` and nothing else, and
   has to be invoked from a binaries directory, since there are no rights to
   change `PATH` system-wide. This is documented in the global `CLAUDE.md` but it
   is real, recurring friction.
-* Bad, because `minimumReleaseAgeExclude: astro@7.2.2` is a deliberate hole in
-  the release-age quarantine that protects against compromised fresh releases.
-  It should be removed once that specific version is no longer needed; nothing
-  currently prompts that cleanup.
 * Neutral, because any contributor would need pnpm installed. `npm install`
   against this repository would produce a divergent tree and an uncommitted
   second lockfile.
@@ -66,7 +60,7 @@ for `esbuild`, `sharp` and `workerd` and nothing else, and
 
 Only `pnpm-lock.yaml` is committed; the presence of a `package-lock.json` or
 `yarn.lock` means the decision has been violated. Both workflows in
-`.github/workflows/` use `pnpm/action-setup@v4` and install with
+`.github/workflows/` use `pnpm/action-setup` and install with
 `--frozen-lockfile`, so a lockfile that drifts from `package.json` fails CI.
 
 ## Pros and Cons of the Options
@@ -108,8 +102,4 @@ Only `pnpm-lock.yaml` is committed; the presence of a `package-lock.json` or
 ## More Information
 
 Configuration lives in [`pnpm-workspace.yaml`](../../pnpm-workspace.yaml) and
-[`package.json`](../../package.json). Note that `package.json` declares
-`engines.node >= 22.12.0` while CI runs Node 24 — see
-[0011](0011-run-ci-on-github-actions.md).
-
-Revisit `minimumReleaseAgeExclude` whenever the Astro version is next bumped.
+[`package.json`](../../package.json).
