@@ -96,15 +96,15 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   crashes on Docker's 64MB `/dev/shm`. The new maintenance burden is that the
   image tag must track `@playwright/test` in `pnpm-lock.yaml`.]*
 * Neutral, because there is no deploy job and deployment does not go through these
-  workflows at all. Cloudflare Pages builds from its own clone on every push
-  ([0003](0003-host-on-cloudflare-pages.md)), so the relationship runs the
+  workflows at all. Cloudflare Pages builds from its own clone on every push to
+  `master` ([0003](0003-host-on-cloudflare-pages.md)), so the relationship runs the
   opposite way from what this record first assumed: the live site is always
   current with its branch, and a deployed site does not imply these workflows went
   green. What protects the deploy is Cloudflare's build command running
   `pnpm run build:deploy`, which re-runs the type check and the unit suite in its
   own environment — not any status reported from here.
-* Bad, because that arrangement makes the unit suite run twice per push (on the
-  same Node.js version, both reading `.node-version`).
+* Bad, because that arrangement runs the unit suite again after a merge, in
+  Cloudflare's build (on the same Node.js version, both reading `.node-version`).
   Playwright still runs only here, so the e2e suite gates the merge into `master`
   but never gates a deploy.
 

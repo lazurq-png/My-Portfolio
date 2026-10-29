@@ -3,7 +3,7 @@
 # and docs/README.md to match.
 e19b10c5cd9efeed  adr/0001-use-astro-as-site-framework.md
 124c5d59d7f1cd3a  adr/0002-author-content-as-markdown-content-collection.md
-58a1f58834c6e947  adr/0003-host-on-cloudflare-pages.md
+d0262e49e17846a3  adr/0003-host-on-cloudflare-pages.md
 e6fc45e253cb31be  adr/0004-use-pnpm-as-package-manager.md
 d94d48a0765417d8  adr/0005-no-ui-framework-scoped-styles-only.md
 c4d7007c51d94599  adr/0006-set-security-headers-in-build-config.md
@@ -11,7 +11,7 @@ fe801e5a621406a6  adr/0007-centralise-sanitization-in-lib.md
 adb5cc5c46e4386e  adr/0008-use-vitest-for-unit-tests.md
 3463a443d617e0b3  adr/0009-use-playwright-for-e2e-tests.md
 ecb1f13f06b1c8cc  adr/0010-separate-unit-and-e2e-test-scopes.md
-745442ccdfcd9024  adr/0011-run-ci-on-github-actions.md
+ffad8aa05e9f9a32  adr/0011-run-ci-on-github-actions.md
 6838da76ff25d060  adr/0012-use-typescript-strict-config.md
 35575b53985f1f52  adr/0013-render-icons-with-astro-icon.md
 e665138f2f11c16a  adr/0014-emit-security-headers-as-a-generated-headers-file.md
