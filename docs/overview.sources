@@ -3,7 +3,7 @@
 # and docs/README.md to match.
 e19b10c5cd9efeed  adr/0001-use-astro-as-site-framework.md
 124c5d59d7f1cd3a  adr/0002-author-content-as-markdown-content-collection.md
-d617572ec22566cb  adr/0003-host-on-cloudflare-pages.md
+58a1f58834c6e947  adr/0003-host-on-cloudflare-pages.md
 e6fc45e253cb31be  adr/0004-use-pnpm-as-package-manager.md
 d94d48a0765417d8  adr/0005-no-ui-framework-scoped-styles-only.md
 c4d7007c51d94599  adr/0006-set-security-headers-in-build-config.md

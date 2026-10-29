@@ -81,8 +81,9 @@ pnpm named there before installing. The user build command is
 Branches map to two environments:
 
 * A push to the **production branch** publishes production.
-* A push to any other branch — `dev`, in practice — publishes a **preview**, at a
-  per-commit URL plus a stable branch alias (`dev.my-portfolio-72x.pages.dev`).
+* A push to `dev` publishes a **preview**, at a per-commit URL plus a stable
+  branch alias (`dev.my-portfolio-72x.pages.dev`). Branch control in the dashboard
+  limits previews to `dev`, so other branches (Dependabot's, for one) are not built.
   Cloudflare adds `x-robots-tag: noindex` to preview responses.
 
 ### Consequences
@@ -95,7 +96,7 @@ Branches map to two environments:
   no cross-vendor delegation to get wrong.
 * Good, because releasing needs no local toolchain and cannot be forgotten: the
   deployed site never drifts behind the branch it tracks.
-* Good, because every branch gets a preview URL, so a change can be looked at on
+* Good, because `dev` gets a preview URL, so a change can be looked at on
   real Cloudflare infrastructure before it reaches production.
 * Neutral, because the deploy is gated on the tests by the build command rather
   than by CI. Cloudflare builds from its own clone and never sees a GitHub Actions
