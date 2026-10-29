@@ -78,7 +78,7 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
 * Neutral, because the pnpm / Node / install steps live once, in the composite
   action `.github/actions/setup`, and every job calls it after its checkout.
 * Neutral, because CI and Cloudflare's build
-  ([0003](0003-host-on-cloudflare-with-wrangler.md)) both take Node.js from
+  ([0003](0003-host-on-cloudflare-pages.md)) both take Node.js from
   `.node-version`, so the tests run on the version that ships.
 * Bad, because getting WebKit working headless took roughly a dozen commits on a
   single day and the result is fragile: it needs
@@ -97,7 +97,7 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   image tag must track `@playwright/test` in `pnpm-lock.yaml`.]*
 * Neutral, because there is no deploy job and deployment does not go through these
   workflows at all. Cloudflare Pages builds from its own clone on every push
-  ([0003](0003-host-on-cloudflare-with-wrangler.md)), so the relationship runs the
+  ([0003](0003-host-on-cloudflare-pages.md)), so the relationship runs the
   opposite way from what this record first assumed: the live site is always
   current with its branch, and a deployed site does not imply these workflows went
   green. What protects the deploy is Cloudflare's build command running

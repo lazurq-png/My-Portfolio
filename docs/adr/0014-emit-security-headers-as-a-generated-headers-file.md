@@ -31,7 +31,7 @@ visible?
 `pages_build_output_dir` and the file carries a Workers `assets` block, so the
 build log warns and ignores it. The output directory that actually ships is the
 one in the dashboard build settings. See the correction at the top of
-[0003](0003-host-on-cloudflare-with-wrangler.md), which postdates this record by
+[0003](0003-host-on-cloudflare-pages.md), which postdates this record by
 three days. Nothing about this decision changes — the deployment reads
 `dist/_headers` either way, and `Parsed 1 valid header rule` in the deploy log
 confirms it. The same stale premise sits in the doc comment on
@@ -45,7 +45,7 @@ worth correcting there too.]*
 * Keep 0006's real driver: the policy stays in the repository, versioned and
   reviewed in the same pull request as the change that needs it.
 * Must work with the Cloudflare Pages deployment in
-  [0003](0003-host-on-cloudflare-with-wrangler.md).
+  [0003](0003-host-on-cloudflare-pages.md).
 
 ## Considered Options
 

@@ -31,7 +31,7 @@ versioned, and hard to lose?
   attack surface.
 * The site must be HTTPS-only and must not be framable.
 * Whatever is chosen has to work with the Cloudflare deployment in
-  [0003](0003-host-on-cloudflare-with-wrangler.md).
+  [0003](0003-host-on-cloudflare-pages.md).
 
 ## Considered Options
 

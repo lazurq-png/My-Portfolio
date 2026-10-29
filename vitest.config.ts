@@ -17,6 +17,12 @@ export default getViteConfig({
       // in with them. They are content, not code -- left in, seventeen posts sit
       // in the report at ~38% and bury the numbers that mean something.
       exclude: [...coverageConfigDefaults.exclude, "src/content/**", "*.config.*"],
+      // A floor for the pure logic the site depends on, a few points under where it
+      // stands (lib: ~97% statements, ~97% branches, 100% lines) so a new untested
+      // function fails the run instead of quietly lowering the number.
+      thresholds: {
+        "src/lib/**": { statements: 95, branches: 90, functions: 95, lines: 95 },
+      },
     },
   },
 });

@@ -29,7 +29,7 @@ come from, and when should it be fetched?
   browser cannot call `api.github.com` at all. Any GitHub data has to be in the
   HTML before it ships.
 * `pnpm build:deploy` is the production deploy gate — Cloudflare Pages runs it
-  and nothing else stops a bad deploy ([0003](0003-host-on-cloudflare-with-wrangler.md)).
+  and nothing else stops a bad deploy ([0003](0003-host-on-cloudflare-pages.md)).
   Whatever is added to the build must not be able to fail it for reasons that
   have nothing to do with the change being deployed.
 * The summary and stack tags are editorial. GitHub's one-line description and
@@ -89,7 +89,7 @@ caught that before it shipped.
   builds of the same commit can produce different HTML.
 * Bad, because `GITHUB_TOKEN` is now deploy configuration living only in the
   Cloudflare dashboard — the same class of invisible setting
-  [0003](0003-host-on-cloudflare-with-wrangler.md) warns about for the build
+  [0003](0003-host-on-cloudflare-pages.md) warns about for the build
   command and output directory.
 * Neutral, because the token is optional. Without it the build still works at 60
   requests/hour, which two projects and a handful of daily deploys sit well

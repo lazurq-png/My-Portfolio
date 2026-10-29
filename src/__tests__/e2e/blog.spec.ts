@@ -39,8 +39,9 @@ test.describe("Blog Page", () => {
     await expect(firstPostLink).toBeVisible();
 
     await firstPostLink.click();
-    await page.waitForLoadState("networkidle");
 
+    // Web-first assertions wait for the navigation themselves; networkidle is
+    // discouraged by Playwright and only measured an idle network, not the page.
     await expect(page).toHaveURL(/\/blog\/.+\/$/);
     await expect(page.locator(".article-shell")).toBeVisible();
     await expect(page.locator(".article-title")).toBeVisible();

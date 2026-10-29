@@ -38,8 +38,8 @@ and what guarantees its shape?
 
 Chosen option: "Astro content collection over local Markdown files", configured
 in `src/content.config.ts` as a `glob()` loader over `src/content/blog/` with a
-Zod schema requiring `title`, `description` and `pubDate`, and allowing optional
-`updatedDate` and `heroImage`. It is the only option that keeps authoring at
+Zod schema requiring `title`, `description` and `pubDate`, and allowing an
+optional `updatedDate`. It is the only option that keeps authoring at
 "add a file" while still failing the build on bad frontmatter.
 
 ### Consequences
@@ -54,12 +54,12 @@ Zod schema requiring `title`, `description` and `pubDate`, and allowing optional
   strict TypeScript config in [0012](0012-use-typescript-strict-config.md).
 * Bad, because there is no web editor. Publishing means a commit, a push, and a
   CI round trip — writing from a device without a checkout is not practical.
-* Bad, because `pubDate` is written as `MM-DD-YYYY` and survives only because
-  `z.coerce.date()` is permissive. The format is ambiguous, unenforced by the
-  schema, and differs from the ISO dates used elsewhere in the project.
-* Neutral, because `.mdx` matches the loader's glob pattern but no MDX
-  integration is installed. An `.mdx` file would be picked up and then fail to
-  render; the pattern is aspirational, not supported.
+* Neutral, because `pubDate` is written as `MM-DD-YYYY`, unlike the ISO dates
+  used elsewhere. `src/lib/dates.ts` parses both forms explicitly, to UTC
+  midnight, and rejects impossible dates, so the format is enforced rather than
+  left to `z.coerce.date()`.
+* Neutral, because the loader matches `.md` only. No MDX integration is
+  installed, so MDX is not supported.
 
 ### Confirmation
 
@@ -81,8 +81,8 @@ this Confirmation was always the stronger claim and is unchanged.]*
 * Good, because authoring is a file, and the schema is eight lines.
 * Good, because content and code share one history and one review process.
 * Neutral, because the schema has to be kept in step with what posts actually
-  use — the unused `heroImage` and `updatedDate` fields are already drifting from
-  reality.
+  use. The never-rendered `heroImage` field was removed for that reason
+  (2026-10-29); `updatedDate` is still unused.
 * Bad, because publishing requires the full toolchain, so there is no
   low-friction path to posting from elsewhere.
 

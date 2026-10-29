@@ -6,19 +6,16 @@ import { toCalendarDate } from "./lib/dates";
 import { fetchRepo, repoUrl, toRepoMeta } from "./lib/github";
 
 const blog = defineCollection({
-  // Load Markdown and MDX files in the `src/content/blog/` directory.
-  loader: glob({ base: "./src/content/blog", pattern: "**/*.{md,mdx}" }),
-  // Type-check frontmatter using a schema
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
-      // Transform string to Date object
-      // A calendar day, normalised to UTC midnight whatever its format (see lib/dates).
-      pubDate: z.preprocess(toCalendarDate, z.coerce.date()),
-      updatedDate: z.preprocess(toCalendarDate, z.coerce.date()).optional(),
-      heroImage: z.optional(image()),
-    }),
+  // Markdown only: no MDX integration is installed, so an .mdx file would load and
+  // then fail to render.
+  loader: glob({ base: "./src/content/blog", pattern: "**/*.md" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    // A calendar day, normalised to UTC midnight whatever its format (see lib/dates).
+    pubDate: z.preprocess(toCalendarDate, z.coerce.date()),
+    updatedDate: z.preprocess(toCalendarDate, z.coerce.date()).optional(),
+  }),
 });
 
 interface ProjectPick {

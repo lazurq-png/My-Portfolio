@@ -1,22 +1,22 @@
 # Hashes of the ADRs docs/overview.html was last updated against.
 # Regenerate with `pnpm docs:stamp`, and only after updating the page
 # and docs/README.md to match.
-a5a422647844a333  adr/0001-use-astro-as-site-framework.md
-3ac148fa76a0bfc0  adr/0002-author-content-as-markdown-content-collection.md
-d617572ec22566cb  adr/0003-host-on-cloudflare-with-wrangler.md
+e19b10c5cd9efeed  adr/0001-use-astro-as-site-framework.md
+124c5d59d7f1cd3a  adr/0002-author-content-as-markdown-content-collection.md
+d617572ec22566cb  adr/0003-host-on-cloudflare-pages.md
 e6fc45e253cb31be  adr/0004-use-pnpm-as-package-manager.md
 d94d48a0765417d8  adr/0005-no-ui-framework-scoped-styles-only.md
-4818f9ef532af12e  adr/0006-set-security-headers-in-build-config.md
+c4d7007c51d94599  adr/0006-set-security-headers-in-build-config.md
 fe801e5a621406a6  adr/0007-centralise-sanitization-in-lib.md
 adb5cc5c46e4386e  adr/0008-use-vitest-for-unit-tests.md
 3463a443d617e0b3  adr/0009-use-playwright-for-e2e-tests.md
 ecb1f13f06b1c8cc  adr/0010-separate-unit-and-e2e-test-scopes.md
-2f397b0447bc11aa  adr/0011-run-ci-on-github-actions.md
-bfe2fb4be75dbc12  adr/0012-use-typescript-strict-config.md
+745442ccdfcd9024  adr/0011-run-ci-on-github-actions.md
+b2576007beea40b6  adr/0012-use-typescript-strict-config.md
 35575b53985f1f52  adr/0013-render-icons-with-astro-icon.md
-846238ecf8bc3ae0  adr/0014-emit-security-headers-as-a-generated-headers-file.md
+e665138f2f11c16a  adr/0014-emit-security-headers-as-a-generated-headers-file.md
 f7f3a4c7eb60b991  adr/0015-add-an-integration-test-scope.md
-2ffdf0f76dc000c6  adr/0016-load-projects-from-github-at-build-time.md
+42f85c1040dfd897  adr/0016-load-projects-from-github-at-build-time.md
 dc59470f7957ab5a  adr/0017-preview-projects-in-a-native-dialog.md
 65a9fd3b7a0babfc  adr/0018-self-host-project-preview-images.md
 acf7c80a5b6866d5  adr/0019-self-host-fonts-with-the-astro-fonts-api.md

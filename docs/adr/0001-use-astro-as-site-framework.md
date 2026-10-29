@@ -52,7 +52,7 @@ alongside it.
 
 - Good, because the build emits a fully static `dist/` with no client runtime,
   which is what makes the hosting decision in
-  [0003](0003-host-on-cloudflare-with-wrangler.md) cheap and low-risk.
+  [0003](0003-host-on-cloudflare-pages.md) cheap and low-risk.
 - Good, because content collections give schema-validated frontmatter out of the
   box — see [0002](0002-author-content-as-markdown-content-collection.md).
 - Good, because component-scoped styles remove the need for a CSS framework —
@@ -70,7 +70,7 @@ alongside it.
 `pnpm build` must produce a fully static bundle. `astro.config.mjs` declares no
 adapter and no server output; if either is ever added, this decision has changed
 and needs a superseding ADR, because
-[0003](0003-host-on-cloudflare-with-wrangler.md) depends on the output being
+[0003](0003-host-on-cloudflare-pages.md) depends on the output being
 static assets only.
 
 ## Pros and Cons of the Options

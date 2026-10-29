@@ -11,7 +11,7 @@ decision-makers: "Martin Larsson (@lazurq-png)"
 Astro ships three base TypeScript configurations — `base`, `strict` and
 `strictest` — and a project can also opt out of TypeScript entirely and write
 plain JavaScript. The code that most benefits from type checking here is the
-handling of content-collection entries, where `updatedDate` and `heroImage` are
+handling of content-collection entries, where fields such as `updatedDate` are
 optional ([0002](0002-author-content-as-markdown-content-collection.md)) and the
 layout props `title`, `description`, `canonicalPath` and `ogType` are all
 optional with fallbacks. Which configuration?
@@ -42,8 +42,8 @@ ceremony `strictest` adds for a project of this size.
 
 ### Consequences
 
-* Good, because `strictNullChecks` makes an unguarded use of `updatedDate` or
-  `heroImage` a compile error rather than an `undefined` rendered into the page.
+* Good, because `strictNullChecks` makes an unguarded use of an optional field
+  such as `updatedDate` a compile error rather than an `undefined` rendered into the page.
 * Good, because the Zod schema's inferred types flow through
   `getCollection()` into both blog pages, so the content contract is typed
   end to end without a hand-written interface.
