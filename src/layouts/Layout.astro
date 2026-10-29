@@ -6,6 +6,8 @@ export interface Props {
   description?: string;
   canonicalPath?: string;
   ogType?: "website" | "article";
+  /** For pages that must not be indexed (the 404): emits `noindex` and no canonical or og:url. */
+  noindex?: boolean;
 }
 
 const DEFAULT_TITLE = "Martin Larsson — Software Developer";
@@ -17,6 +19,7 @@ const {
   description = DEFAULT_DESCRIPTION,
   canonicalPath = Astro.url.pathname,
   ogType = "website",
+  noindex = false,
 } = Astro.props;
 
 // `site` is set in astro.config.mjs, so canonical, og:url and og:image come out
@@ -37,11 +40,13 @@ const ogImage = new URL("/og-image.png", base).href;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {/* A canonical on a noindex page names a URL that does not exist (the 404's own
+        path is whatever was mistyped) and contradicts the noindex. */}
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
+    {!noindex && <meta property="og:url" content={canonical} />}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1280" />
     <meta property="og:image:height" content="640" />

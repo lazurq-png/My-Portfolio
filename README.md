@@ -14,7 +14,8 @@ no UI framework, hosted on Cloudflare Pages.
 
 ## Getting started
 
-Prerequisites: **Node.js ≥ 22.12** and **pnpm** (the exact version is pinned in `package.json`'s
+Prerequisites: **Node.js ≥ 22.23.4** (Astro's own minimum; it refuses to start on anything older)
+and **pnpm** (the exact version is pinned in `package.json`'s
 `packageManager`; `corepack enable` picks it up).
 
 ```bash
@@ -76,19 +77,19 @@ These live only in the Cloudflare dashboard, so check them there if a deploy mis
 | Production branch | `master` (`dev` publishes a preview) |
 | Build command | `pnpm run build:deploy` |
 | Build output directory | `dist` |
-| Node.js version | 22.16.0 (CI uses Node 24, so the unit suite effectively runs on both) |
+| Node.js version | Must be ≥ 22.23.4, Astro's minimum, or the build stops at `astro check`. CI uses Node 24, so a Node-version break shows up only here |
 | `GITHUB_TOKEN` (optional) | Raises GitHub's API limit from 60 to 5000 requests/hour for the projects page; the build works without it |
 
 ## Project layout
 
 ```
 src/
-  pages/        index, projects, blog/index, blog/[...slug]
+  pages/        index, projects, blog/index, blog/[...slug], 404
   layouts/      Layout.astro: head tags, design tokens, shared primitives
   components/   SiteNav, ProjectImage, ProjectPreview
   content/blog/ Markdown posts
   content.config.ts  blog collection + the GitHub-backed projects collection
-  lib/          github.ts, headers.ts, projectImages.ts, sanitize.ts
+  lib/          dates.ts, github.ts, headers.ts, projectImages.ts, sanitize.ts
   assets/projects/   one image per project, named exactly after the repo
 public/         same-origin scripts (nav.js, projects.js, theme-init.js)
 docs/adr/       Architecture Decision Records

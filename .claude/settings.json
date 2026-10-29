@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "PATH=\"$HOME/Binaries/node:$PATH\" node .claude/hooks/format.mjs"
+            "command": "PATH=\"$HOME/Binaries/node:$PATH\" node \"$CLAUDE_PROJECT_DIR/.claude/hooks/format.mjs\""
           }
         ]
       }
