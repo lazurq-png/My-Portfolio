@@ -8,7 +8,9 @@ Use **pnpm**. Work on `dev`; production is a PR into `master`. Task workflows: `
 ## Gotchas
 
 - `typescript` is held on 6.x for now: TS 7 breaks `astro check`, and a bare `pnpm add -D typescript` installs 7.
-  Move up as soon as Astro supports it (withastro/roadmap#1321); versions are never a decision to defend.
+  Astro tracks support in withastro/roadmap#1321.
+- Version changes (Node, TypeScript, any package major) are a risk/reward call for the user: always ask
+  first, with the pros and cons of upgrading vs staying put. Never upgrade or hold back silently.
 - `tsconfig.json` has `include: ["**/*"]`: add any new gitignored build dir to its `exclude`.
 - `vitest.config.ts` uses `getViteConfig` (not `defineConfig`) so `.astro` and `astro:content` resolve. Leave it.
 - Prettier ignores `*.md` on purpose: ADRs and posts are hand-formatted (posts one line per thought).
