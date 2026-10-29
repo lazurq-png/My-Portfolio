@@ -5,7 +5,8 @@
 //
 // Deliberately small. showModal() already gives us the focus trap, the Escape
 // handler, the backdrop, inertness of the page behind the dialog and returning
-// focus to the element that opened it -- none of that is reimplemented here.
+// focus to the element that opened it, and the dialog's closedby="any" closes it
+// on a backdrop click -- none of that is reimplemented here.
 (function () {
   const openers = document.querySelectorAll(".card-open[data-preview]");
   if (!openers.length) return;
@@ -25,16 +26,6 @@
 
     button.addEventListener("click", () => {
       dialog.showModal();
-    });
-  });
-
-  // A click whose target is the <dialog> element itself landed on the backdrop:
-  // the content sits inside .preview__body, so anything on the card proper has
-  // that as its target instead. Bound per dialog rather than on the document so
-  // it cannot fire for a dialog that is not open.
-  document.querySelectorAll("dialog.preview").forEach((dialog) => {
-    dialog.addEventListener("click", (event) => {
-      if (event.target === dialog) dialog.close();
     });
   });
 })();

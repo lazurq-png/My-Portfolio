@@ -20,7 +20,8 @@ test.skip(({ browserName }) => browserName !== "chromium", "axe results are engi
 // dependencies on its first request and reloads that page, which destroys an axe scan
 // in flight. One throwaway visit lets it settle before the first real scan.
 test.beforeAll(async ({ browser }, testInfo) => {
-  const page = await browser.newPage({ baseURL: testInfo.project.use.baseURL });
+  const { baseURL } = testInfo.project.use;
+  const page = await browser.newPage(baseURL ? { baseURL } : {});
   await page.goto("/");
   await page.waitForLoadState("networkidle");
   await page.close();

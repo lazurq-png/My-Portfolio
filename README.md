@@ -75,7 +75,8 @@ These live only in the Cloudflare dashboard, so check them there if a deploy mis
 
 | Setting | Value |
 |---|---|
-| Production branch | `master` (`dev` publishes a preview) |
+| Production branch | `master` |
+| Preview branches | Custom: `dev` only, so Dependabot branches aren't built |
 | Build command | `pnpm run build:deploy` |
 | Build output directory | `dist` |
 | Node.js version | Not set here: Pages reads `.node-version` from the repo, as CI does. A `NODE_VERSION` variable in the dashboard would override it, so leave it unset |

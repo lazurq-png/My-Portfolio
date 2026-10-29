@@ -55,7 +55,9 @@ it calls `showModal()`.
 
 Everything else is the platform's. `showModal()` supplies the focus trap, the
 Escape handler, the backdrop, inertness of the page behind the dialog, and
-returning focus to the button that opened it. The Close button is a
+returning focus to the button that opened it, and `closedby="any"` on the
+`<dialog>` makes a backdrop click close it (this replaced a click handler in
+`public/projects.js`). The Close button is a
 `<form method="dialog">`, which closes the dialog with no JavaScript at all once
 it is open. None of that is reimplemented, and the e2e spec asserts the parts of
 it this site depends on — not to test the browser, but to catch a change here

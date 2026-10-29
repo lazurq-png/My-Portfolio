@@ -40,6 +40,12 @@ Chosen option: "`astro/tsconfigs/strict`", set in `tsconfig.json` with
 optional-value mistakes this codebase is actually prone to, without the extra
 ceremony `strictest` adds for a project of this size.
 
+*[Updated 2026-10-29: now `astro/tsconfigs/strictest`. Trying it showed the
+ceremony feared below was not there: it reported five errors, all in tests
+(three unguarded array destructures, one regex capture group, one optional
+`baseURL` passed through under `exactOptionalPropertyTypes`), and each was a
+one-line fix. With the cost that low, the extra guards are worth having.]*
+
 ### Consequences
 
 * Good, because `strictNullChecks` makes an unguarded use of an optional field
@@ -71,9 +77,11 @@ ceremony `strictest` adds for a project of this size.
 * Good, because type errors fail every push to `dev` as well as every pull
   request into `master`. Both workflows run the check (2026-10-29; until then
   only pull requests did). It takes seconds.
-* Neutral, because `strictest` was not chosen. Its additions —
-  `noUncheckedIndexedAccess` and similar — would add guards throughout for a
-  class of bug that has not occurred here.
+* Neutral, because `strictest` was not chosen at first. Its additions —
+  `noUncheckedIndexedAccess` and similar — were expected to add guards
+  throughout for a class of bug that had not occurred here. *[2026-10-29: it is
+  the config now; see the update above. The guards it needed were five, all in
+  tests.]*
 
 ### Confirmation
 
