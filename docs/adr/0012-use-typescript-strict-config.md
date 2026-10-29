@@ -61,14 +61,13 @@ ceremony `strictest` adds for a project of this size.
   header configuration ([0006](0006-set-security-headers-in-build-config.md)) is
   therefore checked after all, which matters because a silent typo there is
   among the most expensive in the repository.
-* Bad, because the strict setting still costs the project TypeScript 7. The
-  native compiler does not expose the programmatic API `astro check` is built on,
-  so `typescript` is pinned to `^6.0.3` — the last release before the rewrite.
-  Because 7.x is the `latest` tag, an unpinned `pnpm add -D typescript` silently
-  reintroduces the break; pnpm only *warns* about the peer violation, and the
-  failure surfaces as a confusing error from `astro check` rather than from the
-  install. Astro tracks support at
-  <https://github.com/withastro/roadmap/discussions/1321>.
+* Bad, because `astro check` is built on TypeScript's programmatic API, which
+  TypeScript's native compiler does not expose. Until Astro supports it,
+  `typescript` has to stay on a release that still ships the JavaScript
+  compiler, and a bare `pnpm add -D typescript` can silently pick up the native
+  one: pnpm only *warns* about the peer violation, and the failure surfaces as a
+  confusing error from `astro check` rather than from the install. Astro tracks
+  support at <https://github.com/withastro/roadmap/discussions/1321>.
 * Neutral, because type errors gate merges into `master` but not pushes to `dev`.
   `ci-pull.yml` runs the check; `ci-push.yml` deliberately does not, keeping day-
   to-day pushes at the speed [0011](0011-run-ci-on-github-actions.md) chose them

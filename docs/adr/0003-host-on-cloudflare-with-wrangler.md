@@ -61,9 +61,9 @@ itself in its own environment:
 clone repo → pnpm install → pnpm run build:deploy → deploy dist/
 ```
 
-The build image detects `pnpm@10.11.1, nodejs@22.16.0` from the environment, then
+The build image detects a pnpm and a Node.js version from its environment, then
 Corepack honours the `packageManager` field in `package.json` and fetches the
-pinned pnpm (11.25.0) before installing. The user build command is
+pnpm named there before installing. The user build command is
 `pnpm run build:deploy`, and the asset output directory is `dist/`.
 
 > *[2026-09-04: this passage read `pnpm run build` until the deploy log for
@@ -74,7 +74,7 @@ pinned pnpm (11.25.0) before installing. The user build command is
 > `Success: Your site was deployed!`. The gate is live, so the Consequences
 > below describe the current setting rather than a proposal. Everything else
 > this record states about the build environment is confirmed by the same log:
-> the detected `pnpm@10.11.1, nodejs@22.16.0`, the Corepack fetch of 11.25.0,
+> the detected pnpm and Node.js, the Corepack fetch of the `packageManager` pnpm,
 > the `wrangler.jsonc` warning appearing twice, `wrangler` and `workerd` being
 > installed and running their postinstall, and `Parsed 1 valid header rule`.]*
 
@@ -172,11 +172,11 @@ Branches map to two environments:
   `wrangler` is ever reinstated *and* run locally, miniflare will recreate the
   directory, that time with real state files, which would then show up as
   untracked and want a `.gitignore` entry.
-* Bad, because the build environment runs **Node 22.16.0** while CI runs Node 24.
-  The bundle that reaches production is therefore built on a version no test job
-  ever exercises. It does at least mean `engines.node >= 22.12.0` is honoured
-  somewhere, which [0011](0011-run-ci-on-github-actions.md) noted was otherwise
-  only a claim.
+* Bad, because the Node.js version of the build environment is set by Cloudflare
+  (the dashboard or the image default), while CI's is set in the workflows.
+  Nothing keeps the two equal, so the bundle that reaches production can be built
+  on a version no test job exercises
+  ([0011](0011-run-ci-on-github-actions.md)).
 * Neutral, because the response headers are delivered as a `_headers` file
   generated into `dist/`
   ([0014](0014-emit-security-headers-as-a-generated-headers-file.md)). Pages

@@ -86,7 +86,7 @@ that is precisely where Jest would have needed the most work.
 * Good, because `@vitest/coverage-v8` is a single devDependency away.
 * Neutral, because its API is close enough to Jest's that Jest knowledge
   transfers directly.
-* Bad, because the version here (`^4.1.11`) moves quickly, and its config
+* Bad, because Vitest moves quickly, and its config
   defaults have changed across majors — the `exclude` behaviour above is an
   example of a default that is easy to get wrong.
 

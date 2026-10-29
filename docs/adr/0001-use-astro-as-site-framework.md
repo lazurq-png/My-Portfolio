@@ -60,9 +60,8 @@ alongside it.
 - Bad, because `.astro` is a framework-specific component format. Nothing in
   `src/components/` or `src/layouts/` ports to another stack; leaving Astro means
   rewriting the view layer.
-- Bad, because Astro moves fast. The project is on `^7.2.7`, and major versions
-  have historically required migration work — related to the release-age pin
-  discussed in [0004](0004-use-pnpm-as-package-manager.md).
+- Bad, because Astro moves fast, and major versions have historically required
+  migration work.
 - Neutral, because adding interactivity later means adopting an island framework.
   That decision is deliberately deferred, not foreclosed.
 

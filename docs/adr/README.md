@@ -40,11 +40,14 @@ is kept only where a real check exists.
 - **The filename carries the number**: `NNNN-kebab-case-title.md`, numbered in
   the order decisions were *made*. Numbers are never reused, even if an ADR is
   rejected or withdrawn.
-- **ADRs are immutable once accepted.** Changing your mind means writing a new
-  ADR that supersedes the old one, and setting the old one's status to
-  `superseded by ADR-NNNN`. Do not rewrite the reasoning in an accepted ADR —
-  the record of what you believed at the time is the value. Fixing a typo or a
-  broken link is fine.
+- **ADRs are kept correct, and they never block work.** An ADR that is wrong or
+  out of date gets fixed in place. A real change of mind can still be a new ADR
+  that supersedes the old one (`superseded by ADR-NNNN`). The one exception:
+  during a night run (an unattended session), existing ADRs are not edited;
+  the run reports what it found instead.
+- **No versions.** An ADR records a decision and why, not which version of Node
+  or a package was current. Current versions live in `package.json`, the
+  workflows and the README.
 - **State the downsides.** A `Consequences` section with only `Good` entries
   means the analysis was not done.
 - Start from [`0000-adr-template.md`](0000-adr-template.md).

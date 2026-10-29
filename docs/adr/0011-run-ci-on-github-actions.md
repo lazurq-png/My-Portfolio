@@ -77,12 +77,10 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   job that needs it — five copies across the two files. Changing the Node version
   or the pnpm major means five edits, and missing one produces an inconsistency
   that is easy not to notice.
-* Bad, because CI runs Node 24 while Cloudflare builds the deployed bundle on
-  Node 22.16.0 ([0003](0003-host-on-cloudflare-with-wrangler.md)). Every test in
-  these workflows therefore runs on a version that never ships, and the version
-  that ships is never tested. The `engines.node >= 22.12.0` floor is exercised in
-  production and nowhere else — the reverse of the usual mistake, and worse,
-  because the untested version is the one users get.
+* Bad, because CI's Node.js version is set in these workflows and Cloudflare's in
+  its build environment ([0003](0003-host-on-cloudflare-with-wrangler.md)), and
+  nothing keeps them equal. When they differ, every test here runs on a version
+  that never ships, and the version that ships is never tested.
 * Bad, because getting WebKit working headless took roughly a dozen commits on a
   single day and the result is fragile: it needs
   `playwright install --with-deps`, a *second* explicit
@@ -91,7 +89,7 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   workflow.
   <br>*[2026-09-04: this was already out of date when written — `9c60997`
   replaced all of it on 2026-08-31 with the
-  `mcr.microsoft.com/playwright:v1.62.1-noble` container, which ships the
+  official `mcr.microsoft.com/playwright` container, which ships the
   browsers and their system dependencies. No `playwright install` step and no
   `xvfb-run` remain. Two container options carry the residual fragility and are
   commented in the workflow: `--user 1001`, because container jobs run as root
@@ -169,9 +167,7 @@ Three follow-ups:
    this workflow behind the existing jobs, and turning the Cloudflare Git
    integration off, would make one suite run instead of two and let the e2e job
    gate the deploy. The cost is losing per-branch previews.
-2. Make CI test the Node version that actually ships. Cloudflare builds on Node
-   22.16.0, so the fix is to move these workflows to Node 22 or pin Cloudflare's
-   build to 24 — not, as this record first suggested, to raise `engines` to match
-   Node 24.
+2. Make CI test the Node.js version that actually ships: set the workflows to
+   Cloudflare's version, or Cloudflare's to the workflows'.
 3. Factor the shared checkout/pnpm/Node/install block into a composite action to
    remove the duplication, now five copies across the two files.
