@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import SiteNav from "../../components/SiteNav.astro";
+import { formatDate } from "../../lib/dates";
 import { sanitizeSlug } from "../../lib/sanitize";
 
 const posts = (await getCollection("blog")).sort(
@@ -24,13 +25,7 @@ const posts = (await getCollection("blog")).sort(
       {posts.map((post) => (
         <a class="card-link" href={`/blog/${sanitizeSlug(post.id)}/`}>
           <article class="post-card">
-            <div class="post-card__date">
-              {post.data.pubDate.toLocaleDateString("en-GB", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </div>
+            <div class="post-card__date">{formatDate(post.data.pubDate)}</div>
             <h2>{post.data.title}</h2>
             <p>{post.data.description}</p>
           </article>
