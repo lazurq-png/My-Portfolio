@@ -21,7 +21,7 @@ describe("generated blog routes", () => {
   let routeDirs: string[];
 
   beforeAll(async () => {
-    postFiles = (await readdir("src/content/blog")).filter((name) => /\.mdx?$/.test(name));
+    postFiles = (await readdir("src/content/blog")).filter((name) => /\.md$/.test(name));
 
     const entries = await readdir("dist/blog", { withFileTypes: true }).catch(() => {
       throw new Error("dist/blog is missing. Run `pnpm build` before `pnpm test:build`.");

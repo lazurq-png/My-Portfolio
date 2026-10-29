@@ -71,7 +71,7 @@ Work happens on `dev` and reaches production through a pull request into `master
 ### Cloudflare dashboard settings
 
 These live only in the Cloudflare dashboard, so check them there if a deploy misbehaves
-([ADR 0003](docs/adr/0003-host-on-cloudflare-with-wrangler.md)):
+([ADR 0003](docs/adr/0003-host-on-cloudflare-pages.md)):
 
 | Setting | Value |
 |---|---|

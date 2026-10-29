@@ -17,7 +17,10 @@ export const SECURITY_HEADERS: ReadonlyArray<readonly [name: string, value: stri
   ],
   ["X-Frame-Options", "DENY"],
   ["X-Content-Type-Options", "nosniff"],
-  ["Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload"],
+  // No `preload`: the HSTS preload list only takes apex domains you own, so on
+  // *.pages.dev it did nothing but imply an enrolment that never happened. Add it
+  // back with a custom apex domain, after submitting that domain to hstspreload.org.
+  ["Strict-Transport-Security", "max-age=31536000; includeSubDomains"],
   ["Referrer-Policy", "strict-origin-when-cross-origin"],
   ["Permissions-Policy", "camera=(), microphone=(), geolocation=()"],
   ["Cross-Origin-Opener-Policy", "same-origin"],

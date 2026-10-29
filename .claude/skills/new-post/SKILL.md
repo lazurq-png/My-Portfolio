@@ -20,8 +20,8 @@ description: Write a new blog post for the portfolio. Use when asked to add, dra
    ---
    ```
 
-   `title`, `description` and `pubDate` are required. `updatedDate` is optional. `heroImage` exists in
-   the schema but is not rendered. `tags` is not in the schema (Zod drops it) but every post carries
+   `title`, `description` and `pubDate` are required. `updatedDate` is optional. Markdown (`.md`)
+   only; there is no MDX support. `tags` is not in the schema (Zod drops it) but every post carries
    it, so keep following that.
 
 3. **Body**: write a line per thought. `white-space: pre-line` is applied to paragraphs and list

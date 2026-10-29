@@ -87,6 +87,10 @@ const ogImage = new URL("/og-image.png", base).href;
     --accent-soft: rgba(232, 163, 61, 0.14);
     --on-accent: #14161a;
     --rule: #242931;
+    /* A light plate behind monochrome logos that would vanish on a dark ground.
+       The same in both themes on purpose, so it is not redefined below. */
+    --plate: #e6e8ec;
+    --on-plate: #14161a;
 
     /* --font-inter and --font-plex-mono are defined by the <Font> components in
        <head> (Astro Fonts API, configured in astro.config.mjs) and already carry
@@ -94,7 +98,10 @@ const ogImage = new URL("/og-image.png", base).href;
     --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
 
-    /* Fluid type scale -- one ramp, shared by every page. */
+    /* Fluid type scale -- one ramp, shared by every page. The two smallest are
+       for uppercase mono labels only, never for running text. */
+    --step--3: 0.65rem;
+    --step--2: 0.7rem;
     --step--1: 0.8125rem;
     --step-0: 1rem;
     --step-1: 1.0625rem;
