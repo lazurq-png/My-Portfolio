@@ -10,8 +10,9 @@
  * external means updating SECURITY_HEADERS in src/lib/headers.ts.
  *
  * <dialog>.showModal() supplies the focus trap, the Escape handler, the
- * backdrop and inertness of the page behind it. public/projects.js only opens
- * it; none of that is reimplemented.
+ * backdrop and inertness of the page behind it, and closedby="any" makes a
+ * backdrop click close it. public/projects.js only opens it; none of that is
+ * reimplemented.
  *
  * The image itself, and the choice between a hand-made one and GitHub's card,
  * is ProjectImage.astro -- shared with the card on the projects page.
@@ -46,9 +47,7 @@ const stats = [
 ].filter((stat) => stat !== null);
 ---
 
-<dialog id={dialogId} class="preview" aria-labelledby={headingId}>
-  {/* Inner wrapper: a click landing on the <dialog> itself is a backdrop
-      click, which is how public/projects.js tells the two apart. */}
+<dialog id={dialogId} class="preview" aria-labelledby={headingId} closedby="any">
   <div class="preview__body">
     <div class="preview__media">
       <ProjectImage repo={repo} width={1280} />

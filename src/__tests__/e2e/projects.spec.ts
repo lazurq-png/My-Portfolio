@@ -161,8 +161,7 @@ test.describe("Projects Page", () => {
     await expect(dialog).toBeVisible();
 
     // The dialog is centred, so the top-left corner of the viewport is
-    // backdrop. A click there has the <dialog> element itself as its target,
-    // which is how public/projects.js tells backdrop from content.
+    // backdrop. The browser closes it there because of closedby="any".
     await page.mouse.click(2, 2);
 
     await expect(dialog).toBeHidden();

@@ -117,6 +117,13 @@ describe("projects page with projects", () => {
     expect(dialogIds(await render())).toHaveLength(2);
   });
 
+  test("lets the browser close every dialog on a backdrop click", async () => {
+    const dialogs = (await render()).match(/<dialog [^>]*>/g) ?? [];
+
+    expect(dialogs).toHaveLength(2);
+    for (const tag of dialogs) expect(tag).toContain('closedby="any"');
+  });
+
   test("every card opener addresses a dialog that exists", async () => {
     const html = await render();
     const ids = dialogIds(html);
