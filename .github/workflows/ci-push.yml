@@ -35,5 +35,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # docs/overview.html must be re-stamped after an ADR changes (docs/README.md).
+      - name: Docs overview in sync
+        run: pnpm docs:check
+
       - name: Run Vitest
         run: pnpm test:unit

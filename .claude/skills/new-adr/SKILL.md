@@ -17,5 +17,8 @@ description: Write a new Architecture Decision Record in docs/adr/. Use when a d
    Only during a night run (unattended) are existing ADRs left alone; report the problem instead.
 5. **No versions** of Node or any package in an ADR: record the decision and the reason. Current
    versions belong in `package.json`, the workflows and the README.
-6. **Index**: add a row to the table in `docs/adr/README.md`.
+6. **Index and overview**: add a row to the table in `docs/README.md` (the agent index) and a
+   plain-language card to `docs/overview.html` (the human page: short, no jargon, Why / Rules out).
+   Then run `pnpm docs:stamp`, which embeds the ADR in the page; `pnpm docs:check` fails CI until
+   you do. The same applies when editing an existing ADR.
 7. Prettier ignores `*.md`, so there is nothing to format. Run `pnpm lint` anyway if you touched code.

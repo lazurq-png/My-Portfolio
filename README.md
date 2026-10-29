@@ -107,9 +107,11 @@ Adding things:
 
 ## Decisions
 
-Why the site looks the way it does is recorded in [`docs/adr/`](docs/adr/README.md): Astro with no
-UI framework, a security-header policy generated into `dist/_headers`, GitHub data fetched at build
-time, a native `<dialog>` for project previews, self-hosted preview images, and more.
+Why the site looks the way it does: **[`docs/overview.html`](docs/overview.html)** is a short,
+plain-language summary of every decision (open it in a browser; each card opens its full record).
+The records themselves are in [`docs/adr/`](docs/adr/), indexed for agents in
+[`docs/README.md`](docs/README.md). After changing an ADR, update both and run `pnpm docs:stamp`;
+`pnpm docs:check` fails CI until the page is current.
 
 ## Working with Claude Code
 
