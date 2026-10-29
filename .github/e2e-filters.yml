@@ -17,6 +17,7 @@ shared: &shared
   - 'package.json'
   - 'pnpm-lock.yaml'
   - '.github/workflows/ci-pull.yml'
+  - '.github/actions/**'
   - '.github/e2e-filters.yml'
 
 # Clicks through to /projects and asserts the "Selected work" heading.
