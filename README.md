@@ -14,8 +14,8 @@ no UI framework, hosted on Cloudflare Pages.
 
 ## Getting started
 
-Prerequisites: **Node.js ≥ 22.23.4** (Astro's own minimum; it refuses to start on anything older)
-and **pnpm** (the exact version is pinned in `package.json`'s
+Prerequisites: **Node.js**, the version in `.node-version` (currently 24; Astro refuses to start
+below 22.23.4) and **pnpm** (the exact version is pinned in `package.json`'s
 `packageManager`; `corepack enable` picks it up).
 
 ```bash
@@ -77,7 +77,7 @@ These live only in the Cloudflare dashboard, so check them there if a deploy mis
 | Production branch | `master` (`dev` publishes a preview) |
 | Build command | `pnpm run build:deploy` |
 | Build output directory | `dist` |
-| Node.js version | Must be ≥ 22.23.4, Astro's minimum, or the build stops at `astro check`. CI uses Node 24, so a Node-version break shows up only here |
+| Node.js version | Not set here: Pages reads `.node-version` from the repo, as CI does. A `NODE_VERSION` variable in the dashboard would override it, so leave it unset |
 | `GITHUB_TOKEN` (optional) | Raises GitHub's API limit from 60 to 5000 requests/hour for the projects page; the build works without it |
 
 ## Project layout

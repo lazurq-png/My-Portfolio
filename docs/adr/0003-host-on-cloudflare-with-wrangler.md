@@ -125,8 +125,8 @@ Branches map to two environments:
   in a browser can still reach production if it is merged without the e2e job
   having run.
 * Bad, because the gate duplicates work CI already does. Every push runs the unit
-  suite twice — once in Actions, once on Cloudflare — and the two can disagree,
-  since they run different Node versions (see below).
+  suite twice — once in Actions, once on Cloudflare. Both read Node.js from
+  `.node-version`, so they run the same version.
 * **Bad, because `wrangler.jsonc` is dead configuration that looks live.** The
   build log reports it twice:
 
@@ -172,11 +172,10 @@ Branches map to two environments:
   `wrangler` is ever reinstated *and* run locally, miniflare will recreate the
   directory, that time with real state files, which would then show up as
   untracked and want a `.gitignore` entry.
-* Bad, because the Node.js version of the build environment is set by Cloudflare
-  (the dashboard or the image default), while CI's is set in the workflows.
-  Nothing keeps the two equal, so the bundle that reaches production can be built
-  on a version no test job exercises
-  ([0011](0011-run-ci-on-github-actions.md)).
+* Neutral, because Cloudflare's build and CI both take Node.js from the
+  repository's `.node-version`, so the bundle that reaches production is built on
+  the version the tests ran on. A `NODE_VERSION` variable in the dashboard would
+  override the file, so none is set there.
 * Neutral, because the response headers are delivered as a `_headers` file
   generated into `dist/`
   ([0014](0014-emit-security-headers-as-a-generated-headers-file.md)). Pages
@@ -219,8 +218,8 @@ What to check, and where:
 * Neutral, because the build configuration lives in a dashboard rather than in the
   repository. What it *does* is kept in `package.json` as `build:deploy`, so the
   reviewable part is versioned; the dashboard holds one line pointing at it. The
-  output directory and Node version are still dashboard-only, and this record is
-  the only place they are written down.
+  output directory is still dashboard-only, and this record is the only place it
+  is written down.
 
 ### Vercel
 
@@ -300,8 +299,7 @@ Two follow-ups remain:
    mediated. Verified by a full `pnpm run build:deploy` after the removal —
    `astro check` 29 files / 0 errors, 59 unit and integration tests, 22 pages
    built, 13 build-output tests — matching the counts in the `7274773` deploy log
-   exactly, so nothing the gate covers changed. **Only follow-up 2 (Node version
-   alignment) remains open.**]*
-2. Align the Node versions, so that what CI tests is what Cloudflare builds. A
-   `.node-version` file in the repository is honoured by the Pages build image, so
-   this one need not be a dashboard change.
+   exactly, so nothing the gate covers changed.]*
+2. Align the Node versions, so that what CI tests is what Cloudflare builds.
+   *[Done 2026-10-29: `.node-version` in the repository, read by the Pages build
+   image and by every CI job through `.github/actions/setup`.]*

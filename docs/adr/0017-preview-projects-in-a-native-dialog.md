@@ -105,13 +105,10 @@ a header on.
 * Bad, because a stretched overlay makes text inside the card awkward to select
   with a mouse — dragging across the summary drags across the hit area instead.
   That is the standing cost of any whole-card click target.
-* **Bad, because with JavaScript off a project is now unreachable.** The card is
-  inert by design and no longer carries a link, so those visitors get a list of
-  names and nothing to click. Before this change the page degraded to plain links;
-  it no longer degrades at all. The cheap mitigation, if it is ever wanted, is a
-  `<noscript>` block rendering the link on the card — the same technique
-  `SiteNav.astro` already uses to reveal its panel. Not done, because the whole
-  point of the change was to take the link off the card.
+* Neutral, because with JavaScript off the card is inert by design and carries no
+  link. Those visitors get a `<noscript>` list of repository links below the grid
+  instead (2026-10-29), the same technique `SiteNav.astro` uses to reveal its
+  panel. It sits outside the grid so no link ends up under the opener's overlay.
 * Neutral, because the card's accessible name is now just the project title.
   `aria-haspopup="dialog"` is what tells a screen reader the button opens a
   dialog rather than navigating.
@@ -131,9 +128,9 @@ Another asserts the card grid contains no `<a>` at all: a link reappearing there
 would sit under that same overlay and be unclickable, so its absence is now an
 invariant rather than an accident.
 
-The no-JavaScript path is verified by hand, by turning JavaScript off: the cards
-and their titles render and the openers stay disabled. There is nothing else to
-check, because there is nothing else to click.
+The no-JavaScript path is tested with JavaScript off in `e2e/projects.spec.ts`:
+the openers stay disabled and the `<noscript>` list is visible and links to
+GitHub. `integration/projects.test.ts` asserts the list covers every project.
 
 ## Pros and Cons of the Options
 

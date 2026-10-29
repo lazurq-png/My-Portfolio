@@ -73,14 +73,11 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   no longer diagnosable from the artifact. The `github` reporter is now also
   enabled under CI, so failures surface as inline pull-request annotations
   without downloading anything.]*
-* Bad, because the checkout / pnpm / Node / install block is duplicated in every
-  job that needs it — five copies across the two files. Changing the Node version
-  or the pnpm major means five edits, and missing one produces an inconsistency
-  that is easy not to notice.
-* Bad, because CI's Node.js version is set in these workflows and Cloudflare's in
-  its build environment ([0003](0003-host-on-cloudflare-with-wrangler.md)), and
-  nothing keeps them equal. When they differ, every test here runs on a version
-  that never ships, and the version that ships is never tested.
+* Neutral, because the pnpm / Node / install steps live once, in the composite
+  action `.github/actions/setup`, and every job calls it after its checkout.
+* Neutral, because CI and Cloudflare's build
+  ([0003](0003-host-on-cloudflare-with-wrangler.md)) both take Node.js from
+  `.node-version`, so the tests run on the version that ships.
 * Bad, because getting WebKit working headless took roughly a dozen commits on a
   single day and the result is fragile: it needs
   `playwright install --with-deps`, a *second* explicit
@@ -104,8 +101,8 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   green. What protects the deploy is Cloudflare's build command running
   `pnpm run build:deploy`, which re-runs the type check and the unit suite in its
   own environment — not any status reported from here.
-* Bad, because that arrangement makes the unit suite run twice per push, on two
-  different Node versions, with no mechanism to notice if the results diverge.
+* Bad, because that arrangement makes the unit suite run twice per push (on the
+  same Node.js version, both reading `.node-version`).
   Playwright still runs only here, so the e2e suite gates the merge into `master`
   but never gates a deploy.
 
@@ -130,8 +127,7 @@ forever whenever the path filter selects no specs.]*
 * Good, because the two files are individually short and readable.
 * Neutral, because "which workflow runs when" is one more thing to know, though
   the filenames make it obvious.
-* Bad, because the shared setup steps are duplicated with no composite action to
-  factor them out.
+* Neutral, because the shared setup steps are factored into one composite action.
 
 ### One workflow on both triggers
 
@@ -167,7 +163,8 @@ Three follow-ups:
    this workflow behind the existing jobs, and turning the Cloudflare Git
    integration off, would make one suite run instead of two and let the e2e job
    gate the deploy. The cost is losing per-branch previews.
-2. Make CI test the Node.js version that actually ships: set the workflows to
-   Cloudflare's version, or Cloudflare's to the workflows'.
-3. Factor the shared checkout/pnpm/Node/install block into a composite action to
-   remove the duplication, now five copies across the two files.
+2. Make CI test the Node.js version that actually ships. *[Done 2026-10-29: both
+   read `.node-version`.]*
+3. Factor the shared pnpm/Node/install block into a composite action. *[Done
+   2026-10-29: `.github/actions/setup`. Checkout stays in each job, because the
+   action can only be found once the repository is checked out.]*

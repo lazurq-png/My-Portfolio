@@ -18,7 +18,8 @@ updates:
       minor-and-patch:
         update-types: [minor, patch]
   - package-ecosystem: github-actions
-    directory: /
+    # The composite action pins actions too, and "/" alone only covers the workflows.
+    directories: ["/", "/.github/actions/*"]
     schedule:
       interval: weekly
     groups:
