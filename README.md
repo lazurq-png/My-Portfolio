@@ -3,8 +3,7 @@
 Martin Larsson's portfolio and development blog: a static [Astro](https://astro.build) site with
 no UI framework, hosted on Cloudflare Pages.
 
-**Live:** <https://my-portfolio-72x.pages.dev> · **Preview (`dev` branch):**
-<https://dev.my-portfolio-72x.pages.dev>
+**Live:** <https://my-portfolio-72x.pages.dev>
 
 | Page | What it is |
 |---|---|
@@ -64,9 +63,10 @@ Work happens on `dev` and reaches production through a pull request into `master
   spec, limited to the specs whose pages the PR touched. The `master` ruleset requires a PR and the
   **Unit tests**, **Build** and **E2E tests** checks ("E2E tests" is the `e2e-gate` job; a skipped
   matrix never reports a status), so everything on `master` has passed the full suite.
-- **Cloudflare Pages deploys on every push, independently of GitHub Actions.** It runs the build
-  command below, so `build:deploy` in `package.json` is production configuration: breaking it
-  disables the only deploy gate. Playwright is not part of it.
+- **Cloudflare Pages deploys every push to `master`, independently of GitHub Actions.** Other
+  branches aren't built there; the PR's CI covers them. It runs the build command below, so
+  `build:deploy` in `package.json` is production configuration: breaking it disables the only
+  deploy gate. Playwright is not part of it.
 
 ### Cloudflare dashboard settings
 
@@ -76,7 +76,7 @@ These live only in the Cloudflare dashboard, so check them there if a deploy mis
 | Setting | Value |
 |---|---|
 | Production branch | `master` |
-| Preview branches | Custom: `dev` only, so Dependabot branches aren't built |
+| Preview branches | None: only `master` is built |
 | Build command | `pnpm run build:deploy` |
 | Build output directory | `dist` |
 | Node.js version | Not set here: Pages reads `.node-version` from the repo, as CI does. A `NODE_VERSION` variable in the dashboard would override it, so leave it unset |

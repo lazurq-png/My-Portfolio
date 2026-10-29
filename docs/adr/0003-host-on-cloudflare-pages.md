@@ -78,13 +78,11 @@ pnpm named there before installing. The user build command is
 > the `wrangler.jsonc` warning appearing twice, `wrangler` and `workerd` being
 > installed and running their postinstall, and `Parsed 1 valid header rule`.]*
 
-Branches map to two environments:
-
-* A push to the **production branch** publishes production.
-* A push to `dev` publishes a **preview**, at a per-commit URL plus a stable
-  branch alias (`dev.my-portfolio-72x.pages.dev`). Branch control in the dashboard
-  limits previews to `dev`, so other branches (Dependabot's, for one) are not built.
-  Cloudflare adds `x-robots-tag: noindex` to preview responses.
+Only the **production branch** (`master`) is built, and a push to it publishes
+production. Preview deployments are off (Preview branch: None in the dashboard).
+*[2026-10-29: `dev` used to publish a preview. It was dropped because a pull
+request into `master` runs everything that build checked, plus the browser tests,
+so waiting for the preview added time and caught nothing new.]*
 
 ### Consequences
 
@@ -96,8 +94,9 @@ Branches map to two environments:
   no cross-vendor delegation to get wrong.
 * Good, because releasing needs no local toolchain and cannot be forgotten: the
   deployed site never drifts behind the branch it tracks.
-* Good, because `dev` gets a preview URL, so a change can be looked at on
-  real Cloudflare infrastructure before it reaches production.
+* Neutral, because there is no preview URL, so a change is first seen on
+  Cloudflare's infrastructure once it is live. The pull request's CI builds and
+  browser-tests the same `dist/` beforehand.
 * Neutral, because the deploy is gated on the tests by the build command rather
   than by CI. Cloudflare builds from its own clone and never sees a GitHub Actions
   result, so the only way to stop a bad deploy is to make the build itself fail.

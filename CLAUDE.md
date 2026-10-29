@@ -34,5 +34,5 @@ Use **pnpm**. Work on `dev`; production is a PR into `master`. Task workflows: `
   `a11y.spec.ts` runs axe on the rendered pages in both themes: a colour-token change must keep contrast.
   Add pages to `.github/e2e-filters.yml` when a spec gains a navigation. Keep the Playwright container tag
   in `ci-pull.yml` equal to `@playwright/test`.
-- Cloudflare runs `pnpm run build:deploy` on every push, so that script **is** production config. The build
+- Cloudflare runs `pnpm run build:deploy` on every push to `master` (no previews), so that script **is** production config. The build
   settings live only in the Cloudflare dashboard. No Wrangler config, don't add one.
