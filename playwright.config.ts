@@ -44,11 +44,12 @@ export default defineConfig({
       name: "firefox",
       use: {
         ...devices["Desktop Firefox"],
-        // Firefox needs more time than the global 5s budget under parallel
-        // workers. Re-checked 2026-10-29 after the 127.0.0.1 fix: without these,
-        // 1-3 of ~90 Firefox tests per run still timed out waiting for a page
-        // after a click, against the dev server and the built site alike. The
-        // failures were always navigation/visibility waits, never wrong content.
+        // Headroom for slower or busy machines, where Firefox can need more than
+        // the global 5s budget with parallel workers. Re-checked 2026-10-29 on a
+        // laptop that was visibly lagging under the run: without these, 1-3 of ~90
+        // Firefox tests timed out waiting for a page after a click (dev server and
+        // built site alike). Always navigation/visibility waits, never wrong
+        // content. A fast machine or a CI runner may not need them.
         actionTimeout: 60_000,
         navigationTimeout: 60_000,
       },
