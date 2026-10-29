@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "@iconify-json/devicon": "^1.2.72",
+    "@iconify-json/devicon": "^1.2.73",
     "astro": "^7.4.2",
     "astro-icon": "^1.2.0"
   },
