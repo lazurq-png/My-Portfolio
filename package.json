@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "@iconify-json/devicon": "^1.2.73",
-    "astro": "^7.4.2",
+    "@iconify-json/devicon": "^1.2.75",
+    "astro": "^7.4.4",
     "astro-icon": "^1.2.0"
   },
   "devDependencies": {
@@ -31,12 +31,12 @@
     "@axe-core/playwright": "^4.14.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.64.1",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.0.5",
-    "eslint": "^10.13.0",
+    "eslint": "^10.14.0",
     "eslint-plugin-astro": "^3.2.1",
     "eslint-plugin-jsx-a11y-x": "^0.2.0",
-    "globals": "^17.13.0",
+    "globals": "^17.14.0",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.2",
     "sharp": "^0.35.5",
