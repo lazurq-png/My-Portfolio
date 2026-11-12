@@ -4,3 +4,10 @@ packages:
 allowBuilds:
   esbuild: true
   sharp: true
+
+# Mixing @emnapi/core and @emnapi/runtime across 1.x and 2.0.0-beta crashes, and
+# @astrojs/astro2tsx then fails to load, so `astro check` reports
+# "@astrojs/check is not installed". Keep both on 1.x until 2.0 is stable.
+overrides:
+  "@emnapi/runtime": "^1.11.3"
+  "@emnapi/core": "^1.11.3"

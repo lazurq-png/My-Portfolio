@@ -39,19 +39,19 @@ export const PROJECT_PICKS: ProjectPick[] = [
   {
     repo: "lazurq-png/My-Portfolio",
     title: "Portfolio Site",
-    summary: "A polished Astro-based portfolio experience with a lightweight, modern presentation.",
+    summary: "You are here.",
     stack: ["Astro", "TypeScript", "CSS", "20% AI"],
   },
   {
     repo: "lazurq-png/next.js-dashboard",
     title: "Next.js Dashboard Template",
-    summary: "Learning how to use Next.js to build interactive web applications.",
+    summary: "Learning how to use Next.js.",
     stack: ["Next.js", "React", "TypeScript", "PostgreSQL", "0% AI"],
   },
   {
     repo: "lazurq-png/Questionable-candy",
     title: "Questionable Candy",
-    summary: "A satirical candy storefront in the design stage.",
+    summary: "A satirical candy storefront.",
     stack: ["Django", "Python", "PostgreSQL", "CSS", "60% AI"],
   },
   {
@@ -63,7 +63,7 @@ export const PROJECT_PICKS: ProjectPick[] = [
   {
     repo: "lazurq-png/Xenocats",
     title: "Xenocats",
-    summary: "A simple dashboard next.js template with cats that attack mouse/elements.",
+    summary: "Proof of concept page, where I test Claudes unattended capabilities.",
     stack: ["Next.js", "TypeScript", "PostgreSQL", "CSS", "90% AI"],
   },
 ];
