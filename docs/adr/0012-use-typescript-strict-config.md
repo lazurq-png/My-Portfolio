@@ -75,7 +75,7 @@ one-line fix. With the cost that low, the extra guards are worth having.]*
   confusing error from `astro check` rather than from the install. Astro tracks
   support at <https://github.com/withastro/roadmap/discussions/1321>.
 * Good, because type errors fail every push to `dev` as well as every pull
-  request into `master`. Both workflows run the check (2026-10-29; until then
+  request into `main`. Both workflows run the check (2026-10-29; until then
   only pull requests did). It takes seconds.
 * Neutral, because `strictest` was not chosen at first. Its additions —
   `noUncheckedIndexedAccess` and similar — were expected to add guards
@@ -87,7 +87,7 @@ one-line fix. With the cost that low, the extra guards are worth having.]*
 
 **Confirmed by tooling.** `pnpm check` (`astro check`, via `@astrojs/check`) runs
 in the `unit-tests` job of both workflows and in Cloudflare's `build:deploy`.
-"Unit tests" is a required check on `master`, so a type error cannot merge, and
+"Unit tests" is a required check on `main`, so a type error cannot merge, and
 the job gates `e2e-tests`, which keeps a type error from spending the
 four-browser matrix's runner minutes. (It used to be a separate `check` job that
 was never made a required check, so it only reported.) `typescript` must also

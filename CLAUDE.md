@@ -4,7 +4,7 @@ Static Astro portfolio on Cloudflare Pages. Commands, test scopes, deploys and l
 Reasons: [docs/README.md](docs/README.md), one row per ADR; open a full ADR only when the task touches it.
 `docs/overview.html` is the human version: don't read it for facts. This file is only what is easy to get wrong.
 
-Use **pnpm**. Work on `dev`; production is a PR into `master`. Task workflows: `.claude/skills/`.
+Use **pnpm**. Work on `dev`; production is a PR into `main`. Task workflows: `.claude/skills/`.
 
 ## Gotchas
 
@@ -34,5 +34,5 @@ Use **pnpm**. Work on `dev`; production is a PR into `master`. Task workflows: `
   `a11y.spec.ts` runs axe on the rendered pages in both themes: a colour-token change must keep contrast.
   Add pages to `.github/e2e-filters.yml` when a spec gains a navigation. Keep the Playwright container tag
   in `ci-pull.yml` equal to `@playwright/test`.
-- Cloudflare runs `pnpm run build:deploy` on every push to `master` (no previews), so that script **is** production config. The build
+- Cloudflare runs `pnpm run build:deploy` on every push to `main` (no previews), so that script **is** production config. The build
   settings live only in the Cloudflare dashboard. No Wrangler config, don't add one.

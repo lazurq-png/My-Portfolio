@@ -78,10 +78,10 @@ pnpm named there before installing. The user build command is
 > the `wrangler.jsonc` warning appearing twice, `wrangler` and `workerd` being
 > installed and running their postinstall, and `Parsed 1 valid header rule`.]*
 
-Only the **production branch** (`master`) is built, and a push to it publishes
+Only the **production branch** (`main`) is built, and a push to it publishes
 production. Preview deployments are off (Preview branch: None in the dashboard).
 *[2026-10-29: `dev` used to publish a preview. It was dropped because a pull
-request into `master` runs everything that build checked, plus the browser tests,
+request into `main` runs everything that build checked, plus the browser tests,
 so waiting for the preview added time and caught nothing new.]*
 
 ### Consequences

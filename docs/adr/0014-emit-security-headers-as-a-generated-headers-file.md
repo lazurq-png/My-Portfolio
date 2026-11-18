@@ -85,7 +85,7 @@ The `/** @type {any} */` cast is removed along with the key that needed it.
   and the presence of each header, not that a browser accepts the policy.
 * Bad, because the check needs a build to have run, so it cannot join the suite
   that gates every push to `dev` — it runs in the pull-request `build` job only.
-  A broken policy is caught before `master`, not before `dev`.
+  A broken policy is caught before `main`, not before `dev`.
 * Neutral, because the headers are deliberately not wired into `server.headers`.
   A `script-src 'self'` policy blocks the dev server's inline HMR bootstrap, and
   local e2e runs against `pnpm dev`. Dev and production therefore differ here.
