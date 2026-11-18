@@ -12,14 +12,14 @@ There are now two test suites with very different costs: a browserless unit suit
 that finishes in seconds ([0008](0008-use-vitest-for-unit-tests.md)) and a
 four-browser end-to-end suite that needs browser binaries, system dependencies
 and a virtual display ([0009](0009-use-playwright-for-e2e-tests.md)). Work
-happens on `dev` and reaches `master` through a pull request. Running everything
+happens on `dev` and reaches `main` through a pull request. Running everything
 on every push would make routine commits slow enough that the checks get ignored;
 running nothing until merge defeats the point. What runs where?
 
 ## Decision Drivers
 
 * Fast feedback on ordinary `dev` pushes, or the checks stop being useful.
-* Nothing reaches `master` without the full cross-browser suite having passed.
+* Nothing reaches `main` without the full cross-browser suite having passed.
 * The repository is already on GitHub, so the CI provider should not add another
   account or another place to look when something breaks.
 * Failures must be diagnosable after the fact, not only reproducible locally.
@@ -35,7 +35,7 @@ running nothing until merge defeats the point. What runs where?
 
 Chosen option: "Two workflows split by trigger". `ci-push.yml` runs the unit
 suite on pushes to `dev`; `ci-pull.yml` runs the unit suite and the end-to-end
-suite as two separate jobs on pull requests into `master`. The split puts the
+suite as two separate jobs on pull requests into `main`. The split puts the
 expensive suite exactly at the merge gate and keeps day-to-day pushes cheap,
 which no single-workflow arrangement does as clearly.
 
@@ -47,7 +47,7 @@ type check, the docs check and the unit suite. `ci-pull.yml` has five jobs:
 [0015](0015-add-an-integration-test-scope.md)), `changes`, `e2e-tests` and
 `e2e-gate`. `changes` resolves `.github/e2e-filters.yml` into the spec matrix;
 `e2e-gate` exists because a skipped matrix never reports a status, so it — not
-`e2e-tests` — is the job to require on `master`. The workflow also sets
+`e2e-tests` — is the job to require on `main`. The workflow also sets
 `concurrency` with `cancel-in-progress`, so a force-push stops burning the
 previous run's legs.]*
 
@@ -63,7 +63,7 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
 
 * Good, because a push to `dev` gets an answer in well under a minute, so the
   check is worth waiting for.
-* Good, because `master` is protected by the full four-browser suite, and the two
+* Good, because `main` is protected by the full four-browser suite, and the two
   jobs in that workflow run in parallel and report independently — a unit failure
   surfaces without waiting on browsers.
 * Good, because the Playwright HTML report is uploaded with `if: !cancelled()`
@@ -97,7 +97,7 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   image tag must track `@playwright/test` in `pnpm-lock.yaml`.]*
 * Neutral, because there is no deploy job and deployment does not go through these
   workflows at all. Cloudflare Pages builds from its own clone on every push to
-  `master` ([0003](0003-host-on-cloudflare-pages.md)), so the relationship runs the
+  `main` ([0003](0003-host-on-cloudflare-pages.md)), so the relationship runs the
   opposite way from what this record first assumed: the live site is always
   current with its branch, and a deployed site does not imply these workflows went
   green. What protects the deploy is Cloudflare's build command running
@@ -105,18 +105,18 @@ pass, so the required check still reports. `ci-push.yml` is unchanged.]*
   own environment — not any status reported from here.
 * Bad, because that arrangement runs the unit suite again after a merge, in
   Cloudflare's build (on the same Node.js version, both reading `.node-version`).
-  Playwright still runs only here, so the e2e suite gates the merge into `master`
+  Playwright still runs only here, so the e2e suite gates the merge into `main`
   but never gates a deploy.
 
 ### Confirmation
 
-Both workflows must be green. `ci-pull.yml` is the gate on `master`, so its
+Both workflows must be green. `ci-pull.yml` is the gate on `main`, so its
 status is the operative check; the e2e job has a 60-minute timeout to stop a hung
 browser from consuming the runner budget.
 
 *[2026-09-04: the timeout is now `timeout-minutes: 15`, per matrix leg rather
 than for the suite as a whole — a tighter budget, because each leg runs one spec.
-And "green" needs qualifying: the checks to require on `master` are
+And "green" needs qualifying: the checks to require on `main` are
 `Unit tests`, `Build` and `E2E tests` (the `e2e-gate` job). Requiring
 `e2e-tests` directly would leave a pull request pending forever whenever the path
 filter selects no specs.]*

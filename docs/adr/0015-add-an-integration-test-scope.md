@@ -87,7 +87,7 @@ it, closing the trap 0010 flagged as "worth doing".
   `getViteConfig` resolves the Astro config and runs every integration hook on
   every run. Still fast enough for the push gate, but no longer instant.
 * Bad, because the build-output tests cannot run on push, so a broken deployment
-  contract is caught before `master` and not before `dev`.
+  contract is caught before `main` and not before `dev`.
 * Bad, because there are now two Vitest configs and four test directories in a
   project with four pages. The split is justified by what each scope needs, but
   it is more structure than the size of the site suggests.

@@ -99,7 +99,7 @@ runs use the dev server. `reuseExistingServer` is likewise CI-conditional.]*
 
 ### Confirmation
 
-`pnpm test:e2e` runs on every pull request into `master`, across all four
+`pnpm test:e2e` runs on every pull request into `main`, across all four
 projects, with the HTML report uploaded as an artifact and retained for 30 days.
 `forbidOnly` is set when `CI` is present, so a stray `test.only` fails the build
 rather than silently skipping the rest of the suite.
@@ -110,7 +110,7 @@ matrix with one leg per spec file, and the legs are selected by
 only the specs whose pages it touched, and one touching nothing they cover runs
 no e2e at all. Each leg still runs all four projects. The HTML report is uploaded
 `if: failure()` rather than unconditionally, with `retention-days: 7`. The check
-to require on `master` is `e2e-gate`, not `e2e-tests`: a skipped matrix never
+to require on `main` is `e2e-gate`, not `e2e-tests`: a skipped matrix never
 reports a status. See [0011](0011-run-ci-on-github-actions.md).]*
 
 ## Pros and Cons of the Options

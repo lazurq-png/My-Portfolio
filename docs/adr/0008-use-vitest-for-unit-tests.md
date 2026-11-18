@@ -73,7 +73,7 @@ that is precisely where Jest would have needed the most work.
 ### Confirmation
 
 `pnpm test:unit` runs in both workflows in `.github/workflows/`, on every push to
-`dev` and on every pull request into `master`.
+`dev` and on every pull request into `main`.
 
 ## Pros and Cons of the Options
 

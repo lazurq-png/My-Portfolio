@@ -54,16 +54,16 @@ The directory under `src/__tests__/` decides the scope, and each scope has one c
 
 ## Workflow and deploys
 
-Work happens on `dev` and reaches production through a pull request into `master`.
+Work happens on `dev` and reaches production through a pull request into `main`.
 
 - A push to `dev` runs lint, the type check and the unit/integration tests in GitHub Actions
   (`.github/workflows/ci-push.yml`).
-- A PR into `master` runs the full suite (`ci-pull.yml`): lint, type check and unit/integration
+- A PR into `main` runs the full suite (`ci-pull.yml`): lint, type check and unit/integration
   in the **Unit tests** job, build + build-output tests, and a Playwright matrix with one job per
-  spec, limited to the specs whose pages the PR touched. The `master` ruleset requires a PR and the
+  spec, limited to the specs whose pages the PR touched. The `main` ruleset requires a PR and the
   **Unit tests**, **Build** and **E2E tests** checks ("E2E tests" is the `e2e-gate` job; a skipped
-  matrix never reports a status), so everything on `master` has passed the full suite.
-- **Cloudflare Pages deploys every push to `master`, independently of GitHub Actions.** Other
+  matrix never reports a status), so everything on `main` has passed the full suite.
+- **Cloudflare Pages deploys every push to `main`, independently of GitHub Actions.** Other
   branches aren't built there; the PR's CI covers them. It runs the build command below, so
   `build:deploy` in `package.json` is production configuration: breaking it disables the only
   deploy gate. Playwright is not part of it.
@@ -75,8 +75,8 @@ These live only in the Cloudflare dashboard, so check them there if a deploy mis
 
 | Setting | Value |
 |---|---|
-| Production branch | `master` |
-| Preview branches | None: only `master` is built |
+| Production branch | `main` |
+| Preview branches | None: only `main` is built |
 | Build command | `pnpm run build:deploy` |
 | Build output directory | `dist` |
 | Node.js version | Not set here: Pages reads `.node-version` from the repo, as CI does. A `NODE_VERSION` variable in the dashboard would override it, so leave it unset |
@@ -119,4 +119,4 @@ The records themselves are in [`docs/adr/`](docs/adr/), indexed for agents in
 
 `CLAUDE.md` holds the short list of gotchas, and `.claude/skills/` has step-by-step
 workflows for the repeatable tasks: writing a post, adding a project, writing an ADR and adding an
-external resource. `/code-review` is worth running before a PR into `master`.
+external resource. `/code-review` is worth running before a PR into `main`.
